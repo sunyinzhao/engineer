@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.cfca.dao.CfcaElectronicChapterDao">
+    
+	<sql id="cfcaElectronicChapterColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.dn AS "dn",
+		a.sequence_no AS "sequenceNo",
+		a.serial_no AS "serialNo",
+		a.auth_code AS "authCode",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.result_code AS "resultCode",
+		a.result_message AS "resultMessage",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.chapter_image AS "chapterImage"	,
+		a.status as "status",
+		a.ukey_id as "ukeyId",
+		w.name AS "worker.name",
+		w.id as "worker.id",
+		w.certificates_num as "worker.certificatesNum",
+		u.name  as "company.name"
+
+	</sql>
+	
+	<sql id="chapterJoins">
+		<!-- workerId 与userId关联 :证书与用户关联      -->
+		LEFT JOIN enterprise_workers w ON  w.id = a.user_id
+		<!-- w.pid 与 u.id 关联 :  企业与用户关联-->
+		LEFT JOIN sys_user u ON w.pid = u.id
+	</sql>
+    
+	<select id="get" resultType="CfcaElectronicChapter">
+		SELECT 
+			<include refid="cfcaElectronicChapterColumns"/>
+		FROM cfca_electronic_chapter a
+		<include refid="chapterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CfcaElectronicChapter">
+		SELECT 
+			<include refid="cfcaElectronicChapterColumns"/>
+		FROM cfca_electronic_chapter a
+		<include refid="chapterJoins"/>
+		<where>
+
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			
+			<if test="serialNo != null and serialNo != ''">
+				AND a.serial_no = #{serialNo}
+			</if>
+
+			  <!-- 所属单位名称 -->
+			<if test="company != null and company.name != null and company.name != ''   ">
+				AND u.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{company.name }||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{company.name }+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{company.name },'%')</if>
+			</if>
+			<!-- 姓名 -->
+			<if test="worker != null and worker.name != null and worker.name != ''   ">
+				AND w.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{worker.name }||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{worker.name }+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{worker.name },'%')</if>
+			</if>
+			<!-- 身份证号 -->
+			<if test="worker != null and worker.certificatesNum!= null and worker.certificatesNum != ''   ">
+				AND w.certificates_num LIKE
+				<if test="dbName == 'oracle'">'%'||#{worker.certificatesNum }||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{worker.certificatesNum}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{worker.certificatesNum },'%')</if>
+			</if>
+
+			<if test="status != null and status != ''   ">
+				AND a.status = #{status}
+			</if>
+
+			AND a.del_flag ='0'
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findSelfList" resultType="CfcaElectronicChapter">
+		SELECT
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.dn AS "dn",
+		a.sequence_no AS "sequenceNo",
+		a.serial_no AS "serialNo",
+		a.auth_code AS "authCode",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.result_code AS "resultCode",
+		a.result_message AS "resultMessage",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.chapter_image AS "chapterImage",
+		a.status as "status"
+		FROM cfca_electronic_chapter a
+		<where>
+			<!-- 结束时间应该大于系统时间 -->
+			AND a.end_time  &gt;   now()
+			<choose>
+				<when test="userId != null and userId != ''">
+					AND a.user_id = #{userId}
+				</when>
+				<otherwise>
+					AND 1 = 2
+				</otherwise>
+			</choose>
+
+            <if test="sequenceNo != null and sequenceNo!='' ">
+                AND a.sequence_no  =  #{sequenceNo}
+            </if>
+			AND a.del_flag ='0'
+			
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CfcaElectronicChapter">
+		SELECT 
+			<include refid="cfcaElectronicChapterColumns"/>
+		FROM cfca_electronic_chapter a
+		<include refid="chapterJoins"/>
+		<where>
+			AND a.del_flag ='0'
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findNoDonloadList" resultType="CfcaElectronicChapter">
+		SELECT
+		<include refid="cfcaElectronicChapterColumns"/>
+		FROM cfca_electronic_chapter a
+		<include refid="chapterJoins"/>
+		<where>
+			AND a.del_flag ='0'
+
+			<!--查询出证书状态为， 未下载的记录 -->
+			AND (a.status = '3' or a.status is null  or a.status ='')
+			<if test="sequenceNo != null and sequenceNo != ''   ">
+				AND (a.sequence_no = #{sequenceNo} )
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getUkeyIdCount" resultType="Integer">
+		SELECT
+			count(*)
+		FROM cfca_electronic_chapter a
+		<include refid="chapterJoins"/>
+		<where>
+			<choose>
+				<when test="ukeyId !=null and ukeyId!= ''">
+					AND a.ukey_id = #{ukeyId}
+				</when>
+				<otherwise>
+					AND 1 =2
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+
+
+
+	
+	<insert id="insert">
+		INSERT INTO cfca_electronic_chapter(
+			id ,
+			user_id ,
+			dn ,
+			sequence_no,
+			serial_no,
+			auth_code,
+			start_time,
+			end_time ,
+			result_code ,
+			result_message ,
+			create_by,
+			create_date	,
+			status
+		) VALUES (
+			#{id},
+			#{userId},
+			#{dn},
+			#{sequenceNo},
+			#{serialNo},
+			#{authCode},
+			#{startTime},
+			#{endTime},
+			#{resultCode},
+			#{resultMessage},
+			#{createBy.id},
+			#{createDate},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cfca_electronic_chapter SET
+			dn =#{dn},
+			sequence_no =#{ sequenceNo},
+			serial_no=#{ serialNo},
+			auth_code=#{authCode },
+			start_time=#{startTime },
+			end_time=#{endTime} ,
+			result_code=#{resultCode} ,
+			result_message=#{resultMessage} ,
+			status	=#{status},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			ukey_id = #{ukeyId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE cfca_electronic_chapter SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateChapterImage">
+		UPDATE cfca_electronic_chapter SET 
+			chapter_image = #{chapterImage}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

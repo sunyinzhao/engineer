@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.JobKnowledgeDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.company_name AS "companyName",
+		a.job_content AS "jobContent",
+		a.duties AS "duties",
+		a.title AS "title",
+		a.reterence AS "reterence",
+		a.reterencetel AS "reterencetel",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.is_change AS "isChange"
+	</sql>
+
+    
+	<select id="get" resultType="JobKnowledge">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		WHERE a.id = #{id}
+	</select>
+
+
+	<select id="findByTableId" resultType="JobKnowledge">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		WHERE a.table_id = #{tableId}
+	</select>
+	
+	<select id="findList" resultType="JobKnowledge">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		<where>
+			<if test="personId!=null and personId != ''">
+					a.person_id = #{personId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.start_date ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findLast" resultType="JobKnowledge">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		<where>
+				a.person_id = #{personId}
+		</where>
+				ORDER BY a.start_date desc
+				LIMIT 1
+	</select>
+
+
+	<select id="findFirst" resultType="JobKnowledge">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		<where>
+			a.person_id = #{personId}
+		</where>
+		ORDER BY a.start_date ASC
+		LIMIT 1
+	</select>
+	
+	<select id="findAllList" resultType="JobKnowledge">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM job_knowledge a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO job_knowledge(
+			id,
+			table_id,
+			person_id,
+			start_date,
+			end_date,
+			company_name,
+			job_content,
+			duties,
+			title,
+			reterence,
+			reterencetel,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{startDate},
+			#{endDate},
+			#{companyName},
+			#{jobContent},
+			#{duties},
+			#{title},
+			#{reterence},
+			#{reterencetel},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE job_knowledge SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			company_name = #{companyName},
+			job_content = #{jobContent},
+			duties = #{duties},
+			title = #{title},
+			reterence = #{reterence},
+			reterencetel = #{reterencetel},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			is_change = #{isChange}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete from job_knowledge
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

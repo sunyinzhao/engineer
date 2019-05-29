@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.AccountantStatusDao">
+
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.company_name AS "companyName",
+		a.job_company_name AS "jobCompanyName",
+		a.backup_num AS "backupNum",
+		a.backup_type AS "backupType",
+		a.company_type AS "companyType",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.accountant_check AS "accountantCheck",
+		a.old_main_specialty AS "oldMainSpecialty",
+		a.old_auxiliary_specialty AS "oldAuxiliarySpecialty",
+		a.new_main_specialty AS "newMainSpecialty",
+		a.new_auxiliary_specialty AS "newAuxiliarySpecialty",
+		a.reason,
+		a.start_date AS "startDate",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.confirm_five as "confirmFive"
+	</sql>
+
+    
+	<select id="get" resultType="AccountantStatus">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM accountant_status a
+		WHERE a.id = #{id}
+	</select>
+
+    <select id="getByTableId" resultType="AccountantStatus">
+        SELECT
+        <include refid="counselorColumns"/>
+        FROM accountant_status a
+        WHERE a.table_id = #{tableId}
+    </select>
+
+
+	<select id="findList" resultType="AccountantStatus">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM accountant_status a
+		<where>
+
+			<if test="personRecordId!=null and personRecordId!=''" >
+				and a.person_record_id = #{personRecordId}
+			</if>
+			<if test="examineId!=null and examineId!=''" >
+				and a.examine_id = #{examineId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AccountantStatus">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM accountant_status a
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+
+	<insert id="insert">
+		INSERT INTO accountant_status(
+			id,
+			table_id,
+			person_id,
+			company_name,
+			job_company_name,
+			backup_num,
+			backup_type,
+			company_type,
+			register_certificate_num,
+			accountant_check,
+			old_main_specialty,
+			old_auxiliary_specialty,
+			new_main_specialty,
+			new_auxiliary_specialty,
+			start_date,
+			reason,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			confirm_five
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{companyName},
+			#{jobCompanyName},
+			#{backupNum},
+			#{backupType},
+			#{companyType},
+			#{registerCertificateNum},
+			#{accountantCheck},
+			#{oldMainSpecialty},
+			#{oldAuxiliarySpecialty},
+			#{newMainSpecialty},
+			#{newAuxiliarySpecialty},
+			#{startDate},
+			#{reason},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{confirmFive}
+		)
+	</insert>
+
+
+	
+	<update id="update">
+		UPDATE accountant_status SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			company_name = #{companyName},
+			job_company_name = #{jobCompanyName},
+			backup_num = #{backupNum},
+			backup_type = #{backupType},
+			company_type = #{companyType},
+			register_certificate_num = #{registerCertificateNum},
+			accountant_check = #{accountantCheck},
+			old_main_specialty = #{oldMainSpecialty},
+			old_auxiliary_specialty = #{oldAuxiliarySpecialty},
+			new_main_specialty = #{newMainSpecialty},
+			new_auxiliary_specialty = #{newAuxiliarySpecialty},
+			start_date = #{startDate},
+			reason = #{reason},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			confirm_five = #{confirmFive}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE accountant_status SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

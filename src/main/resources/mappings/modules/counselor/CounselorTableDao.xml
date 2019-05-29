@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.CounselorTableDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.person_record_id AS "personRecordId",
+		a.type AS "type",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks"
+	</sql>
+
+    
+	<select id="get" resultType="CounselorTable">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record_table a
+		WHERE a.id = #{id}
+	</select>
+
+
+	<select id="getNew" resultType="CounselorTable">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record_table a
+			WHERE
+			 a.person_record_id = #{recordId}
+			AND a.type = #{type}
+
+	</select>
+
+	<!--查询是否有未确认的-->
+	<select id="getSame" resultType="Integer">
+		SELECT
+			count(1)
+		FROM person_record_table a
+		WHERE
+		a.person_record_id = #{recordId}
+		AND a.status != '1'
+
+	</select>
+
+
+	
+	<select id="findList" resultType="CounselorTable">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record_table a
+		<where>
+			<if test="personRecordId != null and personRecordId != ''">
+				AND a.person_record_id = #{personRecordId}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY FIELD(type,'1','2','6','3','7')
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselorTable">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record_table a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO person_record_table(
+			id,
+			person_record_id,
+			type,
+			status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{personRecordId},
+			#{type},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE person_record_table SET
+			person_record_id = #{personRecordId},
+			type = #{type},
+			status = #{status},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE person_record_table SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

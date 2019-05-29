@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.CreateExcelDao">
+
+	<!--统计数据1-->
+	<select id="excel4Record" resultType="Excel4Record">
+				select
+				case person_record.declare_type
+				when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as declareType,
+				sys_office.`name`,
+				a.`name` as companyName,
+				enterprise_workers.`name` as enterpriseName,
+				enterprise_workers.register_certificate_num as registerCertificateNum,
+				person_record.declare_date as declareDate,
+				change_item.oldvalue,
+				change_item.newvalue,
+				d.`name` as Cexpert1name,
+				case person_record.first_Cdeclare_result when '1' then '通过' when '3' then '未通过' end as firstCdeclareResult,
+				e.name as Cexpert2name,
+				case person_record.second_Cdeclare_result when '1' then '通过' when '3' then '未通过' end as secondCdeclareResult,
+				b.`name` as Zexpert1name,
+				case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过' end as firstZdeclareResult,
+				c.name as Zexpert2name,
+				case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过' end as secondZdeclareResult,
+				#person_expert.type,
+				#g.label,
+				#person_expert.items,
+				#f.label,
+				#person_expert.item_text
+				#g.label,
+				#person_expert.type,
+				#f.value,
+				#f.label
+				GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as 'advice'
+				#person_record.batch_status,
+				#person_record.declare_status
+				FROM
+				person_record
+				left join enterprise_workers on person_record.person_id=enterprise_workers.id
+				left join sys_user a on enterprise_workers.pid=a.id
+				left join sys_office on a.office_id=sys_office.id
+				left join sys_user b on person_record.first_Zexpert_id =b.id
+				left join sys_user c on person_record.second_Zexpert_id =c.id
+				left join sys_user d on person_record.first_Cexpert_id=d.id
+				left join sys_user e on person_record.second_Cexpert_id=e.id
+				left join change_item on person_record.id=change_item.person_record_id
+				left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+				left join sys_examine on person_expert.examine_id=sys_examine.id
+				left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+				left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+				where person_record.del_flag='0' and  person_record.batch_status !='20' and person_record.batch_status >=13
+				group by
+				person_record.declare_type,
+				sys_office.`name`,
+				a.`name`,
+				enterprise_workers.`name`,
+				enterprise_workers.register_certificate_num,
+				person_record.declare_date,
+				change_item.oldvalue,
+				change_item.newvalue,
+				d.`name`,
+				person_record.first_Cdeclare_result,
+				e.name,
+				person_record.second_Cdeclare_result,
+				b.`name`,
+				person_record.first_Zdeclare_result,
+				c.name,
+				person_record.second_Zdeclare_result
+				order by
+				person_record.declare_type,
+				sys_office.`name`,
+				a.`name`,
+				enterprise_workers.`name` asc
+	</select>
+
+
+
+
+
+
+
+
+
+</mapper>

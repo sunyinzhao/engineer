@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.certificate.dao.EngineerCertificateDao">
+    
+	<sql id="engineerCertificateColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.award_org AS "awardOrg",
+		a.specialty_main AS "specialtyMain",
+		a.specialty_auxiliary AS "specialtyAuxiliary",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.batch_id AS "batchId",
+		a.practising_company AS "practisingCompany",
+		a.certificate_num AS "certificateNum",
+		a.certificate_pdf AS "certificatePdf",
+		a.certificate_original AS "certificateOriginal",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.worker_id AS "workerId",
+		a.register_certificate_num  AS "registerCertificateNum"
+	</sql>
+	
+	<sql id="engineerCertificateJoins">
+	</sql>
+    
+	<select id="get" resultType="EngineerCertificate">
+		SELECT 
+			<include refid="engineerCertificateColumns"/>
+		FROM engineer_certificate a
+		<include refid="engineerCertificateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByWorkerId" resultType="EngineerCertificate">
+		SELECT
+		<include refid="engineerCertificateColumns"/>
+		FROM engineer_certificate a
+		<include refid="engineerCertificateJoins"/>
+		WHERE a.worker_id = #{workerId}
+	</select>
+
+
+
+	
+	<select id="findList" resultType="EngineerCertificate">
+		SELECT 
+			<include refid="engineerCertificateColumns"/>
+		FROM engineer_certificate a
+		<include refid="engineerCertificateJoins"/>
+		LEFT  JOIN enterprise_workers w on a.worker_id = w.id
+		LEFT JOIN sys_user u on w.pid = u.id
+
+		<where>
+
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+
+
+			<if test="practisingCompany != null and practisingCompany != ''">
+				AND a.practising_company LIKE
+				<if test="dbName == 'oracle'">'%'||#{practisingCompany}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{practisingCompany}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{practisingCompany},'%')</if>
+			</if>
+
+			<if test="certificateNum != null and certificateNum != ''">
+				AND a.certificate_num LIKE
+				<if test="dbName == 'oracle'">'%'||#{certificateNum}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{certificateNum}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{certificateNum},'%')</if>
+			</if>
+
+			<if test="registerCertificateNum != null and registerCertificateNum != ''">
+				AND a.register_certificate_num LIKE
+				<if test="dbName == 'oracle'">'%'||#{registerCertificateNum}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{registerCertificateNum}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{registerCertificateNum},'%')</if>
+			</if>
+
+			<if test="workerId != null and workerId != ''">
+				AND a.worker_id = #{workerId}
+			</if>
+
+
+			<choose>
+				<when test="certificateOriginal =='1'.toString() ">
+					AND (a.certificate_original != "" and  a.certificate_original is not null)
+				</when>
+
+				<when test="certificateOriginal == '0'.toString()">
+					AND (a.certificate_original = "" or a.certificate_original is null)
+				</when>
+
+				<otherwise>
+
+				</otherwise>
+			</choose>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EngineerCertificate">
+		SELECT 
+			<include refid="engineerCertificateColumns"/>
+		FROM engineer_certificate a
+		<include refid="engineerCertificateJoins"/>
+		<where>
+
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO engineer_certificate(
+			id,
+			name,
+			sex,
+			award_org,
+			specialty_main,
+			specialty_auxiliary,
+			start_date,
+			end_date,
+			batch_id,
+			practising_company,
+			certificate_num,
+			certificate_pdf,
+			certificate_original,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			worker_id,
+			register_certificate_num
+		) VALUES (
+			#{id},
+			#{name},
+			#{sex},
+			#{awardOrg},
+			#{specialtyMain},
+			#{specialtyAuxiliary},
+			#{startDate},
+			#{endDate},
+			#{batchId},
+			#{practisingCompany},
+			#{certificateNum},
+			#{certificatePdf},
+			#{certificateOriginal},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{workerId},
+			#{registerCertificateNum}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE engineer_certificate SET 	
+			name = #{name},
+			sex = #{sex},
+			award_org = #{awardOrg},
+			specialty_main = #{specialtyMain},
+			specialty_auxiliary = #{specialtyAuxiliary},
+			start_date = #{startDate},
+			end_date =#{endDate},
+			practising_company = #{practisingCompany},
+			certificate_num = #{certificateNum},
+			certificate_pdf = #{certificatePdf},
+			certificate_original = #{certificateOriginal},
+			register_certificate_num = #{registerCertificateNum},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM engineer_certificate
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

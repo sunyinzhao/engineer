@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseCertificateDao">
+    
+	<sql id="enterpriseCertificateColumns">
+		a.id AS "id",
+		a.certificate_type AS "certificateType",
+		a.award_org AS "awardOrg",
+		a.specialty AS "specialty",
+		a.grade AS "grade",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.record_id AS "recordId",
+		a.company_name AS "companyName",
+		a.organization_code AS "organizationCode",
+		a.create_by AS "createBy.id",
+		a.legal_person AS "legalPerson",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.technology_leader AS "technologyLeader",
+		a.address AS "address",
+		a.update_date AS "updateDate",
+		a.certificate_num AS "certificateNum",
+		a.remarks AS "remarks",
+		a.certificate_original AS "certificateOriginal",
+		a.certificate_counterpart AS "certificateCounterpart",
+		a.certificate_pdf AS "certificatePdf"
+		
+	</sql>
+	
+	<sql id="enterpriseCertificateJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseCertificate">
+		SELECT 
+			<include refid="enterpriseCertificateColumns"/>
+		FROM enterprise_certificate a
+		<include refid="enterpriseCertificateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseCertificate">
+		SELECT 
+			<include refid="enterpriseCertificateColumns"/>
+		FROM enterprise_certificate a
+		<include refid="enterpriseCertificateJoins"/>
+		<where>
+			
+			<if test="certificateType != null and certificateType != ''">
+				AND a.certificate_type = #{certificateType}
+			</if>
+			<if test="specialty != null and specialty != ''">
+				AND a.specialty = #{specialty}
+			</if>
+			<if test="grade != null and grade != ''">
+				AND a.grade = #{grade}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EnterpriseCertificate">
+		SELECT 
+			<include refid="enterpriseCertificateColumns"/>
+		FROM enterprise_certificate a
+		<include refid="enterpriseCertificateJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_certificate(
+			id,
+			certificate_type,
+			award_org,
+			specialty,
+			grade,
+			start_date,
+			end_date,
+			record_id,
+			company_name,
+			organization_code,
+			create_by,
+			legal_person,
+			create_date,
+			update_by,
+			technology_leader,
+			address,
+			update_date,
+			certificate_num,
+			remarks,
+			certificate_original,
+			certificate_counterpart,
+			certificate_pdf
+		) VALUES (
+			#{id},
+			#{certificateType},
+			#{awardOrg},
+			#{specialty},
+			#{grade},
+			#{startDate},
+			#{endDate},
+			#{recordId},
+			#{companyName},
+			#{organizationCode},
+			#{createBy.id},
+			#{legalPerson},
+			#{createDate},
+			#{updateBy.id},
+			#{technologyLeader},
+			#{address},
+			#{updateDate},
+			#{certificateNum},
+			#{remarks},
+			#{certificateOriginal},
+			#{certificateCounterpart},
+			#{certificatePdf}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_certificate SET 	
+			certificate_type = #{certificateType},
+			award_org = #{awardOrg},
+			specialty = #{specialty},
+			grade = #{grade},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			record_id = #{recordId},
+			company_name = #{companyName},
+			organization_code = #{organizationCode},
+			legal_person = #{legalPerson},
+			update_by = #{updateBy.id},
+			technology_leader = #{technologyLeader},
+			address = #{address},
+			update_date = #{updateDate},
+			certificate_num = #{certificateNum},
+			remarks = #{remarks},
+			certificate_original = #{certificateOriginal},
+			certificate_counterpart = #{certificateCounterpart},
+			certificate_pdf =#{certificatePdf}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM enterprise_certificate
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

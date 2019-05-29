@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.PersonComplianceDao">
+
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.is_check AS "isCheck",
+		a.is_right AS "isRight",
+		a.type,
+		a.examine_id AS "examineId",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks
+	</sql>
+
+	<sql id="counselorColumns1">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.is_check AS "isCheck",
+		a.is_right AS "isRight",
+		a.type,
+		a.examine_id AS "examineId",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		b.label as "name"
+	</sql>
+
+    
+	<select id="get" resultType="PersonCompliance">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_compliance a
+		WHERE a.id = #{id}
+	</select>
+
+
+
+
+	<select id="findList" resultType="PersonCompliance">
+		SELECT 
+			<include refid="counselorColumns1"/>
+		FROM person_compliance a,sys_dict b
+		<where>
+			<if test="recordId!=null and recordId!=''" >
+				and a.record_id = #{recordId}
+			</if>
+			<if test="examineId!=null and examineId!=''" >
+				and a.examine_id = #{examineId}
+			</if>
+			and b.type = 'compliance_type'
+			and b.value = a.type
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findRemarks" resultType="PersonCompliance">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_compliance a,sys_dict b
+		where
+		b.type = 'compliance_type'
+		and b.value = a.type
+		and a.record_id = #{recordId}
+		and a.remarks is not null
+	</select>
+	
+	<select id="findAllList" resultType="PersonCompliance">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_compliance a
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+	<insert id="insert">
+		INSERT INTO person_compliance(
+			id,
+			record_id,
+			examine_id,
+			type,
+			is_check,
+			is_right,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{examineId},
+			#{type},
+			#{isCheck},
+			#{isRight},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+
+
+	
+	<update id="update">
+		UPDATE person_compliance SET
+			record_id = #{recordId},
+			examine_id = #{examineId},
+			type = #{type},
+			is_check = #{isCheck},
+			is_right = #{isRight},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE person_compliance SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

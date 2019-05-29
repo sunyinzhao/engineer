@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.PersonRecordDao">
+    
+	<!-- 证件类型为身份证时，只更新手机号和邮箱 -->
+	<update id= "updateBatchStatus">
+		UPDATE person_record SET
+			batch_status = #{batchStatus}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 插入或更新复议专家id -->
+	<update id= "updatefExpertId">
+		UPDATE person_record SET
+			Fexpert_id = #{fExpertId}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<update id= "updateBatchStatusByBid">
+		UPDATE person_record 
+		inner join (select batch_id from person_record where id= #{id}) a
+		on person_record.batch_id=a.batch_id
+		SET
+			batch_status = #{batchStatus},
+			declare_status = #{declareStatus}
+
+	</update>
+	
+	<!-- 更新预审专家2 -->
+	<update id= "updateSecondCexpertId">
+		UPDATE person_record SET
+			batch_status = #{batchStatus},
+			second_Cexpert_id = #{secondCexpertId}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 更新预审专家1 -->
+	<update id= "updateFirstCexpertId">
+		UPDATE person_record SET
+			batch_status = #{batchStatus},
+			first_Cexpert_id = #{firstCexpertId}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 更新终审专家2 -->
+	<update id= "updateSecondZexpertId">
+		UPDATE person_record SET
+			batch_status = #{batchStatus},
+			second_Zexpert_id = #{secondZexpertId}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 更新终审专家1 -->
+	<update id= "updateFirstZexpertId">
+		UPDATE person_record SET
+			batch_status = #{batchStatus},
+			first_Zexpert_id = #{firstZexpertId}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据person_id查询所有personRecord信息 -->
+	<select id="findByPersonId" parameterType="String" resultType="PersonRecord">
+		SELECT
+			r.id,
+			r.batch_id,
+			r.person_id,
+			r.declare_date,
+			r.batch_type,
+			r.batch_status,
+			r.declare_status,
+			r.batch_result,
+			r.company_name,
+			r.declare_type,
+			r.Fdeclare_result,
+			r.register_auxiliary_specialty,
+			r.register_main_specialty,
+			r.public_date,
+			o.`name` AS officeName
+		FROM
+			person_record r
+		LEFT JOIN sys_user u ON r.company_id = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		WHERE
+			r.person_id = #{id} and r.batch_status='20'
+			AND r.del_flag != '1'
+			ORDER BY declare_date DESC
+	</select>
+	
+	<!-- 用于查询执业情况登记表的执业单位 -->
+	<select id="findByPersonId01" parameterType="String" resultType="PersonRecord">
+		SELECT
+			r.id,
+			r.person_id,
+			r.declare_status,
+			r.declare_type
+		FROM
+			person_record r
+		WHERE
+			r.person_id = #{workers_id} 
+			AND r.declare_type = '2'
+			AND r.declare_status !='20'
+			AND r.del_flag != '1'
+	</select>
+	
+	<!-- 根据id查询所有personRecord信息 -->
+	<select id="findById" resultType="PersonRecord">
+		SELECT
+			r.id,
+			r.batch_id,
+			r.person_id,
+			r.declare_date,
+			r.batch_type,
+			r.declare_type,
+			r.batch_status,
+			r.declare_status,
+			r.batch_result,
+			r.company_name,
+			r.register_auxiliary_specialty,
+			r.register_main_specialty,
+			r.first_Zexpert_id,
+			r.first_Cexpert_id,
+			r.second_Zexpert_id,
+			r.second_Cexpert_id,
+			r.return_reason,
+			r.local_receive_return_reason,
+			r.office_name
+			FROM
+				person_record r
+			WHERE
+				r.id = #{id}
+				AND r.del_flag != '1'
+	</select>
+	
+	<!-- 根据batch_id查询所有personRecord信息 -->
+	<select id="findByBatchId" resultType="PersonRecord">
+		SELECT
+			r.id,
+			r.batch_id,
+			r.person_id,
+			r.declare_date,
+			r.batch_type,
+			r.batch_status,
+			r.declare_status,
+			r.batch_result,
+			r.company_name,
+			r.register_auxiliary_specialty,
+			r.register_main_specialty,
+			r.is_punish
+			FROM
+				person_record r
+			WHERE
+				r.batch_id = #{batchId}
+				AND r.del_flag != '1'
+	</select>
+	
+	
+	<update id= "updateDeclareStatusNew">
+		UPDATE person_record SET
+			declare_status = #{declareStatus}
+		  WHERE
+		  	id = #{id}
+	</update>
+	<update id= "updateDeclareStatusBatch">
+		UPDATE person_record SET
+			declare_status = #{declareStatus},
+			batchno = #{batchNo}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据id更新单位被退回信息 -->
+	<update id="updateReturnReason">
+		UPDATE person_record SET
+			return_reason = #{returnReason}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据id更新地方接收时退回单位申请信息 -->
+	<update id="updateLocalReceiveReturnReason">
+		UPDATE person_record SET
+			local_receive_return_reason = #{localReceiveReturnReason}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据id修改ispunlish -->
+	<update id="updateIsPunish">
+		UPDATE person_record SET
+			is_punish = #{isPunish}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 待公告申请列表 -->
+	<select id="zWaitPublicApplyList" resultType="PersonRecord">
+		SELECT
+			d.name AS officeName,
+			c.name AS companyName,
+			b.name AS workerName,
+			b.certificates_num,
+			a.declare_type,
+			a.declare_date,
+			a.Fdeclare_result AS fdeclareResult
+		FROM
+		person_record a
+		left join enterprise_workers b on a.person_id=b.id
+		left join sys_user c on b.pid=c.id
+		left join sys_office d on c.office_id=d.id
+		<where>
+			<if test="batchStatus !=null and batchStatus !=''">
+				AND a.batch_status in ('17','18','19')
+			</if>
+			<if test="declareType !=null and declareType !=''">
+				AND a.declare_type = #{declareType}
+			</if>
+			<if test="batchNo !=null and batchNo !=''">
+				AND a.batchno = #{batchNo}
+			</if>
+			AND a.Fdeclare_result is not null
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.declare_date DESC
+			</otherwise>
+		</choose> 
+	</select>
+
+	
+
+
+
+	<select id="getAvailablePersonReocrd" resultType="PersonRecord">
+		SELECT
+		a.id,
+		a.batch_id,
+		a.person_id,
+		a.declare_date,
+		a.batch_type,
+		a.batch_status,
+		a.declare_status,
+		a.batch_result,
+		a.company_name,
+		a.register_auxiliary_specialty,
+		a.register_main_specialty,
+		a.declare_type,
+		a.Fdeclare_result AS fdeclareResult
+		FROM
+
+		person_record a
+
+		<where>
+			<if test="personId !=null and personId !=''">
+				AND a.person_id = #{personId}
+			</if>
+				AND a.Fdeclare_result in('1','2')
+		</where>
+
+		ORDER BY a.declare_date DESC
+
+	</select>
+	
+	<update id="updateReturnType">
+		UPDATE person_record SET
+			return_type = #{returnType}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 初始登记的公告存储过程 -->
+	<select id="chushigonggao" parameterType="map" statementType="CALLABLE">
+    {
+        call chushigonggao(
+            #{p1,mode=IN,jdbcType=VARCHAR},
+            #{p2,mode=IN,jdbcType=VARCHAR},
+            #{p3,mode=OUT,jdbcType=NUMERIC}
+        )
+    }
+	</select>
+		<!-- 变更单位的公告存储过程 -->
+	<select id="bdgonggao" parameterType="map" statementType="CALLABLE">
+    {
+        call bdgonggao(
+            #{p1,mode=IN,jdbcType=VARCHAR},
+            #{p2,mode=IN,jdbcType=VARCHAR},
+            #{p3,mode=OUT,jdbcType=NUMERIC}
+        )
+    }
+	</select>
+	<!-- 变更专业的公告存储过程 -->
+	<select id="dzgonggao" parameterType="map" statementType="CALLABLE">
+    {
+        call dzgonggao(
+            #{p1,mode=IN,jdbcType=VARCHAR},
+            #{p2,mode=IN,jdbcType=VARCHAR},
+            #{p3,mode=OUT,jdbcType=NUMERIC}
+        )
+    }
+	</select>
+		<!-- 继续登记的公告存储过程 -->
+	<select id="jxgonggao" parameterType="map" statementType="CALLABLE">
+    {
+        call jxgonggao(
+            #{p1,mode=IN,jdbcType=VARCHAR},
+            #{p2,mode=IN,jdbcType=VARCHAR},
+            #{p3,mode=OUT,jdbcType=NUMERIC}
+        )
+    }
+	</select>
+	<!-- 注销登记的公告存储过程 -->
+	<select id="zxgonggao" parameterType="map" statementType="CALLABLE">
+    {
+        call zxgonggao(
+            #{p1,mode=IN,jdbcType=VARCHAR},
+            #{p2,mode=IN,jdbcType=VARCHAR},
+            #{p3,mode=OUT,jdbcType=NUMERIC}
+        )
+    }
+	</select>
+
+	<!-- 根据batchno与office_id查询所有personRecord的相关统计数 -->
+	<select id="countForPersonRecord" resultType="com.thinkgem.jeesite.modules.enterprise.entity.EnterpriseWorkersCount">
+		SELECT
+		pr.batchno AS batchNo,
+		su.office_id AS officeId,
+		so.name AS officeName,
+		pr.declare_type AS declareType,
+		count(pr.declare_type) as zrc,
+		count(case when pr.declare_type='0' then '注销登记' end)as zxdj,
+		count(case when pr.declare_type='0' and pr.Fdeclare_result='1' then '注销符合' end)as zxfh,
+		count(case when pr.declare_type='0' and pr.Fdeclare_result='3' then '注销不符' end)as zxbf,
+		count(case when pr.declare_type='1' then '初始登记' end)as csdj,
+		count(case when pr.declare_type='1' and pr.Fdeclare_result='1' then '初始符合' end)as csfh,
+		count(case when pr.declare_type='1' and pr.Fdeclare_result='2' then '部分符合' end)as csbffh,
+		count(case when pr.declare_type='1' and pr.Fdeclare_result='3' then '初始不符' end)as csbf,
+		count(case when pr.declare_type='2' then '变更单位' end)as bgdw,
+		count(case when pr.declare_type='2' and (pr.Fdeclare_result='1' or pr.Fdeclare_result='2') then '单位符合' end)as dwfh,
+		count(case when pr.declare_type='2' and pr.Fdeclare_result='3' then '单位不符' end)as dwbf,
+		count(case when pr.declare_type='3' then '变更专业' end)as bgzy,
+		count(case when pr.declare_type='3' and pr.Fdeclare_result='1' then '专业符合' end)as zyfh,
+		count(case when pr.declare_type='3' and pr.Fdeclare_result='2' then '专业部分符合' end)as zybffh,
+		count(case when pr.declare_type='3' and pr.Fdeclare_result='3' then '专业不符' end)as zybf,
+		count(case when pr.declare_type='4' then '继续登记' end)as jxdj,
+		count(case when pr.declare_type='4' and (pr.Fdeclare_result='1' or pr.Fdeclare_result='2') then '继续符合' end)as jxfh,
+		count(case when pr.declare_type='4' and pr.Fdeclare_result='3' then '继续不符' end)as jxbf,
+		COUNT(DISTINCT ew.id)as sqrs,
+		COUNT(DISTINCT ew.id,case when ew.isvalid='1' then '有效人数' end)as yxrs,
+		COUNT(DISTINCT ew.id,case when ew.isvalid='0' then '失效人数' end)as sxrs
+		FROM person_record pr
+		LEFT JOIN enterprise_workers ew ON pr.person_id=ew.id
+		LEFT JOIN sys_user su ON ew.pid=su.id
+		LEFT JOIN sys_office so ON su.office_id=so.id
+		<where>
+		<if test="id !=null and id !=''">
+			AND so.id = #{id}
+		</if>
+        <if test="startBatchNo != null and startBatchNo != ''">
+            <choose>
+                <when test="endBatchNo!=null and endBatchNo !=''">
+                    AND pr.batchno BETWEEN #{startBatchNo} AND #{endBatchNo}
+                </when>
+                <otherwise>
+                    AND pr.batchno > #{startBatchNo}
+                </otherwise>
+            </choose>
+        </if>
+		</where>
+		GROUP BY office_id,batchno
+	</select>
+</mapper>

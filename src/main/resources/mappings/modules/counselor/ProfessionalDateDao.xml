@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.ProfessionalDateDao">
+	<!---->
+	<select id="findList" resultType="ProfessionalDate">
+		select 	c.review_company as reviewCompany,
+		c.company_name as companyName,
+		c.name as name,
+		c.certificates_num as certificatesNum,
+		c.isvalid as isValid,
+		s.newvalue as newValue,
+		s.changetype as changeType,
+		GROUP_CONCAT(distinct e.specialty) as result1,
+		GROUP_CONCAT(distinct t.specialty) as result2,
+		GROUP_CONCAT(distinct y.specialty) as result3
+		from change_item s
+		left join person_record p on s.person_record_id=p.id
+		LEFT JOIN enterprise_workers c on p.person_id=c.id
+		left join educationtbl e on e.person_id = p.person_id
+		left join title_certificate t on t.person_id=p.person_id
+		left join specialty_train y on y.person_id=p.person_id
+		left join (
+			select SUBSTRING_INDEX(SUBSTRING_INDEX(a.specialty_label,',',help_topic_id+1),',',-1) as sac,a.specialty as specialty
+			from specialty_config a
+			join mysql.help_topic b on b.help_topic_id &lt; (length(a.specialty_label)-length(replace(a.specialty_label,',',''))+1)
+		) o on o.specialty=s.newvalue
+		where s.changetype > '1'
+		<if test="newValue!=null and newValue!=''">
+			and s.newvalue=#{newValue}
+		</if>
+		and p.batchno =#{name}
+		and p.del_flag='0'
+		GROUP BY  s.id
+		HAVING sum(locate(o.sac,IFNULL(e.specialty,''))) = 0 and
+		sum(locate(o.sac,IFNULL(t.specialty,''))) = 0 and
+		sum(locate(o.sac,IFNULL(y.specialty,''))) = 0
+	</select>
+
+	<select id="findListToExport" resultType="ProfessionalDate">
+		select 	c.review_company as reviewCompany,
+		c.company_name as companyName,
+		c.name as name,
+		c.certificates_num as certificatesNum,
+		c.isvalid as isValid,
+		s.newvalue as newValue,
+		GROUP_CONCAT(distinct e.specialty) as result1,
+		GROUP_CONCAT(distinct t.specialty) as result2,
+		GROUP_CONCAT(distinct y.specialty) as result3
+		from change_item s
+		left join person_record p on s.person_record_id=p.id
+		LEFT JOIN enterprise_workers c on p.person_id=c.id
+		left join educationtbl e on e.person_id = p.person_id
+		left join title_certificate t on t.person_id=p.person_id
+		left join specialty_train y on y.person_id=p.person_id
+		left join (
+		select SUBSTRING_INDEX(SUBSTRING_INDEX(a.specialty_label,',',help_topic_id+1),',',-1) as sac,a.specialty as specialty
+		from specialty_config a
+		join mysql.help_topic b on b.help_topic_id &lt; (length(a.specialty_label)-length(replace(a.specialty_label,',',''))+1)
+		) o on o.specialty=s.newvalue
+		where s.changetype > '1'
+		<if test="newValue!=null and newValue!=''">
+			and s.newvalue=#{newValue}
+		</if>
+		and p.batchno =#{name}
+		and p.del_flag='0'
+		GROUP BY  s.id
+		HAVING sum(locate(o.sac,IFNULL(e.specialty,''))) = 0 and
+		sum(locate(o.sac,IFNULL(t.specialty,''))) = 0 and
+		sum(locate(o.sac,IFNULL(y.specialty,''))) = 0
+	</select>
+
+</mapper>

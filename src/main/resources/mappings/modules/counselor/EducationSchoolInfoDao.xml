@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.EducationSchoolInfoDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.school_code AS "schoolCode",
+		a.school_name AS "schoolName",
+		a.education_type AS "educationType",
+		a.school_startyear AS "schoolStartyear",
+		a.education_code AS "educationCode",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag
+
+	</sql>
+	<insert id="insert">
+		INSERT INTO education_schoolinfo(
+		id,
+		school_code,
+		school_name,
+		education_type,
+		school_startyear,
+		education_code,
+		create_by,
+		create_date,
+		update_by,
+		update_date,
+		del_flag
+		) VALUES (
+		#{id},
+		#{schoolCode},
+		#{schoolName},
+		#{educationType},
+		#{schoolStartyear},
+		#{educationCode},
+		#{createBy.id},
+		#{createDate},
+		#{updateBy.id},
+		#{updateDate},
+		#{del_flag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE education_schoolinfo SET
+		school_code = #{schoolCode},
+		school_name = #{schoolName},
+		education_type = #{educationType},
+		school_startyear = #{schoolStartyear},
+		education_code = #{educationCode},
+		update_by = #{updateBy.id},
+		update_date = #{updateDate},
+		del_flag = #{del_flag}
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		delete
+		from education_schoolinfo
+		WHERE id = #{id}
+	</update>
+
+	<!--  ONE  -->
+	<select id="findList" resultType="EducationSchoolInfo">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM education_schoolinfo a
+		<where>
+			<if test="schoolCode!=null and schoolCode!= ''">
+				AND school_code LIKE '%${schoolCode}%'
+			</if>
+			<if test="schoolName!=null and schoolName!= ''">
+				AND school_name LIKE '%${schoolName}%'
+			</if>
+		</where>
+		ORDER BY a.school_code ASC
+	</select>
+
+    <!-- TWO -->
+	<select id="get" resultType="EducationSchoolInfo">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM education_schoolinfo a
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- THREE 学校代码查询- 不重复- 异步 -->
+	<select id="findListBySchoolCode" resultType="EducationSchoolInfo">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM education_schoolinfo a
+		WHERE a.school_code = #{schoolCode}
+	</select>
+
+	<!-- FOUR 学历证书验证显示信息- -->
+	<select id="findCheckEducationalList" resultType="EducationSchoolInfo">
+		SELECT
+            enterprise_workers.`name` AS enterpriseName, -- 姓名
+            enterprise_workers.certificates_num AS certificatesNum, -- 身份证号
+            enterprise_workers.isvalid AS isValid, -- 咨询师状态
+            educationtbl.specialty AS suoxueSpecialty, -- 所学专业
+            educationtbl.school, -- 毕业学校
+            educationtbl.indexNo, -- 用于区别学历
+            educationtbl.zs_no as zsNo, -- 证书编号
+            sys_user.`name` AS companyName, -- 单位名称
+            sys_office.`name` AS areaName, -- 所属协会
+            sys_office.id AS officeId,
+            person_record.batchno AS batchNo, -- 批次
+            person_record.declare_date AS declareDate
+        FROM
+            person_record
+            LEFT JOIN enterprise_workers ON person_record.person_id = enterprise_workers.id
+            LEFT JOIN sys_user ON enterprise_workers.pid = sys_user.id
+            LEFT JOIN sys_office ON sys_user.office_id = sys_office.id
+            LEFT JOIN educationtbl ON enterprise_workers.id = educationtbl.person_id
+		<where>
+			<if test="batchNo != null and batchNo !=''">
+				and batchno = #{batchNo}
+			</if>
+			<!--<if test="officeId != null and officeId !=''">-->
+				<!--and sys_office.id = #{officeId}-->
+			<!--</if>-->
+-- 			AND person_record.batch_status > 11
+-- 			AND person_record.batch_status != '21'
+-- 			AND enterprise_workers.isvalid != '0'
+			and person_record.del_flag='0'
+		</where>
+        GROUP BY
+            sys_office.`name`,
+            sys_user.`name`,
+            enterprise_workers.`name`,
+            person_record.declare_date
+        ORDER BY
+            sys_office.`name`,
+            sys_user.`name`,
+            enterprise_workers.`name` ASC
+	</select>
+
+	
+</mapper>

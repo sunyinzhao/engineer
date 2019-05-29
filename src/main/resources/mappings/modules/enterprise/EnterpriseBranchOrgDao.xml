@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseBranchOrgDao">
+    
+	<sql id="enterpriseBranchOrgColumns">
+		a.id AS "id",
+		a.branch_org_name AS "branchOrgName",
+		a.area AS "area.id",
+		a.pid AS "pid",
+		a.workers_count AS "workersCount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="enterpriseBranchOrgJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseBranchOrg">
+		SELECT 
+			<include refid="enterpriseBranchOrgColumns"/>
+		FROM enterprise_branch_org a
+		<include refid="enterpriseBranchOrgJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseBranchOrg">
+		SELECT 
+			<include refid="enterpriseBranchOrgColumns"/>
+		FROM enterprise_branch_org a
+		<include refid="enterpriseBranchOrgJoins"/>
+		<where>
+
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EnterpriseBranchOrg">
+		SELECT 
+			<include refid="enterpriseBranchOrgColumns"/>
+		FROM enterprise_branch_org a
+		<include refid="enterpriseBranchOrgJoins"/>
+		<where>
+
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_branch_org(
+			id,
+			branch_org_name,
+			area,
+			pid,
+			workers_count,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{branchOrgName},
+			#{area.id},
+			#{pid},
+			#{workersCount},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_branch_org SET 	
+			branch_org_name = #{branchOrgName},
+			area = #{area.id},
+			workers_count = #{workersCount},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM enterprise_branch_org
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

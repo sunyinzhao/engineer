@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.ReportCounselorCountDao">
+
+	<!-- 查询某批次初始登记通过的人员信息 -->
+	<select id="findReportCounselorFirstYesInfo" resultType="ReportCounselorCount">
+		SELECT
+			enterprise_workers.`name` as enterpriseName,
+			case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end AS sex,
+			a.`name` as companyName,
+			sys_office.`name` AS areaName,
+			sys_office.`code`,
+			sys_office.id AS officeId,
+			case person_record.declare_type
+			when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end AS recordType,
+			#Getzhuanye(h.newvalue),
+			#Getzhuanye(i.newvalue),
+			case person_record.first_Fexpert_result when '1' then Getzhuanye(h.newvalue) else '' end AS zhuzhuanye,
+			case person_record.second_Fexpert_result when '1' then Getzhuanye(i.newvalue) else '' end AS fuzhuanye,
+			person_record.declare_date AS declareDate,
+			b.`name` as Zexpert1name,
+			case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fzResult,
+			c.name as Zexpert2name,
+			case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS szResult,
+			#case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS zResult,
+			GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+			GROUP_concat(REPLACE(back_memo,'	','')  SEPARATOR '|') as fankuiyijian,
+			d.name as Fexpertname,
+			case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fResult,
+			person_record.fy_advice
+			#person_expert.type,
+			#g.label,
+			#person_expert.items,
+			#f.label,
+			#person_expert.item_text
+			#g.label,
+			#person_expert.type,
+			#f.value,
+			#f.label
+			#feedback.back_memo,
+			#person_record.batch_status,
+			#person_record.declare_status
+		FROM
+			person_record
+			left join enterprise_workers on person_record.person_id=enterprise_workers.id
+			left join sys_user a on enterprise_workers.pid=a.id
+			left join sys_office on a.office_id=sys_office.id
+			left join sys_user b on person_record.first_Zexpert_id =b.id
+			left join sys_user c on person_record.second_Zexpert_id =c.id
+			left join sys_user d on person_record.Fexpert_id=d.id
+			left join change_item h on person_record.id=h.person_record_id and h.changetype='4'
+			left join change_item i on person_record.id=i.person_record_id and i.changetype='5'
+			left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4'
+			left join sys_examine on person_expert.examine_id=sys_examine.id
+			left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+			left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+			left join feedback on feedback.person_record_id=person_record.id
+		<where>
+			<if test="batchNo != null and batchNo !=''">
+				and batchno = #{batchNo}
+			</if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+			and Fdeclare_result in ('1','2')
+			and person_record.del_flag='0'
+			and person_record.batch_status in('17','19')
+			and person_record.batch_status !='21'
+			and person_record.declare_type='1'
+		</where>
+		GROUP BY
+			enterprise_workers.sex,
+            person_record.declare_type,
+            sys_office.`name`,
+            sys_office.`code`,
+            a.`name`,
+            enterprise_workers.`name`,
+            #enterprise_workers.register_certificate_num,
+            person_record.declare_date,
+            zhuzhuanye,
+            fuzhuanye,
+            d.`name`,
+            person_record.first_Zdeclare_result,
+            b.`name`,
+            person_record.second_Zdeclare_result,
+            #person_record.Zdeclare_result,
+            c.name,
+            person_record.Fdeclare_result,
+            #feedback.back_memo,
+            person_record.fy_advice
+        ORDER BY
+            person_record.declare_type,
+            sys_office.code,
+            a.`name`,
+            enterprise_workers.`name` asc
+
+	</select>
+
+	<!-- 查询某批次初始登记未通过的人员信息 -->
+	<select id="findReportCounselorFirstNoInfo" resultType="ReportCounselorCount">
+        SELECT
+            enterprise_workers.`name` as enterpriseName,
+            case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end AS sex,
+            a.`name` as companyName,
+            sys_office.`name` AS areaName,
+            sys_office.`code`,
+            sys_office.id AS officeId,
+            case person_record.declare_type
+            when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end AS recordType,
+            #Getzhuanye(h.newvalue),
+            #Getzhuanye(i.newvalue),
+            case person_record.first_Fexpert_result when '1' then Getzhuanye(h.newvalue) else '' end AS zhuzhuanye,
+            case person_record.second_Fexpert_result when '1' then Getzhuanye(i.newvalue) else '' end AS fuzhuanye,
+            person_record.declare_date AS declareDate,
+            b.`name` as Zexpert1name,
+            case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fzResult,
+            c.name as Zexpert2name,
+            case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS szResult,
+            #case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS zResult,
+            GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+            GROUP_concat(REPLACE(back_memo,'	','')  SEPARATOR '|') as fankuiyijian,
+            d.name as Fexpertname,
+            case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fResult,
+            person_record.fy_advice
+            #person_expert.type,
+            #g.label,
+            #person_expert.items,
+            #f.label,
+            #person_expert.item_text
+            #g.label,
+            #person_expert.type,
+            #f.value,
+            #f.label
+            #feedback.back_memo,
+            #person_record.batch_status,
+            #person_record.declare_status
+        FROM
+            person_record
+            left join enterprise_workers on person_record.person_id=enterprise_workers.id
+            left join sys_user a on enterprise_workers.pid=a.id
+            left join sys_office on a.office_id=sys_office.id
+            left join sys_user b on person_record.first_Zexpert_id =b.id
+            left join sys_user c on person_record.second_Zexpert_id =c.id
+            left join sys_user d on person_record.Fexpert_id=d.id
+            left join change_item h on person_record.id=h.person_record_id and h.changetype='4'
+            left join change_item i on person_record.id=i.person_record_id and i.changetype='5'
+            left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4'
+            left join sys_examine on person_expert.examine_id=sys_examine.id
+            left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+            left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+            left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and Fdeclare_result = '3'
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.batch_status !='21'
+            and person_record.declare_type='1'
+        </where>
+        GROUP BY
+            enterprise_workers.sex,
+            person_record.declare_type,
+            sys_office.`name`,
+            sys_office.`code`,
+            a.`name`,
+            enterprise_workers.`name`,
+            #enterprise_workers.register_certificate_num,
+            person_record.declare_date,
+            zhuzhuanye,
+            fuzhuanye,
+            d.`name`,
+            person_record.first_Zdeclare_result,
+            b.`name`,
+            person_record.second_Zdeclare_result,
+            #person_record.Zdeclare_result,
+            c.name,
+            person_record.Fdeclare_result,
+            #feedback.back_memo,
+            person_record.fy_advice
+        ORDER BY
+            person_record.declare_type,
+            sys_office.code,
+            a.`name`,
+            enterprise_workers.`name` asc
+
+	</select>
+
+
+
+    <!-- 查询某批次继续登记通过的人员信息 -->
+    <select id="findReportCounselorContinueYesInfo" resultType="ReportCounselorCount">
+          select
+              enterprise_workers.`name` as enterpriseName,
+              case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+              enterprise_workers.register_certificate_num as registerCertificateNum,
+              a.`name` as companyName,
+              sys_office.`name` as areaName,
+              sys_office.id AS officeId,
+              case person_record.declare_type
+              when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+              person_record.declare_date as declareDate,
+              b.`name` as Zexpert1name,
+              case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+              GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+              GROUP_concat(back_memo  SEPARATOR '|') as fankuiyijian,
+              d.name as Fexpertname,
+              case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fResult,
+              #person_expert.type,
+              #g.label,
+              #person_expert.items,
+              #f.label,
+              #person_expert.item_text
+              #g.label,
+              #person_expert.type,
+              #f.value,
+              #f.label
+              #feedback.back_memo,
+              person_record.fy_advice
+              #person_record.batch_status,
+              #person_record.declare_status
+          FROM
+              person_record
+              left join enterprise_workers on person_record.person_id=enterprise_workers.id
+              left join sys_user a on enterprise_workers.pid=a.id
+              left join sys_office on a.office_id=sys_office.id
+              left join sys_user b on person_record.first_Zexpert_id =b.id
+              left join sys_user c on person_record.second_Zexpert_id =c.id
+              left join sys_user d on person_record.Fexpert_id=d.id
+              left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+              left join sys_examine on person_expert.examine_id=sys_examine.id
+              left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+              left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+              left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and Fdeclare_result = '1'
+            and person_record.del_flag='0'
+            and person_record.batch_status IN ('17','19')
+            and person_record.declare_type='4'
+        </where>
+          group by
+              enterprise_workers.sex,
+              person_record.declare_type,
+              sys_office.`name`,
+              a.`name`,
+              enterprise_workers.`name`,
+              enterprise_workers.register_certificate_num,
+              person_record.declare_date,
+              d.`name`,
+              b.`name`,
+              person_record.Zdeclare_result,
+              person_record.Fdeclare_result,
+              #feedback.back_memo,
+              person_record.fy_advice
+           order by
+              person_record.declare_type,
+              sys_office.`name`,
+              a.`name`,
+              enterprise_workers.`name` asc
+
+    </select>
+
+    <!-- 查询某批次继续登记未通过的人员信息 -->
+    <select id="findReportCounselorContinueNoInfo" resultType="ReportCounselorCount">
+        select
+            enterprise_workers.`name` as enterpriseName,
+            case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+            enterprise_workers.register_certificate_num as registerCertificateNum,
+            a.`name` as companyName,
+            sys_office.`name` as areaName,
+            sys_office.id AS officeId,
+            case person_record.declare_type
+            when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+            person_record.declare_date as declareDate,
+            b.`name` as Zexpert1name,
+            case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+            GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+            GROUP_concat(back_memo  SEPARATOR '|') as fankuiyijian,
+            d.name as Fexpertname,
+            case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fResult,
+            #person_expert.type,
+            #g.label,
+            #person_expert.items,
+            #f.label,
+            #person_expert.item_text
+            #g.label,
+            #person_expert.type,
+            #f.value,
+            #f.label
+            #feedback.back_memo,
+            person_record.fy_advice
+            #person_record.batch_status,
+            #person_record.declare_status
+        FROM
+            person_record
+            left join enterprise_workers on person_record.person_id=enterprise_workers.id
+            left join sys_user a on enterprise_workers.pid=a.id
+            left join sys_office on a.office_id=sys_office.id
+            left join sys_user b on person_record.first_Zexpert_id =b.id
+            left join sys_user c on person_record.second_Zexpert_id =c.id
+            left join sys_user d on person_record.Fexpert_id=d.id
+            left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+            left join sys_examine on person_expert.examine_id=sys_examine.id
+            left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+            left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+            left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and Fdeclare_result = '3'
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.declare_type='4'
+        </where>
+        group by
+            enterprise_workers.sex,
+            person_record.declare_type,
+            sys_office.`name`,
+            a.`name`,
+            enterprise_workers.`name`,
+            enterprise_workers.register_certificate_num,
+            person_record.declare_date,
+            d.`name`,
+            b.`name`,
+            person_record.Zdeclare_result,
+            person_record.Fdeclare_result,
+            #feedback.back_memo,
+            person_record.fy_advice
+        order by
+            person_record.declare_type,
+            sys_office.`name`,
+            a.`name`,
+            enterprise_workers.`name` asc
+
+    </select>
+
+
+
+    <!-- 查询某批次注销登记通过的人员信息 -->
+    <select id="findReportCounselorCancelYesInfo" resultType="ReportCounselorCount">
+        SELECT
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end AS sex,
+        a.`name` as companyName,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        sys_office.`name` AS areaName,
+        sys_office.`code`,
+        sys_office.id AS officeId,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end AS recordType,
+        #Getzhuanye(h.newvalue),
+        #Getzhuanye(i.newvalue),
+        case person_record.first_Fexpert_result when '1' then Getzhuanye(h.newvalue) else '' end AS zhuzhuanye,
+        case person_record.second_Fexpert_result when '1' then Getzhuanye(i.newvalue) else '' end AS fuzhuanye,
+        person_record.declare_date AS declareDate,
+        b.`name` as Zexpert1name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fzResult,
+        c.name as Zexpert2name,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS szResult,
+        #case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS zResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+        GROUP_concat(REPLACE(back_memo,'	','')  SEPARATOR '|') as fankuiyijian,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fResult,
+        person_record.fy_advice
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        #feedback.back_memo,
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='4'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='5'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4'
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and Fdeclare_result in ('1','2')
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.batch_status !='21'
+            and person_record.declare_type='0'
+        </where>
+        GROUP BY
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`name`,
+        sys_office.`code`,
+        a.`name`,
+        enterprise_workers.`name`,
+        #enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        zhuzhuanye,
+        fuzhuanye,
+        d.`name`,
+        person_record.first_Zdeclare_result,
+        b.`name`,
+        person_record.second_Zdeclare_result,
+        #person_record.Zdeclare_result,
+        c.name,
+        person_record.Fdeclare_result,
+        #feedback.back_memo,
+        person_record.fy_advice
+        ORDER BY
+        person_record.declare_type,
+        sys_office.code,
+        a.`name`,
+        enterprise_workers.`name` asc
+
+    </select>
+
+    <!-- 查询某批次注销登记未通过的人员信息 -->
+    <select id="findReportCounselorCancelNoInfo" resultType="ReportCounselorCount">
+        SELECT
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end AS sex,
+        a.`name` as companyName,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        sys_office.`name` AS areaName,
+        sys_office.`code`,
+        sys_office.id AS officeId,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end AS recordType,
+        #Getzhuanye(h.newvalue),
+        #Getzhuanye(i.newvalue),
+        case person_record.first_Fexpert_result when '1' then Getzhuanye(h.newvalue) else '' end AS zhuzhuanye,
+        case person_record.second_Fexpert_result when '1' then Getzhuanye(i.newvalue) else '' end AS fuzhuanye,
+        person_record.declare_date AS declareDate,
+        b.`name` as Zexpert1name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fzResult,
+        c.name as Zexpert2name,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS szResult,
+        #case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS zResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+        GROUP_concat(REPLACE(back_memo,'	','')  SEPARATOR '|') as fankuiyijian,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end AS fResult,
+        person_record.fy_advice
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        #feedback.back_memo,
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='4'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='5'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4'
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and Fdeclare_result = '3'
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.batch_status !='21'
+            and person_record.declare_type='0'
+        </where>
+        GROUP BY
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`name`,
+        sys_office.`code`,
+        a.`name`,
+        enterprise_workers.`name`,
+        #enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        zhuzhuanye,
+        fuzhuanye,
+        d.`name`,
+        person_record.first_Zdeclare_result,
+        b.`name`,
+        person_record.second_Zdeclare_result,
+        #person_record.Zdeclare_result,
+        c.name,
+        person_record.Fdeclare_result,
+        #feedback.back_memo,
+        person_record.fy_advice
+        ORDER BY
+        person_record.declare_type,
+        sys_office.code,
+        a.`name`,
+        enterprise_workers.`name` asc
+
+    </select>
+
+
+
+    <!-- 查询某批次变更执业单位通过的人员信息 -->
+    <select id="findReportCounselorApplyWorkYesInfo" resultType="ReportCounselorCount">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        #a.`name` as companyName,
+        sys_office.`name` as areaName,
+        sys_office.id AS officeId,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+        h.oldvalue as oldWorkers,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        h.newvalue as newWorkers,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as szResult,
+        person_record.declare_date as declareDate,
+        b.`name` as Zexpert1name,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+        GROUP_concat(back_memo  SEPARATOR '|') as fankuiyijian,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fResult,
+        person_record.fy_advice
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        #feedback.back_memo,
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='1'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and person_record.Fdeclare_result='1'
+            and person_record.declare_type='2'
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.batch_status!='21'
+        </where>
+        group by
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`name`,
+        sys_office.`code` ,
+        #a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        h.oldvalue,
+        h.newvalue,
+        d.`name`,
+        person_record.first_Zdeclare_result,
+        b.`name`,
+        person_record.second_Zdeclare_result,
+        person_record.Zdeclare_result,
+        c.name,
+        person_record.Fdeclare_result,
+        #feedback.back_memo,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`code` ,
+        sys_office.`name` ,
+        #a.`name`,
+        enterprise_workers.`name`
+
+    </select>
+
+    <!-- 查询某批次变更执业单位未通过的人员信息 -->
+    <select id="findReportCounselorApplyWorkNoInfo" resultType="ReportCounselorCount">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        #a.`name` as companyName,
+        sys_office.`name` as areaName,
+        sys_office.id AS officeId,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+        h.oldvalue as oldWorkers,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        h.newvalue as newWorkers,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as szResult,
+        person_record.declare_date as declareDate,
+        b.`name` as Zexpert1name,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+        GROUP_concat(back_memo  SEPARATOR '|') as fankuiyijian,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fResult,
+        person_record.fy_advice
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        #feedback.back_memo,
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='1'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and person_record.Fdeclare_result='3'
+            and person_record.declare_type='2'
+            and person_record.del_flag='0'
+            and person_record.batch_status in('17','19')
+            and person_record.batch_status!='21'
+        </where>
+        group by
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`name`,
+        sys_office.`code` ,
+        #a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        h.oldvalue,
+        h.newvalue,
+        d.`name`,
+        person_record.first_Zdeclare_result,
+        b.`name`,
+        person_record.second_Zdeclare_result,
+        person_record.Zdeclare_result,
+        c.name,
+        person_record.Fdeclare_result,
+        #feedback.back_memo,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`code` ,
+        sys_office.`name` ,
+        #a.`name`,
+        enterprise_workers.`name`
+
+    </select>
+
+
+
+    <!-- 查询某批次变更专业通过的人员信息 -->
+    <select id="findReportCounselorSpecialtyYesInfo" resultType="ReportCounselorCount">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        a.`name` as companyName,
+        sys_office.id AS officeId,
+        sys_office.`code`,
+        sys_office.`name` as areaName,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+        Getzhuanye(enterprise_workers.register_main_specialty) as yuanzhu,
+        case when h.changetype = '2' and first_Fexpert_result='1' then  Getzhuanye(h.newvalue) else Getzhuanye(enterprise_workers.register_main_specialty) end  xinzhu,
+        Getzhuanye(enterprise_workers.register_auxiliary_specialty) as yuanfu,
+        case when i.changetype = '3' and second_Fexpert_result='1' then Getzhuanye(i.newvalue) else Getzhuanye(enterprise_workers.register_auxiliary_specialty) end xinfu,
+        person_record.declare_date as declareDate,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end fResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as zhuanjiayijian,
+        GROUP_concat(back_memo  SEPARATOR '|') as fankuiyijian,
+        person_record.fy_advice
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='2'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='3'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4'
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and person_record.del_flag='0'
+            and person_record.batch_status in ('17','19')
+            and person_record.batch_status!='21'
+            and person_record.declare_type='3'
+            and Fdeclare_result in ('1','2')
+        </where>
+        group by
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`code`,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        enterprise_workers.register_main_specialty,
+        xinzhu,
+        enterprise_workers.register_auxiliary_specialty,
+        xinfu,
+        d.name,
+        person_record.Fdeclare_result,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`code`,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name` asc
+
+    </select>
+
+    <!-- 查询某批次变更专业未通过的人员信息 -->
+    <select id="findReportCounselorSpecialtyNoInfo" resultType="ReportCounselorCount">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        a.`name` as companyName,
+        sys_office.id AS officeId,
+        sys_office.`code`,
+        sys_office.`name` as areaName,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as recordType,
+        Getzhuanye(enterprise_workers.register_main_specialty) as 'yuanzhu',
+        Getzhuanye(h.newvalue) as 'xinzhu',
+        Getzhuanye(enterprise_workers.register_auxiliary_specialty) as 'yuanfu',
+        Getzhuanye(i.newvalue) as 'xinfu',
+        person_record.declare_date as declareDate,
+        d.name as Fexpertname,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end fResult,
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as '专家意见',
+        GROUP_concat(back_memo  SEPARATOR '|') as '反馈意见',
+        #feedback.back_memo,
+        person_record.fy_advice
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='2'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='3'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        <where>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            and person_record.del_flag='0'
+            and person_record.batch_status in ('17','19')
+            and person_record.batch_status!='21'
+            and person_record.declare_type='3'
+            and Fdeclare_result ='3'
+        </where>
+        group by
+        enterprise_workers.sex,
+        person_record.declare_type,
+        sys_office.`code`,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        enterprise_workers.register_main_specialty,
+        h.newvalue,
+        enterprise_workers.register_auxiliary_specialty,
+        i.newvalue,
+        d.name,
+        person_record.Fdeclare_result,
+        #feedback.back_memo,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`code`,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name` asc
+
+    </select>
+
+</mapper>

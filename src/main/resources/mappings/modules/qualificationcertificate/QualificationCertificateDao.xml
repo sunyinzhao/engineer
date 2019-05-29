@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.qualificationcertificate.dao.QualificationCertificateDao">
+    
+	<sql id="qualificationCertificateColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.company_name AS "companyName",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="qualificationCertificateJoins">
+	</sql>
+    
+	<select id="get" resultType="QualificationCertificate">
+		SELECT 
+			<include refid="qualificationCertificateColumns"/>
+		FROM qualification_certificate a
+		<include refid="qualificationCertificateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="QualificationCertificate">
+		SELECT 
+			<include refid="qualificationCertificateColumns"/>
+		FROM qualification_certificate a
+		<include refid="qualificationCertificateJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="QualificationCertificate">
+		SELECT 
+			<include refid="qualificationCertificateColumns"/>
+		FROM qualification_certificate a
+		<include refid="qualificationCertificateJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qualification_certificate(
+			id,
+			name,
+			sex,
+			register_main_specialty,
+			register_auxiliary_specialty,
+			register_certificate_num,
+			company_name,
+			start_date,
+			end_date,
+			create_by,
+			create_date
+		) VALUES (
+			#{id},
+			#{name},
+			#{sex},
+			#{registerMainSpecialty},
+			#{registerAuxiliarySpecialty},
+			#{registerCertificateNum},
+			#{companyName},
+			#{startDate},
+			#{endDate},
+			#{createBy.id},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE qualification_certificate SET 	
+			name = #{name},
+			sex = #{sex},
+			register_main_specialty = #{registerMainSpecialty},
+			register_auxiliary_specialty = #{registerAuxiliarySpecialty},
+			register_certificate_num = #{registerCertificateNum},
+			company_name = #{companyName},
+			start_date = #{startDate},
+			end_date = #{endDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM qualification_certificate
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.ProjectInvestmentDao">
+
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.record_id AS "recordId",
+		a.project_name AS "projectName",
+		a.order_by AS "orderBy",
+		a.accountant,
+		a.nr,
+		a.zc_specialty AS "zcSpecialty",
+		a.brzy,
+		a.commit_time AS "commitTime",
+		a.compliancer_name AS "compliancerName",
+		a.jsgm,
+		a.person_id AS "personId"
+	</sql>
+
+    
+	<select id="get" resultType="ProjectInvestment">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM project_investment a
+		WHERE a.id = #{id}
+	</select>
+
+    <select id="getByTableId" resultType="ProjectInvestment">
+        SELECT
+        <include refid="counselorColumns"/>
+        FROM project_investment a
+        WHERE a.table_id = #{tableId}
+    </select>
+
+
+	<select id="findList" resultType="ProjectInvestment">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM project_investment a
+		<where>
+
+			<if test="recordId!=null and recordId!=''" >
+				and a.record_id = #{recordId}
+			</if>
+			<if test="tableId!=null and tableId!=''" >
+				and a.table_id = #{tableId}
+			</if>
+		</where>
+		ORDER BY commit_time
+	</select>
+	
+	<select id="findAllList" resultType="ProjectInvestment">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM project_investment a
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+
+	<insert id="insert">
+		INSERT INTO project_investment(
+			id,
+			table_id,
+			record_id,
+			project_name,
+			order_by,
+			accountant,
+			nr,
+			zc_specialty,
+			brzy,
+			commit_time,
+			compliancer_name,
+			jsgm,
+			person_id
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{recordId},
+			#{projectName},
+			#{orderBy},
+			#{accountant},
+			#{nr},
+			#{zcSpecialty},
+			#{brzy},
+			#{commitTime},
+			#{compliancerName},
+			#{jsgm},
+			#{personId}
+		)
+	</insert>
+
+
+
+	<update id="update">
+		UPDATE project_investment SET
+			table_id = #{tableId},
+			record_id = #{recordId},
+			project_name = #{projectName},
+			order_by = #{orderBy},
+			accountant = #{accountant},
+			nr = #{nr},
+			zc_specialty = #{zcSpecialty},
+			brzy = #{brzy},
+			commit_time = #{commitTime},
+			compliancer_name = #{compliancerName},
+			jsgm = #{jsgm},
+			person_id = #{personId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete
+		from project_investment
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

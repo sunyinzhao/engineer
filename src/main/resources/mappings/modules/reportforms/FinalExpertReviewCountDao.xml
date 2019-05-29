@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.FinalExpertReviewCountDao">
+
+
+	<select id="countByExpertReview1" resultType="FinalExpertReviewCount">
+		SELECT
+			pr.first_Zexpert_id,
+			su.office_id AS officeId,
+		-- 	su.NAME AS officeName,
+		-- 	ew.`name` AS entrpriseName,
+			su1.NAME AS expertName,
+		CASE pr.batch_status
+		WHEN '12' THEN '专家评审' WHEN '13' THEN '专家评审' WHEN '17' THEN '专家复核' WHEN '19' THEN '专家复核' END AS reviewStage,
+
+		-- pr.Zdeclare_result,-- 1 2 符合， 3 不符合， “” null 未审。
+		count(case  when pr.declare_type='1' then '初始分配数量'  end )as initialAllocatedQuantity,
+		count(case  when pr.declare_type='1' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '初始符合'  end)as initialAccord,
+		count(case  when pr.declare_type='1' and pr.Zdeclare_result='3' then '初始不符合'  end)as initialIncompatible,
+		count(case  when pr.declare_type='1' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '初始未完成'  end)as initialUndone,
+
+		count(case  when pr.declare_type='2' then '单位分配数量'  end )as unitAllocatedQuantity,
+		count(case  when pr.declare_type='2' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '单位符合'  end)as unitAccord,
+		count(case  when pr.declare_type='2' and pr.Zdeclare_result='3' then '单位不符合'  end)as unitIncompatible,
+		count(case  when pr.declare_type='2' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '单位未完成'  end)as unitUndone,
+
+		count(case  when pr.declare_type='3' then '专业分配数量'  end )as specialtyAllocatedQuantity,
+		count(case  when pr.declare_type='3' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '专业符合'  end)as specialtyAccord,
+		count(case  when pr.declare_type='3' and pr.Zdeclare_result='3' then '专业不符合'  end)as specialtyIncompatible,
+		count(case  when pr.declare_type='3' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '专业未完成'  end)as specialtyUndone,
+
+		count(case  when pr.declare_type='4' then '继续分配数量'  end )as continueAllocatedQuantity,
+		count(case  when pr.declare_type='4' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '继续符合'  end)as continueAccord,
+		count(case  when pr.declare_type='4' and pr.Zdeclare_result='3' then '继续不符合'  end)as continueIncompatible,
+		count(case  when pr.declare_type='4' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '继续未完成'  end)as continueUndone,
+
+		count(case  when pr.declare_type='0' then '注销分配数量'  end )as logoutAllocatedQuantity,
+		count(case  when pr.declare_type='0' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '注销符合'  end)as logoutAccord,
+		count(case  when pr.declare_type='0' and pr.Zdeclare_result='3' then '注销不符合'  end)as logoutIncompatible,
+		count(case  when pr.declare_type='0' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '注销未完成'  end)as logoutUndone,
+
+
+		CASE pr.declare_type WHEN '0' THEN	'注销登记' WHEN '1' THEN	'初始登记' WHEN '2' THEN	'变更执业单位' WHEN '3' THEN	'变更专业' WHEN '4' THEN '继续登记'  END AS declareType,
+			pr.batchno AS batchNo
+		FROM
+			person_record pr
+			LEFT JOIN enterprise_workers ew ON pr.person_id = ew.id
+			LEFT JOIN sys_user su ON ew.pid = su.id
+			LEFT JOIN sys_office so ON su.office_id=so.id
+			LEFT JOIN sys_user su1 ON pr.first_Zexpert_id = su1.id
+		<where>
+			<!--<if test="batchStatus !=null and batchStatus !=''">-->
+				<!--AND a.batch_status in ('17','18','19')-->
+			<!--</if>-->
+			<if test="batchNo !=null and batchNo !=''">
+				AND pr.batchno = #{batchNo}
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND su.office_id = #{officeId}
+			</if>
+			AND pr.batch_status IN ( '12', '13' )
+		</where>
+		GROUP BY
+			pr.first_Zexpert_id
+
+		ORDER BY
+			pr.first_Zexpert_id,
+			su1.NAME,
+			su.NAME ASC
+
+	</select>
+
+
+	<select id="countByExpertReview2" resultType="FinalExpertReviewCount">
+		SELECT
+		pr.Fexpert_id,
+		su.office_id AS officeId,
+		-- 	su.NAME AS officeName,
+		-- 	ew.`name` AS entrpriseName,
+		su1.NAME AS expertName,
+		CASE pr.batch_status
+		WHEN '12' THEN '专家评审' WHEN '13' THEN '专家评审' WHEN '17' THEN '专家复核' WHEN '19' THEN '专家复核' END AS reviewStage,
+
+		-- pr.Zdeclare_result,-- 1 2 符合， 3 不符合， “” null 未审。
+		count(case  when pr.declare_type='1' then '初始分配数量'  end )as initialAllocatedQuantity,
+		count(case  when pr.declare_type='1' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '初始符合'  end)as initialAccord,
+		count(case  when pr.declare_type='1' and pr.Zdeclare_result='3' then '初始不符合'  end)as initialIncompatible,
+		count(case  when pr.declare_type='1' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '初始未完成'  end)as initialUndone,
+
+		count(case  when pr.declare_type='2' then '单位分配数量'  end )as unitAllocatedQuantity,
+		count(case  when pr.declare_type='2' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '单位符合'  end)as unitAccord,
+		count(case  when pr.declare_type='2' and pr.Zdeclare_result='3' then '单位不符合'  end)as unitIncompatible,
+		count(case  when pr.declare_type='2' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '单位未完成'  end)as unitUndone,
+
+		count(case  when pr.declare_type='3' then '专业分配数量'  end )as specialtyAllocatedQuantity,
+		count(case  when pr.declare_type='3' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '专业符合'  end)as specialtyAccord,
+		count(case  when pr.declare_type='3' and pr.Zdeclare_result='3' then '专业不符合'  end)as specialtyIncompatible,
+		count(case  when pr.declare_type='3' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '专业未完成'  end)as specialtyUndone,
+
+		count(case  when pr.declare_type='4' then '继续分配数量'  end )as continueAllocatedQuantity,
+		count(case  when pr.declare_type='4' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '继续符合'  end)as continueAccord,
+		count(case  when pr.declare_type='4' and pr.Zdeclare_result='3' then '继续不符合'  end)as continueIncompatible,
+		count(case  when pr.declare_type='4' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '继续未完成'  end)as continueUndone,
+
+		count(case  when pr.declare_type='0' then '注销分配数量'  end )as logoutAllocatedQuantity,
+		count(case  when pr.declare_type='0' and (pr.Zdeclare_result='1' or pr.Zdeclare_result='2') then '注销符合'  end)as logoutAccord,
+		count(case  when pr.declare_type='0' and pr.Zdeclare_result='3' then '注销不符合'  end)as logoutIncompatible,
+		count(case  when pr.declare_type='0' and  (pr.Zdeclare_result is null or pr.Zdeclare_result = '')  then '注销未完成'  end)as logoutUndone,
+
+
+		CASE pr.declare_type WHEN '0' THEN	'注销登记' WHEN '1' THEN	'初始登记' WHEN '2' THEN	'变更执业单位' WHEN '3' THEN	'变更专业' WHEN '4' THEN '继续登记'  END AS declareType,
+		pr.batchno AS batchNo
+		FROM
+		person_record pr
+		LEFT JOIN enterprise_workers ew ON pr.person_id = ew.id
+		LEFT JOIN sys_user su ON ew.pid = su.id
+		LEFT JOIN sys_office so ON su.office_id=so.id
+		LEFT JOIN sys_user su1 ON pr.Fexpert_id = su1.id
+		<where>
+			<!--<if test="batchStatus !=null and batchStatus !=''">-->
+			<!--AND a.batch_status in ('17','18','19')-->
+			<!--</if>-->
+			<if test="batchNo !=null and batchNo !=''">
+				AND pr.batchno = #{batchNo}
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND su.office_id = #{officeId}
+			</if>
+			AND pr.batch_status IN ( '17', '19' )
+		</where>
+		GROUP BY
+		pr.Fexpert_id
+
+		ORDER BY
+		pr.Fexpert_id,
+		su1.NAME,
+		su.NAME ASC
+
+	</select>
+
+
+
+</mapper>

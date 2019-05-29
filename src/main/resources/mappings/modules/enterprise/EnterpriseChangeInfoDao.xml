@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseChangeInfoDao">
+    
+	<sql id="enterpriseChangeInfoColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.name_new AS "nameNew",
+		a.legal_person AS "legalPerson",
+		a.legal_person_new AS "legalPersonNew",
+		a.register_address AS "registerAddress",
+		a.register_address_new AS "registerAddressNew",
+		a.application_code AS "applicationCode",
+		a.application_code_new AS "applicationCodeNew",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.status AS "status",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="enterpriseChangeInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseChangeInfo">
+		SELECT 
+			<include refid="enterpriseChangeInfoColumns"/>
+		FROM enterprise_change_info a
+		<include refid="enterpriseChangeInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseChangeInfo">
+		SELECT 
+			<include refid="enterpriseChangeInfoColumns"/>
+		FROM enterprise_change_info a
+		<include refid="enterpriseChangeInfoJoins"/>
+		<where>
+			
+			<if test="nameNew != null and nameNew != ''">
+				AND a.name_new LIKE 
+					<if test="dbName == 'oracle'">'%'||#{nameNew}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{nameNew}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{nameNew},'%')</if>
+			</if>
+			<if test="legalPersonNew != null and legalPersonNew != ''">
+				AND a.legal_person_new LIKE 
+					<if test="dbName == 'oracle'">'%'||#{legalPersonNew}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{legalPersonNew}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{legalPersonNew},'%')</if>
+			</if>
+			<if test="registerAddressNew != null and registerAddressNew != ''">
+				AND a.register_address_new = #{registerAddressNew}
+			</if>
+			<if test="applicationCodeNew != null and applicationCodeNew != ''">
+				AND a.application_code_new = #{applicationCodeNew}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EnterpriseChangeInfo">
+		SELECT 
+			<include refid="enterpriseChangeInfoColumns"/>
+		FROM enterprise_change_info a
+		<include refid="enterpriseChangeInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_change_info(
+			id,
+			name,
+			name_new,
+			legal_person,
+			legal_person_new,
+			register_address,
+			register_address_new,
+			application_code,
+			application_code_new,
+			pid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			status,
+			remarks
+		) VALUES (
+			#{id},
+			#{name},
+			#{nameNew},
+			#{legalPerson},
+			#{legalPersonNew},
+			#{registerAddress},
+			#{registerAddressNew},
+			#{applicationCode},
+			#{applicationCodeNew},
+			#{pid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{status},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_change_info SET 	
+			name_new = #{nameNew},
+			legal_person_new = #{legalPersonNew},
+			register_address_new = #{registerAddressNew},
+			application_code_new = #{applicationCodeNew},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM enterprise_change_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

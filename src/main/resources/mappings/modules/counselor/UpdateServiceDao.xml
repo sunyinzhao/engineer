@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.UpdateServiceDao">
+
+
+
+	<select id="getDate" resultType="Date">
+		SELECT
+			source_update AS "sourceUpdate"
+		FROM
+		update_service a
+		ORDER BY source_update
+		DESC
+		limit 1
+	</select>
+
+
+	<insert id="insert">
+		INSERT INTO update_service(
+			id,
+			source_update
+		) VALUES (
+			#{id},
+			#{sourceUpdate}
+		)
+	</insert>
+	
+	<update id="update">
+		update update_service
+			set source_update=#{sourceUpdate}
+		where id=#{id} 
+	</update>
+</mapper>

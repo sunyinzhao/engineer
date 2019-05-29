@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.CounselorExamineRejectDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.person_record_id AS "personRecordId",
+		a.examine_id AS "examineId",
+		a.content AS "content",
+		a.title,
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date
+	</sql>
+
+    
+	<select id="get" resultType="CounselorExamineReject">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor_examine_reject a
+		WHERE a.id = #{id} and a.del_flag='0'
+	</select>
+
+
+	<select id="findList" resultType="CounselorExamineReject">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor_examine_reject a
+		<where>
+			a.del_flag='0'
+			<if test="personRecordId!=null and personRecordId!=''" >
+				and a.person_record_id = #{personRecordId}
+			</if>
+			<if test="examineId!=null and examineId!=''" >
+				and a.examine_id = #{examineId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CounselorExamineReject">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM counselor_examine_reject a
+		<where>
+			a.del_flag='0'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+
+	<insert id="insert">
+		INSERT INTO counselor_examine_reject(
+			id,
+			person_record_id,
+			examine_id,
+			content,
+			title,
+			create_by,
+			create_date,
+			update_by,
+			update_date
+		) VALUES (
+			#{id},
+			#{personRecordId},
+			#{examineId},
+			#{content},
+			#{title},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate}
+		)
+	</insert>
+
+	
+	<update id="update">
+		UPDATE counselor_examine_reject SET
+			person_record_id = #{personRecordId},
+			examine_id = #{examineId},
+			content = #{content},
+			title = #{title},
+			del_flag = #{delFlag},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE counselor_examine_reject SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

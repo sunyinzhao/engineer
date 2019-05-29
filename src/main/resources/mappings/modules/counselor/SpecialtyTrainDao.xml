@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.SpecialtyTrainDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.train_school AS "trainSchool",
+		a.train_type AS "trainType",
+		a.specialty AS "specialty",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.cardnum AS "cardnum",
+		a.study_type AS "studyType",
+		a.school_master AS "schoolMaster",
+		a.getgctime AS "getgctime",
+		a.indexNo AS "index",
+		a.main,
+		a.assist
+	</sql>
+
+    
+	<select id="get" resultType="SpecialtyTrain">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM specialty_train a
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getMax" resultType="Integer">
+		SELECT
+		max(a.indexNo)
+		FROM specialty_train a
+		WHERE a.person_id = #{personId}
+		AND a.table_id = #{tableId}
+	</select>
+
+	<select id="findNotRelev" resultType="SpecialtyTrain">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record_table t
+		RIGHT JOIN specialty_train a ON a.table_id = t.id
+		WHERE t.person_record_id = #{recordId}
+	</select>
+
+	<select id="getMaxIndex" resultType="Integer">
+		SELECT
+		MAX(a.indexNo)
+		FROM
+		specialty_train a
+		WHERE
+		a.person_id = #{personId}
+	</select>
+
+
+	<select id="getByTableId" resultType="SpecialtyTrain">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM specialty_train a
+		WHERE a.person_id = #{tableId}
+		ORDER BY  a.indexNo ASC
+	</select>
+	
+	<select id="findList" resultType="SpecialtyTrain">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM specialty_train a
+		<where>
+			<if test="personId!=null and personId!= ''">
+				AND person_id = #{personId}
+			</if>
+		</where>
+		ORDER BY a.indexNo DESC
+	</select>
+	
+	<select id="findAllList" resultType="SpecialtyTrain">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM specialty_train a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO specialty_train(
+			id,
+			table_id,
+			person_id,
+			train_school,
+			train_type,
+			specialty,
+			start_time,
+			end_time,
+			cardnum,
+			study_type,
+			school_master,
+			getgctime,
+			indexNo,
+			main,
+			assist
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{trainSchool},
+			#{trainType},
+			#{specialty},
+			#{startTime},
+			#{endTime},
+			#{cardnum},
+			#{studyType},
+			#{schoolMaster},
+			#{getgctime},
+			#{index},
+			#{main},
+			#{assist}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE specialty_train SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			train_school = #{trainSchool},
+			train_type = #{trainType},
+			specialty = #{specialty},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			cardnum = #{cardnum},
+			study_type = #{studyType},
+			school_master = #{schoolMaster},
+			getgctime = #{getgctime},
+			indexNo = #{index},
+			main = #{main},
+			assist = #{assist}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE
+		FROM
+		specialty_train
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

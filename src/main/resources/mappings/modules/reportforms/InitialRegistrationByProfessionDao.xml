@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.InitialRegistrationByProfessionDao">
+	<select id="findInitialRegistrationByProfession" resultType="InitialRegistrationByProfession">
+		SELECT 
+		a.name as officeName,
+		a.num1+a.num2+a.num3+a.num4+a.num5+a.num6+a.num7+a.num8+a.num9+a.num10+a.num11+a.num12+a.num13+a.num14+a.num15+a.num16+a.num17
+		+a.num18+a.num19+a.num20+a.num21+a.num23+a.num24+a.num25+a.num26+a.num27+a.num28+a.num29+a.num30+a.num31+a.num32+a.num33
+		+a.num34+a.num35+a.num36+a.num37+a.num38+a.num39+a.num41 as tatol
+		,num1 AS farmingAndForestry
+		,num2 AS waterConservancyAndHydropower
+		,num3	AS power
+		,num4 AS coal
+		,num5 AS oilAndNaturalGas
+		,num6 AS highway
+		,num7 AS railTransit
+		,num8 AS civilAviation
+		,num9 AS waterTransport
+		,num10 AS electroniCommunication
+		,num11 AS metallurgy
+		,num12 AS chemicalAndMedicine
+		,num13 AS nuclearIndustry
+		,num14 AS mechanics
+		,num15 AS lightAndTextileIndustry
+		,num16 AS buildingMaterial
+		,num17 AS architecture
+		,num18 AS municipalUtilities
+		,num19 AS ecologicalEnvironmentEngineering
+		,num20 AS hydrogeologySurveyGeotechnical
+		,num21 AS speciallty21
+		,num23 AS cityPlanning
+		,num24 AS earthquakeEngineering
+		,num25 AS engineeringTechnologyEconomy
+		,num26 AS ancientArchitecturalBuildings
+		,num27 AS oceanographicEngineering
+		,num28 AS povertyReductionProjects
+		,num29 AS energyConservation
+		,num30 AS mineralExploitation
+		,num31 AS tourismEngineering
+		,num32 AS meteorologicalEngineering
+		,num33 AS commercialGrain
+		,num34 AS bioengineering
+		,num35 AS cableway
+		,num36 AS landUse
+		,num37 AS landArrangement
+		,num38 AS immigrationProject
+		,num39 AS postalEngineering
+		,num41 AS packagingIndustry,
+		a.batchno AS batchNo
+		FROM
+		(SELECT
+			sys_office.name,
+			sum(case when person_register.register_main_specialty ='1' then 1 ELSE 0 end)+
+			sum(case when person_register.register_auxiliary_specialty ='1' then 1 ELSE 0 end) as num1,
+			sum(case when person_register.register_main_specialty ='2' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='2' then 1 ELSE 0 end) as num2,
+			sum(case when person_register.register_main_specialty ='3' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='3' then 1 ELSE 0 end) as num3,
+			sum(case when person_register.register_main_specialty ='4' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='4' then 1 ELSE 0 end) as num4,
+			sum(case when person_register.register_main_specialty ='5' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='5' then 1 ELSE 0 end) as num5,
+			sum(case when person_register.register_main_specialty ='6' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='6' then 1 ELSE 0 end) as num6,
+			sum(case when person_register.register_main_specialty ='7' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='7' then 1 ELSE 0 end) as num7,
+			sum(case when person_register.register_main_specialty ='8' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='8' then 1 ELSE 0 end) as num8,
+			sum(case when person_register.register_main_specialty ='9' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='9' then 1 ELSE 0 end) as num9,
+			sum(case when person_register.register_main_specialty ='10' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='10' then 1 ELSE 0 end) as num10,
+			sum(case when person_register.register_main_specialty ='11' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='11' then 1 ELSE 0 end) as num11,
+			sum(case when person_register.register_main_specialty ='12' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='12' then 1 ELSE 0 end) as num12,
+			sum(case when person_register.register_main_specialty ='13' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='13' then 1 ELSE 0 end) as num13,
+			sum(case when person_register.register_main_specialty ='14' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='14' then 1 ELSE 0 end) as num14,
+			sum(case when person_register.register_main_specialty ='15' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='15' then 1 ELSE 0 end) as num15,
+			sum(case when person_register.register_main_specialty ='16' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='16' then 1 ELSE 0 end) as num16,
+			sum(case when person_register.register_main_specialty ='17' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='17' then 1 ELSE 0 end) as num17,
+			sum(case when person_register.register_main_specialty ='18' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='18' then 1 ELSE 0 end) as num18,
+			sum(case when person_register.register_main_specialty ='19' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='19' then 1 ELSE 0 end) as num19,
+			sum(case when person_register.register_main_specialty ='20' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='20' then 1 ELSE 0 end) as num20,
+			sum(case when person_register.register_main_specialty ='21' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='21' then 1 ELSE 0 end) as num21,
+			sum(case when person_register.register_main_specialty ='23' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='23' then 1 ELSE 0 end) as num23,
+			sum(case when person_register.register_main_specialty ='24' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='24' then 1 ELSE 0 end) as num24,
+			sum(case when person_register.register_main_specialty ='25' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='25' then 1 ELSE 0 end) as num25,
+			sum(case when person_register.register_main_specialty ='26' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='26' then 1 ELSE 0 end) as num26,
+			sum(case when person_register.register_main_specialty ='27' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='27' then 1 ELSE 0 end) as num27,
+			sum(case when person_register.register_main_specialty ='28' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='28' then 1 ELSE 0 end) as num28,
+			sum(case when person_register.register_main_specialty ='29' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='29' then 1 ELSE 0 end) as num29,
+			sum(case when person_register.register_main_specialty ='30' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='30' then 1 ELSE 0 end) as num30,
+			sum(case when person_register.register_main_specialty ='31' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='31' then 1 ELSE 0 end) as num31,
+			sum(case when person_register.register_main_specialty ='32' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='32' then 1 ELSE 0 end) as num32,
+			sum(case when person_register.register_main_specialty ='33' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='33' then 1 ELSE 0 end) as num33,
+			sum(case when person_register.register_main_specialty ='34' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='34' then 1 ELSE 0 end) as num34,
+			sum(case when person_register.register_main_specialty ='35' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='35' then 1 ELSE 0 end) as num35,
+			sum(case when person_register.register_main_specialty ='36' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='36' then 1 ELSE 0 end) as num36,
+			sum(case when person_register.register_main_specialty ='37' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='37' then 1 ELSE 0 end) as num37,
+			sum(case when person_register.register_main_specialty ='38' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='38' then 1 ELSE 0 end) as num38,
+			sum(case when person_register.register_main_specialty ='39' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='39' then 1 ELSE 0 end) as num39,
+			sum(case when person_register.register_main_specialty ='41' then 1 ELSE 0  end)+
+			sum(case when person_register.register_auxiliary_specialty ='41' then 1 ELSE 0 end) as num41,
+			person_record.batchno
+		FROM
+			person_record
+			left join enterprise_workers on person_record.person_id=enterprise_workers.id
+			left join sys_user on sys_user.id=enterprise_workers.pid
+			left join sys_office on sys_office.id=sys_user.office_id
+			left join person_record_table on person_record.id=person_record_table.person_record_id
+			left join person_register on person_record_table.id=person_register.table_id
+		where 
+			person_record.del_flag!='1' and 
+			person_record.batch_status!='20' and 
+			person_record.batch_status!='21' and
+			person_record.batch_status>9 AND
+			person_record.declare_type='1'
+		group by 
+		sys_office.name,
+		person_record.batchno) a
+		<where>
+			<if test="batchNo != null and batchNo !=''">
+				AND a.batchno = #{batchNo}
+			</if>
+		</where>
+	</select>
+</mapper>

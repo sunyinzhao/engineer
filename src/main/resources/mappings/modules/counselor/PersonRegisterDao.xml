@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.PersonRegisterDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.company_name AS "companyName",
+		a.job_company_name AS "jobCompanyName",
+		a.backup_num AS "backupNum",
+		a.backup_type AS "backupType",
+		a.company_type AS "companyType",
+		a.iseducate AS "iseducate",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.accountant_check AS "accountantCheck",
+		a.is_fifth AS "isFifth",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.confirm_five AS "confirmFive"
+	</sql>
+
+    
+	<select id="get" resultType="PersonRegister">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_register a
+		WHERE a.id = #{id}
+	</select>
+
+
+	<select id="getByTableId" resultType="PersonRegister">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_register a
+		WHERE a.table_id = #{tableId}
+	</select>
+	
+	<select id="findList" resultType="PersonRegister">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_register a
+		<where>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.type ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PersonRegister">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_register a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO person_register(
+			id,
+			table_id,
+			person_id,
+			company_name,
+			job_company_name,
+			backup_num,
+			backup_type,
+			company_type,
+			iseducate,
+			register_main_specialty,
+			register_auxiliary_specialty,
+			accountant_check,
+			is_fifth,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			confirm_five
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{companyName},
+			#{jobCompanyName},
+			#{backupNum},
+			#{backupType},
+			#{companyType},
+			#{iseducate},
+			#{registerMainSpecialty},
+			#{registerAuxiliarySpecialty},
+			#{accountantCheck},
+			#{isFifth},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{confirmFive}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE person_register SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			company_name = #{companyName},
+			job_company_name = #{jobCompanyName},
+			backup_num = #{backupNum},
+			backup_type = #{backupType},
+			company_type = #{companyType},
+			iseducate = #{iseducate},
+			register_main_specialty = #{registerMainSpecialty},
+			register_auxiliary_specialty = #{registerAuxiliarySpecialty},
+			accountant_check = #{accountantCheck},
+			is_fifth= #{isFifth},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			confirm_five = #{confirmFive}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE person_register SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

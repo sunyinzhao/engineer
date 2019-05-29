@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseAttachmentDao">
+    
+	<sql id="enterpriseAttachmentColumns">
+		a.id AS "id",
+		a.file_name AS "fileName",
+		a.type AS "type",
+		a.file_type AS "fileType",
+		a.path AS "path",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="enterpriseAttachmentJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseAttachment">
+		SELECT 
+			<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<include refid="enterpriseAttachmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseAttachment">
+		SELECT 
+			<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<include refid="enterpriseAttachmentJoins"/>
+		<where>
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			<!--	ORDER BY a.update_date DESC -->
+				ORDER BY  CONVERT(a.type,signed) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findZhengShuList" resultType="EnterpriseAttachment">
+		SELECT 
+			<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<include refid="enterpriseAttachmentJoins"/>
+		<where>
+			AND a.type in ('12','17') 
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			<!--	ORDER BY a.update_date DESC -->
+				ORDER BY  CONVERT(a.type,signed) ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	
+	<select id="findAllList" resultType="EnterpriseAttachment">
+		SELECT 
+			<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<include refid="enterpriseAttachmentJoins"/>
+		<where>
+
+
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			<!--	ORDER BY a.update_date DESC -->
+				ORDER BY  CONVERT(a.type,signed) ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findJpgList" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+
+			<if test="type !=null and type !=''">
+				AND a.type = #{type}
+			</if>
+		</where>
+	</select>
+
+	<select id="findMixJpg" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+				AND a.type in (13,12,17)
+
+		</where>
+	</select>
+
+	<select id="findPPPJpg" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type ='7'
+
+		</where>
+	</select>
+
+	<select id="findType1" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('19','13')
+
+		</where>
+	</select>
+
+	<select id="findType2" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('14','13')
+
+		</where>
+	</select>
+
+	<select id="findType3" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('15','14','16')
+
+		</where>
+	</select>
+
+	<select id="findType4" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('12','15','16','17')
+
+		</where>
+	</select>
+
+	<select id="findType5" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('12','15','16','17','18')
+
+		</where>
+	</select>
+
+	<!--findListBytype-->
+	<select id="findListBytype" resultType="EnterpriseAttachment">
+		SELECT
+		<include refid="enterpriseAttachmentColumns"/>
+		FROM enterprise_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+		</where>
+		order by a.type asc
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_attachment(
+			id,
+			file_name,
+			type,
+			file_type,
+			path,
+			pid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{fileName},
+			#{type},
+			#{fileType},
+			#{path},
+			#{pid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_attachment SET 	
+			file_name = #{fileName},
+			type = #{type},
+			file_type = #{fileType},
+			path = #{path},
+			pid = #{pid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+
+	<update id="delete">
+		DELETE FROM enterprise_attachment
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE pid = #{pid}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

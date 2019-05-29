@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.SpecialtyConfigDao">
+	<sql id="specialtyConfigColumns">
+		a.id AS "id",
+		a.specialty AS "specialty",
+		a.specialty_label AS "specialtyLabel"
+	</sql>
+	<!---->
+	<select id="findList" resultType="SpecialtyConfig">
+		SELECT
+		<include refid="specialtyConfigColumns"/>
+		FROM specialty_config a
+		<where>
+			<if test="specialtyLabel != null and specialtyLabel != ''">
+				AND a.specialty_label like concat('%',#{specialtyLabel},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.specialty DESC
+			</otherwise>
+		</choose>
+	</select>
+
+    <select id="getAll" resultType="SpecialtyConfig">
+        SELETE
+        <include refid="specialtyConfigColumns"/>
+        FROM specialty_config a
+    </select>
+
+	<select id="get" resultType="SpecialtyConfig">
+		SELECT
+		<include refid="specialtyConfigColumns"/>
+		FROM specialty_config a
+		<where>
+			a.id = #{id}
+		</where>
+	</select>
+	<update id="update" >
+		UPDATE specialty_config
+		set
+		specialty = #{specialty},
+		specialty_label = #{specialtyLabel}
+		 where id = #{id}
+	</update>
+	<insert id="insert">
+		insert into specialty_config (id,specialty,specialty_label) values (#{id},#{specialty},#{specialtyLabel})
+	</insert>
+	<delete id="delete">
+		delete from  specialty_config where id=#{id}
+	</delete>
+
+	<select id="getSpecialty" resultType="String">
+		select count(1) from specialty_config a where a.specialty=#{specialty}
+	</select>
+
+    <select id="getSpecialtyByNum" resultType="String">
+		select
+		 <include refid="specialtyConfigColumns"></include>
+		 from specialty_config a
+        where a.specialty=#{specialty}
+	</select>
+</mapper>

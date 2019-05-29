@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.EducationtblDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.school_type AS "schoolType",
+		a.school AS "school",
+		a.specialty AS "specialty",
+		a.study_type AS "studyType",
+		a.education AS "education",
+		a.study_year AS "studyYear",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.school_master AS "schoolMaster",
+		a.getgctime AS "getgctime",
+		a.indexNo AS "index",
+		a.main,
+		a.assist,
+		a.zs_no AS "zsNo"
+	</sql>
+
+    
+	<select id="get" resultType="Educationtbl">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM educationtbl a
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getMax" resultType="Integer">
+		SELECT
+		max(a.indexNo)
+		FROM educationtbl a
+		where
+		a.table_id = #{tableId}
+		AND a.person_id = #{personId}
+	</select>
+
+	<select id="getMaxIndex" resultType="Integer">
+		SELECT
+		MAX(a.indexNo)
+		FROM
+		educationtbl a
+		WHERE
+		a.person_id = #{personId}
+	</select>
+
+
+	<select id="getByTableId" resultType="Educationtbl">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM educationtbl a
+		WHERE a.person_id = #{tableId}
+		ORDER BY a.indexNo asc
+	</select>
+
+
+
+	<select id="findNotRelev" resultType="Educationtbl">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record_table t
+		RIGHT JOIN educationtbl a ON a.table_id = t.id
+		WHERE t.person_record_id = #{recordId}
+	</select>
+	
+	<select id="findList" resultType="Educationtbl">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM educationtbl a
+		<where>
+			<if test="personId!=null and personId!= ''">
+				AND person_id = #{personId}
+			</if>
+		</where>
+		ORDER BY a.indexNo DESC
+	</select>
+	
+	<select id="findAllList" resultType="Educationtbl">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM educationtbl a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<insert id="insert">
+		INSERT INTO educationtbl(
+			id,
+			table_id,
+			person_id,
+			school_type,
+			school,
+			specialty,
+			study_type,
+			education,
+			study_year,
+			start_time,
+			end_time,
+			school_master,
+			getgctime,
+			indexNo,
+			main,
+			assist,
+			zs_no
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{schoolType},
+			#{school},
+			#{specialty},
+			#{studyType},
+			#{education},
+			#{studyYear},
+			#{startTime},
+			#{endTime},
+			#{schoolMaster},
+			#{getgctime},
+			#{index},
+			#{main},
+			#{assist},
+			#{zsNo}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE educationtbl SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			school_type = #{schoolType},
+			school = #{school},
+			specialty = #{specialty},
+			study_type = #{studyType},
+			education = #{education},
+			study_year = #{studyYear},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			school_master = #{schoolMaster},
+			getgctime = #{getgctime},
+			indexNo = #{index},
+			main = #{main},
+			assist = #{assist},
+			zs_no = #{zsNo}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete
+		from educationtbl
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

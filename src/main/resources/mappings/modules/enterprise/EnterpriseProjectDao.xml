@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseProjectDao">
+    
+	<sql id="enterpriseProjectColumns">
+		a.id AS "id",
+		a.project_name AS "projectName",
+		a.project_service_rang AS "projectServiceRang",
+		a.specialty AS "specialty",
+		a.apply_service_rang AS "applyServiceRang",
+		a.project_invest_amount AS "projectInvestAmount",
+		a.construction_scale AS "constructionScale",
+		a.complete_date AS "completeDate",
+		a.entrust_company AS "entrustCompany",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="enterpriseProjectJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseProject">
+		SELECT 
+			<include refid="enterpriseProjectColumns"/>
+		FROM enterprise_project a
+		<include refid="enterpriseProjectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseProject">
+		SELECT 
+			<include refid="enterpriseProjectColumns"/>
+		FROM enterprise_project a
+		<include refid="enterpriseProjectJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EnterpriseProject">
+		SELECT 
+			<include refid="enterpriseProjectColumns"/>
+		FROM enterprise_project a
+		<include refid="enterpriseProjectJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_project(
+			id,
+			project_name,
+			project_service_rang,
+			specialty,
+			apply_service_rang,
+			project_invest_amount,
+			construction_scale,
+			complete_date,
+			entrust_company,
+			pid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{projectName},
+			#{projectServiceRang},
+			#{specialty},
+			#{applyServiceRang},
+			#{projectInvestAmount},
+			#{constructionScale},
+			#{completeDate},
+			#{entrustCompany},
+			#{pid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_project SET 	
+			project_name = #{projectName},
+			project_service_rang = #{projectServiceRang},
+			specialty = #{specialty},
+			apply_service_rang = #{applyServiceRang},
+			project_invest_amount = #{projectInvestAmount},
+			construction_scale = #{constructionScale},
+			complete_date = #{completeDate},
+			entrust_company = #{entrustCompany},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM enterprise_project
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.NotRealDao">
+
+
+    
+
+	<select id="findList" resultType="NotReal">
+		SELECT w.name AS 'name',d.label AS 'label',p.item_text AS 'text',p.record_id AS 'recordId',
+		CASE p.items WHEN '0' THEN '不符合' WHEN '99' THEN '不真实' END as 'type',
+		o.name AS 'officeName',
+		w.company_name AS 'companyName',
+		r.batchno AS 'batchNo',
+		w.certificates_num AS 'idCard',
+		CASE r.declare_type WHEN '0' THEN '注销登记' WHEN '1' THEN '初始登记' WHEN '2' THEN '变更执业单位' WHEN '3' THEN '变更专业' WHEN '4' THEN '继续登记' END AS 'declareType'
+		FROM
+		person_expert p
+		LEFT JOIN sys_dict d ON p.type = d.value
+		LEFT JOIN person_record r ON r.id = p.record_id
+		LEFT JOIN enterprise_workers w ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON o.id = u.office_id
+		<where>
+			<if test="officeName != null and officeName != ''">
+				AND o.name LIKE CONCAT('%',#{officeName},'%')
+			</if>
+
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+
+			<if test="name != null and name != ''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+
+			<if test="batchNo != null and batchNo != ''">
+				AND r.batchno = #{batchNo}
+			</if>
+
+			<if test="declareType != null and declareType != ''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<!--不真实项-->
+		AND p.items like '%99%'
+			<!--展示不真实名字-->
+		AND d.type = 'expert_type'
+			<!--展示未处理的列表-->
+		AND (r.if_finish != '1' or r.if_finish is null)
+			<!--只查询examine_type为4的 选项-->
+		AND p.examine_type = '4'
+        </where>
+	</select>
+	
+
+</mapper>

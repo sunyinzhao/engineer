@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.signature.dao.ApplySignaturePersonDao">
+    
+	<sql id="applySignaturePersonColumns">
+		a.id AS "id",
+		a.signature_id AS "signatureId",
+		a.person_id AS "personId",
+		a.duty AS "duty",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.absolute_page AS "absolutePage",
+		a.absolute_x AS "absoluteX",
+		a.absolute_y AS "absoluteY",
+		
+		w.name AS "enterpriseWorkers.name",
+		w.sex AS "enterpriseWorkers.sex",
+		w.nation AS "enterpriseWorkers.nation",
+		w.certificates_type AS "enterpriseWorkers.certificatesType",
+		w.certificates_num AS "enterpriseWorkers.certificatesNum",
+		w.register_main_specialty AS "enterpriseWorkers.registerMainSpecialty",
+		w.register_auxiliary_specialty AS "enterpriseWorkers.registerAuxiliarySpecialty"		
+		
+	</sql>
+	
+	<sql id="applySignaturePersonJoins">
+		INNER JOIN enterprise_workers w ON w.id = a.person_id
+	</sql>
+    
+	<select id="get" resultType="ApplySignaturePerson">
+		SELECT 
+			<include refid="applySignaturePersonColumns"/>
+		FROM apply_signature_person a
+		<include refid="applySignaturePersonJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ApplySignaturePerson">
+		SELECT 
+			<include refid="applySignaturePersonColumns"/>
+		FROM apply_signature_person a
+		<include refid="applySignaturePersonJoins"/>
+		<where>
+			
+			<if test="signatureId != null and signatureId != ''">
+				AND a.signature_id = #{signatureId}
+			</if>
+			<if test="personId != null and personId != ''">
+				AND a.person_id = #{personId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getAllPro" resultType="ApplySignaturePerson">
+		SELECT 
+			<include refid="applySignaturePersonBySelfColumns"/>
+		FROM apply_signature_person a
+		<include refid="applySignaturePersonBySelfJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	
+	
+	
+	<sql id="applySignaturePersonBySelfColumns">
+		a.id AS "id",
+		a.signature_id AS "signatureId",
+		a.person_id AS "personId",
+		a.duty AS "duty",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		
+		s.project_name AS "applySignature.projectName",
+		s.services AS "applySignature.services",
+		s.child_services AS "applySignature.childServices",
+		s.area AS "applySignature.area",
+		s.plan_grade AS "applySignature.planGrade",
+		s.enterprise_id AS "applySignature.enterpriseId",
+		s.complete_date AS "applySignature.completeDate",
+		s.project_specialty AS "applySignature.projectSpecialty",
+		s.project_invest_amount AS "applySignature.projectInvestAmount",
+		s.signature_file_path AS "applySignature.signatureFilePath",
+		s.remarks  AS "applySignature.remarks",
+		s.status AS "applySignature.status",
+		s.project_specialty_child AS "applySignature.projectSpecialtyChild",
+		s.del_flag AS "applySignature.delFlag",
+		s.boundary AS "applySignature.boundary",
+		s.boundary_case AS "applySignature.boundaryCase",
+		s.contract_num AS "applySignature.contractNum",
+		s.lock_person AS "applySignature.lockPerson",
+		s.lock_time AS "applySignature.lockTime",
+		s.build_scale AS "applySignature.buildScale",
+		s.project_abroad_amount AS "applySignature.projectAbroadAmount",
+		s.project_add_sub_amount AS "applySignature.projectAddSubAmount",
+		s.funds_source  AS "applySignature.fundsSource",
+		s.plan_begin_date AS "applySignature.planBeginDate",
+		s.approval_org AS "applySignature.approvalOrg",
+		s.veto AS "applySignature.veto",
+		s.project_property AS "applySignature.projectProperty",
+		u.name AS "enterpriseName"
+		
+	</sql>
+	
+	
+	<sql id="applySignaturePersonBySelfJoins">
+		INNER JOIN apply_signature s ON s.id = a.signature_id
+		LEFT JOIN enterprise_workers w ON w.id  =   a.person_id
+		LEFT JOIN sys_user u ON u.id  =   s.enterprise_id
+	</sql>
+	
+	
+	<select id="findListBySelf" resultType="ApplySignaturePerson">
+		SELECT 
+			<include refid="applySignaturePersonBySelfColumns"/>
+		FROM apply_signature_person a
+		<include refid="applySignaturePersonBySelfJoins"/>
+		<where>
+			AND s.del_flag=  #{DEL_FLAG_NORMAL}
+<!-- 			查询出提交与签章完毕的申请单 -->
+			AND (s.status = '1' or s.status = '2' )
+			
+			<if test="signatureId != null and signatureId != ''">
+				AND a.signature_id = #{signatureId}
+			</if>
+			<!-- <if test="personId != null and personId != ''">
+				AND a.person_id = #{personId}
+			</if> -->
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+						
+			<if test="enterpriseWorkers != null and enterpriseWorkers.certificatesNum != null and enterpriseWorkers.certificatesNum != '' ">
+				AND w.certificates_num = #{enterpriseWorkers.certificatesNum}
+			</if>
+			
+			<if test="enterpriseWorkers != null and enterpriseWorkers.name != null and enterpriseWorkers.name != '' ">
+				AND w.name = #{enterpriseWorkers.name}
+			</if>	
+			
+			<if test="applySignature != null and applySignature.projectName != null and applySignature.projectName != '' ">
+				AND s.project_name = #{applySignature.projectName}
+			</if>	
+					
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	
+	
+	<select id="findAllList" resultType="ApplySignaturePerson">
+		SELECT 
+			<include refid="applySignaturePersonColumns"/>
+		FROM apply_signature_person a
+		<include refid="applySignaturePersonJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO apply_signature_person(
+			id,
+			signature_id,
+			person_id,
+			duty,
+			status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{signatureId},
+			#{personId},
+			#{duty},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE apply_signature_person SET 	
+			signature_id = #{signatureId},
+			person_id = #{personId},
+			duty = #{duty},
+			status = #{status},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="updateAbsolute">
+		UPDATE apply_signature_person SET 
+			absolute_page = #{absolutePage},
+			absolute_x = #{absoluteX},
+			absolute_y = #{absoluteY}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+		
+	
+	
+	<update id="updateDuty">
+		UPDATE apply_signature_person SET 
+			duty = #{duty}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM apply_signature_person
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

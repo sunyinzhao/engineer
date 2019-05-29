@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.ChangeItemDao">
+
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.person_record_id AS "recordId",
+		a.changetype AS "changeType",
+		a.oldvalue AS "oldValue",
+		a.newvalue AS "newValue",
+		a.result,
+		a.createby AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks
+	</sql>
+
+    
+	<select id="get" resultType="ChangeItem">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM change_item a
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByRecordId" resultType="ChangeItem">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM change_item a
+		WHERE a.person_record_id = #{recordId}
+		and a.changetype = #{changeType}
+		ORDER BY create_date DESC
+	</select>
+
+
+
+	<select id="findList" resultType="ChangeItem">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM change_item a
+		<where>
+			<if test="recordId!=null and recordId!=''" >
+				and a.person_record_id = #{recordId}
+			</if>
+			<if test="changeType!=null and changeType!=''">
+				and a.changetype = #{changeType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findItemList" resultType="ChangeItem">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM change_item a
+		<where>
+			AND a.person_record_id = #{recordId}
+			<if test="changeType!=null and changeType!=''" >
+			AND a.changetype in
+			<foreach collection="changeType" separator="," open="(" close=")" item="type">
+				#{type}
+			</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="ChangeItem">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM change_item a
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+
+	<insert id="insert">
+		INSERT INTO change_item(
+			id,
+			person_record_id,
+			changetype,
+			oldvalue,
+			newvalue,
+			result,
+			createby,
+			create_date,
+			update_by,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{changeType},
+			#{oldValue},
+			#{newValue},
+			#{result},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+
+
+	
+	<update id="update">
+		UPDATE change_item SET
+			person_record_id = #{recordId},
+			changetype = #{changeType},
+			oldvalue = #{oldValue},
+			newvalue = #{newValue},
+			result = #{result},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			is_assigned = #{isAssigned},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete from
+		change_item
+		WHERE id = #{id}
+	</update>
+	<update id="updateIsAssigned">
+		UPDATE change_item SET
+			is_assigned = '1'
+		WHERE person_record_id = #{recordId} and changetype=#{changeType}
+	</update>
+	
+</mapper>

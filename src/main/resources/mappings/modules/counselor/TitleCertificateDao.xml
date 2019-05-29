@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.TitleCertificateDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.table_id AS "tableId",
+		a.person_id AS "personId",
+		a.title_level AS "titleLevel",
+		a.title_type AS "titleType",
+		a.specialty AS "specialty",
+		a.approve_employer AS "approveEmployer",
+		a.approve_time AS "approveTime",
+		a.get_employer AS "getEmployer",
+		a.indexNo AS "index",
+		a.main,
+		a.assist
+	</sql>
+
+    
+	<select id="get" resultType="TitleCertificate">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM title_certificate a
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getMax" resultType="Integer">
+		SELECT
+		max(a.indexNo)
+		FROM title_certificate a
+		WHERE
+		a.person_id = #{personId}
+		AND table_id = #{tableId}
+	</select>
+
+	<select id="findNotRelev" resultType="TitleCertificate">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record_table t
+		RIGHT JOIN title_certificate a ON a.table_id = t.id
+		WHERE t.person_record_id = #{recordId}
+	</select>
+
+
+	<select id="getByTableId" resultType="TitleCertificate">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM title_certificate a
+		WHERE a.person_id = #{tableId}
+		ORDER BY a.indexNo ASC
+	</select>
+	
+	<select id="findList" resultType="TitleCertificate">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM title_certificate a
+		<where>
+			<if test="personId!=null and personId!= ''">
+				AND person_id = #{personId}
+			</if>
+		</where>
+		ORDER BY a.indexNo DESC
+	</select>
+	
+	<select id="findAllList" resultType="TitleCertificate">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM title_certificate a
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findTitleList" resultType="Dict">
+		SELECT
+		a.value,a.id,a.label,a.type
+		FROM sys_dict a
+		WHERE
+			a.type = #{type}
+			and a.description = #{description}
+			and a.del_flag='0'
+	</select>
+
+
+	<select id="getMaxIndex" resultType="Integer">
+		SELECT
+		MAX(a.indexNo)
+		FROM
+		title_certificate a
+		WHERE
+		a.person_id = #{personId}
+	</select>
+
+
+
+	<insert id="insert">
+		INSERT INTO title_certificate(
+			id,
+			table_id,
+			person_id,
+			title_level,
+			title_type,
+			specialty,
+			approve_employer,
+			approve_time,
+			get_employer,
+			indexNo,
+			main,
+			assist
+		) VALUES (
+			#{id},
+			#{tableId},
+			#{personId},
+			#{titleLevel},
+			#{titleType},
+			#{specialty},
+			#{approveEmployer},
+			#{approveTime},
+			#{getEmployer},
+			#{index},
+			#{main},
+			#{assist}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE title_certificate SET
+			table_id = #{tableId},
+			person_id = #{personId},
+			title_level = #{titleLevel},
+			title_type = #{titleType},
+			specialty = #{specialty},
+			approve_employer = #{approveEmployer},
+			approve_time = #{approveTime},
+			get_employer = #{getEmployer},
+			indexNo = #{index},
+			main = #{main},
+			assist = #{assist}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		delete
+		from title_certificate
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

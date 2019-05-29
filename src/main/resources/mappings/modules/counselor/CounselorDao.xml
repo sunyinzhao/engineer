@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.CounselorDao">
+    
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.batch_id AS "batchId",
+		a.person_id AS "personId",
+		a.declare_date AS "declareDate",
+		a.batch_type AS "batchType",
+		a.declare_type AS "declareType",
+		a.batch_status AS "batchStatus",
+		a.declare_status AS "declareStatus",
+		a.expert_id AS "expertId",
+		a.declare_result AS "declareResult",
+		a.batch_result AS "batchResult",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.Cdeclare_result AS "cdeclareResult",
+		a.Zdeclare_result AS "zdeclareResult",
+		a.Fdeclare_result AS "fdeclareResult",
+		a.first_Cexpert_id AS "firstCexpertId",
+		a.first_Fexpert_result AS "firstFexpertResult",
+		a.second_Fexpert_result AS "secondFexpertResult",
+		a.first_Cdeclare_result AS "firstCdeclareResult",
+		a.second_Cexpert_id AS "secondCexpertId",
+		a.second_Cdeclare_result AS "secondCdeclareResult",
+		a.first_Zexpert_id AS "firstZexpertId",
+		a.first_Zdeclare_result AS "firstZdeclareResult",
+		a.second_Zexpert_id AS "secondZexpertId",
+		a.second_Zdeclare_result AS "secondZdeclareResult",
+		a.util_feedback AS "utilFeedback",
+		a.company_name AS "companyName",
+		a.company_id AS "companyId",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.cancel_type AS "cancelType",
+		a.hg_return as "hgReturn",
+		a.return_reason as "returnReason",
+		a.local_receive_return_reason as "receiveReason",
+		a.remarks AS "remarks",
+		a.impropriety,
+		a.office_name AS "officeName",
+		a.hg_expert_id AS "hgExpertId",
+		a.return_type AS "returnType",
+		a.H_declare_result AS "HdeclareResult",
+		a.fy_advice AS "fyAdvice",
+		a.if_finish AS ifFinish,
+		a.is_punish AS "isPunish",
+		a.public_date AS "publicDate"
+	</sql>
+
+    
+	<select id="get" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record a
+		WHERE a.id = #{id}
+	</select>
+
+	<!--查询declare status !=1 并且 declare status <6 的值.如果有,表示不可编辑删除-->
+	<select id="getRead" resultType="Integer">
+		SELECT COUNT(1)
+		FROM person_record
+		WHERE person_id = #{personId}
+		AND batch_status between 3 and 19
+		AND declare_type in ('1','3')
+		AND del_flag = '0'
+	</select>
+
+	<select id="findList" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			<if test="personId != null and personId != ''">
+				AND a.person_id = #{personId}
+			</if>
+			<if test="batchId != null and batchId != ''">
+				AND a.batch_id = #{batchId}
+			</if>
+			<if test="declareType != null and declareType != ''">
+				AND a.declare_type = #{declareType}
+			</if>
+			<if test="declareStatus != null and declareStatus != ''">
+				AND a.declare_status = #{declareStatus}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				<choose>
+					<when test="endDate!=null and endDate !=''">
+						AND a.declare_date BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND a.declare_date > #{startDate}
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findNewList" resultType="Counselor">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			<if test="personId != null and personId != ''">
+				AND a.person_id = #{personId}
+			</if>
+			<if test="declareType != null and declareType != ''">
+				AND a.declare_type = #{declareType}
+			</if>
+			<if test="returnType != null and returnType != ''">
+				AND a.return_type = #{returnType}
+			</if>
+
+
+			<if test="startDate != null and startDate != ''">
+				<choose>
+					<when test="endDate!=null and endDate !=''">
+						AND a.declare_date BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND a.declare_date > #{startDate}
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findListByDate" resultType="Counselor">
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			<if test="declareType != null and declareType != ''">
+				AND a.declare_type = #{declareType}
+			</if>
+<!-- 				AND a.declare_status = '19' -->
+<!-- 			<if test="startDate != null and startDate != ''"> -->
+<!-- 				AND a.start_date > #{startDate} -->
+<!-- 			</if> -->
+<!-- 			<if test="endDate != null and endDate != ''"> -->
+<!-- 				AND a.end_date &lt; #{endDate} -->
+<!-- 			</if> -->
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batchno = #{batchNo}
+			</if>
+<!-- 			<if test="declareStatus != null and declareStatus != ''"> -->
+<!-- 				AND a.declare_status &lt; #{declareStatus} -->
+<!-- 			</if> -->
+			AND (a.batch_stauts ='17' and Zdeclare_result='1' or a.batch_stauts ='19')
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="Counselor">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findCheck" resultType="int" >
+		SELECT
+		count(1)
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			AND a.person_id = #{personId}
+			AND a.declare_type in
+			<foreach  collection="declareType" item="declare" open="(" close=")" separator=",">
+				#{declare}
+			</foreach>
+			AND ((a.batch_status !='17') or(a.declare_status !='17') )
+		</where>
+	</select>
+
+	<select id="findSame" resultType="int" >
+		SELECT
+		count(1)
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			AND a.person_id = #{personId}
+			AND ((a.batch_status !='20') or(a.declare_status !='20') )
+		</where>
+	</select>
+
+	<select id="findBatchId" resultType="Counselor" >
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			AND a.batch_id = #{batchId}
+		</where>
+	</select>
+	<!-- 查找过程中数据，如果存在则不允许修改工作简历 -->
+	<select id="findWorkRecord" resultType="Counselor" >
+		SELECT
+		<include refid="counselorColumns"/>
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			<if test="personId != null and personId != ''">
+				AND a.person_id = #{personId}
+			</if>
+				AND a.batch_status >= 5 and a.batch_status!='20'
+		</where>
+	</select>
+
+	<select id="findStatus" resultType="int" >
+		SELECT
+		count(1)
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			AND a.batch_id = #{batchId}
+			AND a.declare_status !=#{status}
+		</where>
+	</select>
+
+	<select id="findStatus1" resultType="int" >
+		SELECT
+		count(1)
+		FROM person_record a
+		<where>
+			AND  a.del_flag= '0'
+			AND a.batch_id = #{batchId}
+			AND a.declare_status =#{status}
+		</where>
+	</select>
+
+	<select id="isFifth" resultType="String" >
+		select is_fifth
+		from person_register r
+		where r.table_id =
+		(
+		select id
+		from person_record_table
+		where person_record_id = #{recordId} and type = '1'
+		)
+	</select>
+
+
+
+
+	<insert id="insert">
+		INSERT INTO person_record(
+			id,
+			batch_id,
+			person_id,
+			declare_date,
+			batch_type,
+			declare_type,
+			batch_status,
+			declare_status,
+			expert_id,
+			declare_result,
+			batch_result,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			first_Cexpert_id,
+			first_Cdeclare_result,
+			second_Cexpert_id,
+			second_Cdeclare_result,
+			first_Zexpert_id,
+			first_Zdeclare_result,
+			second_Zexpert_id,
+			second_Zdeclare_result,
+			company_name,
+			company_id,
+			register_main_specialty,
+			register_auxiliary_specialty,
+			cancel_type,
+			remarks,
+			office_name,
+			hg_expert_id
+		) VALUES (
+			#{id},
+			#{batchId},
+			#{personId},
+			#{createDate},
+			#{batchType},
+			#{declareType},
+			#{batchStatus},
+			#{declareStatus},
+			#{expertId},
+			#{declareResult},
+			#{batchResult},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{firstCexpertId},
+			#{firstCdeclareResult},
+			#{secondCexpertId},
+			#{secondCdeclareResult},
+			#{firstZexpertId},
+			#{firstZdeclareResult},
+			#{secondZexpertId},
+			#{secondZdeclareResult},
+			#{companyName},
+			#{companyId},
+			#{registerMainSpecialty},
+			#{registerAuxiliarySpecialty},
+			#{cancelType},
+			#{remarks},
+			#{officeName},
+			#{hgExpertId}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE person_record SET
+			batch_id = #{batchId},
+			person_id = #{personId},
+			batch_type = #{batchType},
+			declare_type = #{declareType},
+			batch_status = #{batchStatus},
+			declare_status = #{declareStatus},
+			expert_id = #{expertId},
+			declare_result = #{declareResult},
+			batch_result = #{batchResult},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			first_Cexpert_id = #{firstCexpertId},
+			first_Cdeclare_result = #{firstCdeclareResult},
+			second_Cexpert_id = #{secondCexpertId},
+			second_Cdeclare_result = #{secondCdeclareResult},
+			first_Zexpert_id = #{firstZexpertId},
+			first_Zdeclare_result = #{firstZdeclareResult},
+			second_Zexpert_id = #{secondZexpertId},
+			second_Zdeclare_result = #{secondZdeclareResult},
+			first_Fexpert_result = #{firstFexpertResult},
+			second_Fexpert_result = #{secondFexpertResult},
+			Fdeclare_result = #{fdeclareResult},
+			util_feedback = #{utilFeedback},
+			company_name = #{companyName},
+			company_id = #{companyId},
+			register_main_specialty = #{registerMainSpecialty},
+			register_auxiliary_specialty = #{registerAuxiliarySpecialty},
+			cancel_type = #{cancelType},
+			remarks = #{remarks},
+			hg_return = #{hgReturn},
+			return_reason = #{returnReason},
+			local_receive_return_reason = #{receiveReason},
+			impropriety = #{impropriety},
+			office_name = #{officeName},
+			hg_expert_id = #{hgExpertId},
+			return_type = #{returnType},
+			H_declare_result = #{HdeclareResult},
+			Zdeclare_result = #{zdeclareResult},
+			fy_advice = #{fyAdvice},
+			if_finish = #{ifFinish}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateDelcareDate">
+		UPDATE person_record SET
+			declare_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+
+
+	
+	<update id="delete">
+		UPDATE person_record SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getAutoNumber" resultType="Counselor">
+		SELECT 
+			a.qty AS qty
+		FROM autoNumber a
+		WHERE a.batchno = #{batchNo} and a.officecode = #{officeCode}
+	</select>
+	<update id="updateAutoNumber">
+		UPDATE autoNumber SET
+		qty = qty+1
+		WHERE batchno = #{batchNo} and officecode = #{officeCode}
+	</update>
+
+	<select id="findBatchIdById" resultType="String">
+		SELECT GROUP_CONCAT(declare_type)
+			FROM person_record
+			WHERE batch_id = (
+			select batch_id from person_record where id=#{id}
+			)
+			and del_flag='0'
+			order by declare_type
+	</select>
+	<delete id="deleteByBatchId">
+		update person_record set del_flag = '1' where batch_id = #{batchId}
+	</delete>
+	
+</mapper>

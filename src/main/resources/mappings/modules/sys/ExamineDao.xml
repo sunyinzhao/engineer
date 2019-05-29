@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.ExamineDao">
+	
+	<sql id="examineColumns">
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_ids,
+		a.name,
+		a.href,
+		a.target,
+		a.icon,
+		a.sort,
+		a.is_show,
+		a.permission,
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		p.name AS "parent.name",
+		a.predict,
+		a.real_value,
+		a.result_type,
+		a.result,
+		a.apply_no,
+		a.reject_type,
+		a.kind,
+		a.type,
+		a.kindOf
+
+	</sql>
+
+	<sql id="examineColumns1">
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_ids,
+		a.name,
+		a.href,
+		a.target,
+		a.icon,
+		a.sort,
+		a.is_show,
+		a.permission,
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		p.name AS "parent.name",
+		a.predict,
+		a.real_value,
+		a.result_type,
+		a.result,
+		a.apply_no,
+		a.reject_type,
+		e.result AS realValue
+
+	</sql>
+	
+	<sql id="examineJoins">
+		LEFT JOIN sys_examine p ON p.id = a.parent_id
+    </sql>
+	
+	<select id="get" resultType="Examine">
+		SELECT
+			<include refid="examineColumns"/>
+		FROM sys_examine a
+		<include refid="examineJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findAllList" resultType="Examine">
+		SELECT
+			<include refid="examineColumns"/>
+		FROM sys_examine a
+		<include refid="examineJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.sort
+	</select>
+
+	<!--合规展示树的颜色-->
+	<select id="findAllNewExamine" resultType="Examine">
+		SELECT
+		<include refid="examineColumns1"/>
+			FROM
+		sys_examine AS a
+		<include refid="examineJoins"/>
+		LEFT JOIN (
+			SELECT
+				*
+			FROM
+		association_examine e
+				WHERE
+			declare_apply_id = #{declareRecordId}
+		) AS e ON a.id = e.sys_examine_id
+				where a.del_flag='0'
+		ORDER BY a.sort
+	</select>
+
+    <!--去掉甲综三个节点-->
+    <select id="outNode" resultType="Examine">
+        SELECT
+        <include refid="examineColumns"/>
+        FROM sys_examine a
+        <include refid="examineJoins"/>
+        WHERE a.del_flag = '0'
+        AND a.id not in('a3db21b01e2941bcaa0ce454ddf04fcf','3736bb1bdafb4598a4744cac43526d1a','e625ea2409a240a0b62056e706e68903')
+        ORDER BY a.sort
+    </select>
+
+	<!--专家展示树的颜色-->
+	<select id="findNewExpertExamine" resultType="Examine">
+		SELECT
+		<include refid="examineColumns1"/>
+		FROM
+		sys_examine AS a
+		<include refid="examineJoins"/>
+		LEFT JOIN (
+		SELECT
+		*
+		FROM
+		expert_examine e
+		WHERE
+		declare_record_id = #{declareRecordId}
+		AND e.specialty_id = #{specialtyId}
+		AND e.kind = #{kind}
+		) AS e ON a.id = e.sys_examine_id
+		where a.del_flag='0'
+		ORDER BY a.sort
+	</select>
+
+
+	
+	<select id="findByParentIdsLike" resultType="Examine">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM sys_examine a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE #{parentIds}
+		ORDER BY a.sort
+	</select>
+
+
+	<select id="findExamineRootId" resultType="Examine">
+		SELECT
+		<include refid="examineColumns"/>
+		FROM sys_examine a
+		<include refid="examineJoins"/>
+		WHERE a.parent_id = #{parentId}
+		AND		a.kind = #{kind}
+	</select>
+
+	<select id="findExamineByParentId" resultType="Examine">
+		SELECT
+		<include refid="examineColumns"/>
+		FROM sys_examine a
+		<include refid="examineJoins"/>
+		WHERE a.parent_ids like CONCAT('%', #{id}, '%')
+	</select>
+
+	<!--根据名字查找实体-->
+	<select id="getName" resultType="Examine">
+		SELECT
+		<include refid="examineColumns"/>
+		FROM sys_examine a
+		<include refid="examineJoins"/>
+		WHERE a.name = #{name}
+	</select>
+
+	
+	<!--<select id="findByUserId" resultType="Examine">
+		SELECT DISTINCT
+			<include refid="examineColumns"/>
+		FROM sys_examine a
+		LEFT JOIN sys_examine p ON p.id = a.parent_id
+		JOIN sys_role_examine rm ON rm.examine_id = a.id
+		JOIN sys_role r ON r.id = rm.role_id AND r.useable='1'
+		JOIN sys_user_role ur ON ur.role_id = r.id
+		JOIN sys_user u ON u.id = ur.user_id AND u.id = #{userId}
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND r.del_flag = #{DEL_FLAG_NORMAL} AND u.del_flag = #{DEL_FLAG_NORMAL} 
+		ORDER BY a.sort
+	</select>-->
+	
+	<insert id="insert">
+		INSERT INTO sys_examine(
+			id, 
+			parent_id, 
+			parent_ids, 
+			name, 
+			href, 
+			target, 
+			icon, 
+			sort, 
+			is_show, 
+			permission, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks,
+			del_flag,
+			predict,
+			real_value,
+			result_type,
+			result,
+			apply_no,
+			reject_type,
+			kind,
+			type,
+			kindOf
+		) VALUES (
+			#{id}, 
+			#{parent.id}, 
+			#{parentIds}, 
+			#{name}, 
+			#{href}, 
+			#{target}, 
+			#{icon}, 
+			#{sort}, 
+			#{isShow}, 
+			#{permission}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag},
+			#{predict},
+			#{realValue},
+			#{resultType},
+			#{result},
+			#{applyNo},
+			#{rejectType},
+			#{kind},
+			#{type},
+			#{kindOf}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_examine SET
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}, 
+			name = #{name}, 
+			href = #{href}, 
+			target = #{target}, 
+			icon = #{icon}, 
+			sort = #{sort}, 
+			is_show = #{isShow}, 
+			permission = #{permission}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks},
+			predict = #{predict},
+			real_value = #{realValue},
+			result_type = #{resultType},
+			result = #{result},
+			apply_no  = #{applyNo},
+			reject_type =#{rejectType},
+			kind = #{kind},
+			type = #{type},
+			kindOf= #{kindOf}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE sys_examine SET
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSort">
+		UPDATE sys_examine SET
+			sort = #{sort}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_examine SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+					<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
+	</update>
+	
+</mapper>

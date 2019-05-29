@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.CounselorAttachmentDao">
+    
+	<sql id="counselorAttachmentColumns">
+		a.id AS "id",
+		a.file_name AS "fileName",
+		a.type AS "type",
+		a.file_type AS "fileType",
+		a.path AS "path",
+		a.pid AS "pid",
+		a.table_id AS "tableId",
+		a.table_type AS "tableType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.back_expert_id AS "backExpertId",
+		a.type_num AS "typeNum"
+	</sql>
+	
+	<sql id="counselorAttachmentJoins">
+	</sql>
+    
+	<select id="get" resultType="CounselorAttachment">
+		SELECT 
+			<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CounselorAttachment">
+		SELECT 
+			<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		<where>
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="tableId != null and tableId != ''">
+				AND a.table_id = #{tableId}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+		</where>
+		ORDER BY create_date
+	</select>
+
+	
+	<select id="findAllList" resultType="CounselorAttachment">
+		SELECT 
+			<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		<where>
+
+
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			<!--	ORDER BY a.update_date DESC -->
+				ORDER BY  CONVERT(a.type,signed) ASC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findNewList" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE
+		(a.pid = #{personId} and a.table_type = #{tableType})
+		or
+		(a.table_id = #{tableId})
+	</select>
+
+	<select id="findAllAttach" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE
+		a.pid = #{personId} and a.table_type = #{type}
+	</select>
+
+
+	<!--根据类型集合查询list-->
+	<select id="findListByType" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE
+		a.table_id = #{tableId}
+		and a.type
+		in
+		<foreach collection="types" item="type" open="(" close=")" separator=",">
+			#{type}
+		</foreach>
+		ORDER BY create_date ASC
+	</select>
+
+	<!--根据类型集合查询list-->
+	<select id="findListByTypeMap" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE
+		a.pid = #{pid}
+		and a.type
+		in
+		<foreach collection="types" item="type" open="(" close=")" separator=",">
+			#{type}
+		</foreach>
+		ORDER BY create_date ASC
+	</select>
+	<!-- 根据id删除个人图片信息 -->
+	<update id="deletePicture">
+		UPDATE counselor_attachment SET
+		pid = '',
+		file_name = ''
+		WHERE
+		id = #{id}
+	</update>
+
+	
+	<insert id="insert">
+		INSERT INTO counselor_attachment(
+			id,
+			file_name,
+			type,
+			file_type,
+			path,
+			pid,
+			table_id,
+			table_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			back_expert_id,
+			type_num
+		) VALUES (
+			#{id},
+			#{fileName},
+			#{type},
+			#{fileType},
+			#{path},
+			#{pid},
+			#{tableId},
+			#{tableType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{backExpertId},
+			#{typeNum}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE counselor_attachment SET
+			file_name = #{fileName},
+			type = #{type},
+			file_type = #{fileType},
+			path = #{path},
+			pid = #{pid},
+			table_id = #{tableId},
+			table_type = #{tableType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			back_expert_id = #{backExpertId}
+		WHERE  id = #{id}
+
+	</update>
+	
+
+	<update id="delete">
+		DELETE FROM counselor_attachment
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE table_id = #{tableId}
+			</otherwise>
+		</choose>
+	</update>
+
+
+	<select id="findJpgList" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+				<!-- 去除企业反馈的附件 -->
+
+				<if test="type ==null or type ==''">
+					AND a.type != '0'
+				</if>
+			</if>
+
+			<if test="type !=null and type !=''">
+				AND a.type = #{type}
+			</if>
+		</where>
+	</select>
+
+	<select id="findMixJpg" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in (13,12,17)
+
+		</where>
+	</select>
+
+	<select id="findPPPJpg" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type ='7'
+
+		</where>
+	</select>
+
+	<select id="findType1" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('19','13')
+
+		</where>
+	</select>
+
+	<select id="findType2" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('14','13')
+
+		</where>
+	</select>
+
+	<select id="findType3" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('15','14','16')
+
+		</where>
+	</select>
+
+	<select id="findType4" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('12','15','16','17')
+
+		</where>
+	</select>
+
+	<select id="findType5" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+			</if>
+			AND a.type in ('12','15','16','17','18')
+
+		</where>
+	</select>
+
+	<select id="findSysAttachmentBySelectType" resultType="CounselorAttachment">
+		SELECT
+		s.id AS id,
+		e.type AS type
+		FROM
+		counselor_attachment e
+		INNER JOIN sys_attachment s ON e.id = s.pid
+		WHERE
+		e.pid =  #{pid}
+		<choose>
+			<when  test="type eq '1'.toString()  ">
+				AND e.type in ('19','13')
+			</when>
+			<when  test="type eq '2'.toString()  ">
+				AND e.type in ('14','13')
+			</when>
+			<when  test="type eq '3'.toString()  ">
+				AND e.type in ('15','14','16')
+			</when>
+			<when  test="type eq '4'.toString()  ">
+				AND e.type in ('12','15','16','17')
+			</when>
+			<when  test="type eq '5'.toString()  ">
+				AND e.type in ('12','15','16','17','18')
+			</when>
+			<otherwise>
+				AND 1 =2
+			</otherwise>
+		</choose>
+		order by e.type asc,s.file_name asc
+	</select>
+
+
+	<!--findListBytype-->
+	<select id="findListBytype" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+				<!-- 去除企业反馈的附件 -->
+				AND a.type != '0'
+			</if>
+		</where>
+		order by a.type asc
+	</select>
+
+	<select id="findListByTypeAndPid" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<where>
+			<if test="pid !=null and pid !=''">
+				AND a.pid = #{pid}
+				<!-- 去除企业反馈的附件 -->
+				AND a.table_type= '5'
+			</if>
+		</where>
+	</select>
+
+
+
+	<!--查询出所有的新附件-->
+
+	<select id="findSysAttachment" resultType="CounselorAttachment">
+		SELECT
+		s.id AS id,
+		e.type AS type
+		FROM
+		counselor_attachment e
+		INNER JOIN sys_attachment s ON e.id = s.pid
+		WHERE
+		e.pid =  #{declareRecordId}
+		<!-- 去除企业反馈的附件 -->
+
+		<choose>
+			<when  test="type !=null and type !=''">
+				AND e.type = #{type}
+			</when>
+			<otherwise>
+				AND e.type != '0'
+			</otherwise>
+		</choose>
+		order by e.type asc,s.file_name asc
+	</select>
+	
+</mapper>

@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.counselor.dao.PersonExpertDao">
+
+	<sql id="counselorColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.expert_id AS "expertId",
+		a.type AS "type",
+		a.items AS "items",
+		a.item_text AS "itemText",
+		a.second_items AS "secondItems",
+		a.second_item_text AS "secondItemText",
+		a.examine_id AS "examineId",
+		a.examine_type AS "examineType",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.indexNo AS "index",
+		b.label AS "name"
+	</sql>
+
+	<sql id="counselorColumns1">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.expert_id AS "expertId",
+		a.type AS "type",
+		a.items AS "items",
+		a.item_text AS "itemText",
+		a.second_items AS "secondItems",
+		a.second_item_text AS "secondItemText",
+		a.examine_id AS "examineId",
+		a.examine_type AS "examineType",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.indexNo AS "index"
+	</sql>
+
+    
+	<select id="get" resultType="PersonExpert">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_expert a
+		WHERE a.id = #{id}
+	</select>
+
+
+
+	<select id="findList" resultType="PersonExpert">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_expert a,sys_dict b
+		<where>
+			<if test="examineId!=null and examineId != ''">
+				and examine_id = #{examineId}
+			</if>
+			<if test="recordId!=null and recordId != ''">
+				and record_id = #{recordId}
+			</if>
+			<if test="examineType!=null and examineType != ''">
+				and examine_type = #{examineType}
+			</if>
+			<!--12.11 查询出items-->
+			<if test="items!=null and items != ''">
+				and items = #{items}
+			</if>
+			and b.type = 'expert_type'
+			and b.value = a.type
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.indexNo asc,a.type asc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findNewList" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a
+		<where>
+			<if test="examineId!=null and examineId != ''">
+				and examine_id = #{examineId}
+			</if>
+			<if test="recordId!=null and recordId != ''">
+				and record_id = #{recordId}
+			</if>
+			<if test="examineType!=null and examineType != ''">
+				and examine_type = #{examineType}
+			</if>
+			<if test="type!=null and type != ''">
+				and type = #{type}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="PersonExpert">
+		SELECT 
+			<include refid="counselorColumns"/>
+		FROM person_expert a
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+	<!--查找是否存在同样的数据-->
+	<select id="findSame" resultType="int">
+		SELECT
+		count(1)
+		FROM person_expert a
+		<where>
+			AND a.record_id = #{recordId}
+			AND a.examine_type = #{examineType}
+		</where>
+	</select>
+
+
+	<!--查找是否存在同样的数据-->
+	<select id="findNotRelev" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM educationtbl WHERE main NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+
+	<select id="findNotRelev35" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM educationtbl WHERE main NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNotRelev36" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM educationtbl WHERE assist NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNotRelev37" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM title_certificate WHERE main NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNotRelev38" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM title_certificate WHERE assist NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNotRelev39" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM specialty_train WHERE main NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNotRelev40" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a WHERE record_id IN (
+		SELECT person_record_id FROM person_record_table WHERE id IN (
+		SELECT table_id FROM specialty_train WHERE assist NOT IN (
+		SELECT id FROM person_expert WHERE type = #{type}
+		)
+		)
+		AND type = '1'
+		)
+		AND type = #{type}
+		AND examine_type = '4'
+	</select>
+
+
+
+	<select id="findSameList" resultType="PersonExpert">
+		select record_id,type
+		from person_expert
+		where examine_type = '3' and type &lt; 35
+		GROUP BY record_id,type
+		HAVING count(type)>1
+		limit 10000
+	</select>
+
+	<select id="findNewSameList" resultType="PersonExpert">
+		select record_id,type,count(type)
+		from person_expert
+		where examine_type = '3' and type >= 35
+		GROUP BY record_id,type,indexNo
+		HAVING count(type)>1 and count(indexNo)>1
+		limit 10000
+	</select>
+
+
+	<!--查找不符合的值-->
+	<select id="findFailList" parameterType="map" resultType="PersonExpert">
+		SELECT
+			b.label as name,a.items as items,a.item_text AS "itemText",a.second_items as secondItems,a.second_item_text as "secondItemText", e.name as 'examineId',a.type,a.indexNo as 'index'
+		FROM person_expert a ,sys_dict b,sys_examine e
+		<where>
+		  AND a.examine_type = #{examineType}
+		  AND a.record_id = #{recordId}
+		  AND	(a.items != #{items} or a.second_items != #{items})
+			AND b.type = 'expert_type'
+			AND a.type = b.value
+            AND e.id = a.examine_id
+            AND a.type not in
+            <foreach collection="types" item="type" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+            ORDER BY e.id DESC
+		</where>
+	</select>
+
+
+	<!--查找不符合的值-->
+	<select id="findFailList1" parameterType="map" resultType="PersonExpert">
+		SELECT
+		b.label as name,a.items as "items",a.item_text AS "itemText",e.name as 'examineId',a.type,a.indexNo as 'index',
+		a.record_id as 'recordId',a.id,
+		f.back_memo as "feedback.backMemo",
+		f.id as "feedback.id",
+		f.person_record_id as "feedback.personRecordId",
+		f.expert_id as "feedback.expertId",
+		f.back_time as "feedback.backTime",
+		f.create_by AS "feedback.createBy.id",
+		f.create_date AS "feedback.create_date",
+		f.update_by AS "feedback.updateBy.id",
+		f.update_date AS "feedback.update_date"
+		FROM person_expert a LEFT JOIN feedback f on f.expert_id = a.id,sys_dict b,sys_examine e
+		<where>
+			AND a.examine_type = #{examineType}
+			AND a.record_id = #{recordId}
+			AND	a.items != #{items}
+			AND b.type = 'expert_type'
+			AND a.type = b.value
+			AND e.id = a.examine_id
+			AND a.type not in
+			<foreach collection="types" item="type" open="(" close=")" separator=",">
+				#{type}
+			</foreach>
+			ORDER BY e.id DESC
+		</where>
+	</select>
+
+    <!--根据types 查找到不同的结果集-->
+    <select id="findOtherList" parameterType="map" resultType="PersonExpert">
+        SELECT
+        b.label as name,a.items as "items",a.item_text AS "itemText",e.name as 'examineId',a.type,a.indexNo as 'index',
+		a.record_id as 'recordId',a.id,
+		f.back_memo as "feedback.backMemo",
+		f.id as "feedback.id",
+		f.person_record_id as "feedback.personRecordId",
+		f.expert_id as "feedback.expertId",
+		f.back_time as "feedback.backTime",
+		f.create_by AS "feedback.createBy.id",
+		f.create_date AS "feedback.create_date",
+		f.update_by AS "feedback.updateBy.id",
+		f.update_date AS "feedback.update_date"
+        FROM person_expert a LEFT JOIN feedback f on f.expert_id = a.id,sys_dict b,sys_examine e
+        <where>
+            AND a.examine_type = #{examineType}
+            AND a.record_id = #{recordId}
+            AND b.type = 'expert_type'
+            AND a.type = b.value
+            AND e.id = a.examine_id
+			AND (a.items != '1'||a.second_items != '1')
+            AND a.type in
+            <foreach collection="types" item="type" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+            ORDER BY a.indexNo ASC,a.type ASC
+        </where>
+    </select>
+
+
+  	<!--根据不真实的所有项,查询这个批次下,所有的这些type,进行修改item-->
+
+	<select id="findNotReal" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a
+		WHERE
+		type in
+			(
+		SELECT type
+		FROM person_expert
+		WHERE items like '%99%'
+		AND record_id = #{id}
+		AND examine_type = '4'
+		)
+		AND record_id in (
+		SELECT
+		id
+		FROM person_record
+		WHERE batch_id = #{batchId}
+		AND del_flag = '0'
+		AND id != #{id}
+		)
+		AND examine_type = '4'
+	</select>
+
+	<select id="findNot99List" resultType="PersonExpert">
+		SELECT
+		<include refid="counselorColumns1"/>
+		FROM person_expert a
+		WHERE
+		record_id = #{recordId}
+		AND items like '%99%'
+		AND examine_type = '4'
+	</select>
+
+
+
+	<insert id="insert">
+		INSERT INTO person_expert(
+			id,
+			record_id,
+			expert_id,
+			type,
+			item_text,
+			examine_id,
+			examine_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			indexNo
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{expertId},
+			#{type},
+			#{itemText},
+			#{examineId},
+			#{examineType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{index}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE person_expert SET
+			record_id = #{recordId},
+			expert_id = #{expertId},
+			type = #{type},
+			items = #{items},
+			item_text = #{itemText},
+			second_items = #{secondItems},
+			second_item_text = #{secondItemText},
+			examine_id = #{examineId},
+			examine_type = #{examineType},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			indexNo = #{index}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE person_expert SET
+		del_flag = '1'
+		WHERE id = #{id}
+	</update>
+
+
+	<update id="deleteList">
+		DELETE FROM person_expert
+		WHERE id in
+		<foreach collection="allResult" open="(" close=")" separator="," index="index" item="item">
+		#{item}
+		</foreach>
+	</update>
+	
+</mapper>

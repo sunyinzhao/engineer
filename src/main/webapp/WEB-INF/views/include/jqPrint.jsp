@@ -1,0 +1,1 @@
+<script src="${ctxStatic}/jquery-print/jQuery.print.js" type="text/javascript"></script>

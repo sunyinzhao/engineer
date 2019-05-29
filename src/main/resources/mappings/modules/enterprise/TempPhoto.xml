@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.TempPhotoDao">
+	<!--根据身份证号查询-->
+	<select id="findByCardNum" parameterType="String" resultType="TempPhoto">
+		SELECT
+			name,
+			cardnum
+		FROM
+			temp_photo
+		WHERE
+			cardnum = #{cardNum}
+	</select>
+
+	<select id="findByNameAndCard" parameterType="String" resultType="Integer">
+		select
+			  count(1)
+	  	FROM temp_photo
+	  	WHERE name=#{name} AND cardnum = #{cardNum}
+
+	</select>
+	<select id="findByCardAndYear" resultType="Integer">
+		select
+			  count(1)
+	  	FROM temp_photo
+	  	WHERE  cardnum = #{cardNum} AND year =#{year}
+
+	</select>
+</mapper>

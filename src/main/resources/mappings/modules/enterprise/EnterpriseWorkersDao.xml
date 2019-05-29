@@ -1,0 +1,3392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseWorkersDao">
+    
+	<sql id="enterpriseWorkersColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.certificates_type AS "certificatesType",
+		a.certificates_num AS "certificatesNum",
+		a.education AS "education",
+		a.mobile AS "mobile",
+		a.title AS "title",
+		a.specialty AS "specialty",
+		a.school AS "school",
+		a.nationality AS "nationality",
+		a.graduation_date AS "graduationDate",
+		a.entry_date AS "entryDate",
+		a.work_resume AS "workResume",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.engage_specialty AS "engageSpecialty",
+		a.age AS "age",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.phone AS "phone",
+		a.retire AS "retire",
+		a.type AS "type",
+		a.title_specialty as "titleSpecialty",
+		a.file_no as "fileNo",
+		a.company_name as "companyName",
+		a.review_company as "reviewCompany",
+		a.z_specialty as "zSpecialty",
+		a.f_specialty as "fSpecialty",
+		a.company_contact as "companyContact",
+		a.company_area as "companyArea",
+		a.company_tel as "companyTel",
+		a.getyear as "getyear",
+		a.professioncard_num as "professioncardNum",
+		a.isregister as isRegister,
+		a.isvalid AS "isValid",
+		a.email,
+		a.picture_url AS "pictureUrl",
+		a.picture_name AS "pictureName",
+		a.is_first as "isFirst",
+		a.is_freeze as "isFreeze",
+		a.freeze_date as "freezeDate",
+		a.freeze_cycle as "freezeCycle",
+		a.picture_lock as "pictureLock",
+		a.valid_date as "validDate",
+		a.aollow_date as "aollowDate"
+	</sql>
+
+	<sql id="enterpriseWorkersColumns3">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.certificates_type AS "certificatesType",
+		a.certificates_num AS "certificatesNum",
+		a.education AS "education",
+		a.mobile AS "mobile",
+		a.title AS "title",
+		a.specialty AS "specialty",
+		a.school AS "school",
+		a.nationality AS "nationality",
+		a.graduation_date AS "graduationDate",
+		a.entry_date AS "entryDate",
+		a.work_resume AS "workResume",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.engage_specialty AS "engageSpecialty",
+		a.age AS "age",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.phone AS "phone",
+		a.retire AS "retire",
+		a.type AS "type",
+		a.title_specialty as "titleSpecialty",
+		a.file_no as "fileNo",
+		a.company_name as "companyName",
+		a.review_company as "reviewCompany",
+		a.z_specialty as "zSpecialty",
+		a.f_specialty as "fSpecialty",
+		a.company_contact as "companyContact",
+		a.company_area as "companyArea",
+		a.company_tel as "companyTel",
+		a.getyear as "getyear",
+		a.professioncard_num as "professioncardNum",
+		a.isvalid AS "isValid",
+		a.picture_url AS "pictureUrl",
+		a.picture_name AS "pictureName",
+		a.is_first as "isFirst",
+		a.is_freeze as "isFreeze",
+		a.freeze_date as "freezeDate",
+		a.freeze_cycle as "freezeCycle",
+		a.aollow_date as "aollowDate",
+		c.name as "officeName",
+		a.picture_lock as "pictureLock"
+	</sql>
+
+    <sql id="enterpriseWorkersColumns1">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.certificates_type AS "certificatesType",
+		a.certificates_num AS "certificatesNum",
+		a.education AS "education",
+		a.mobile AS "mobile",
+		a.title AS "title",
+		d.specialty_type AS "specialty",
+		a.school AS "school",
+		a.nationality AS "nationality",
+		a.graduation_date AS "graduationDate",
+		a.entry_date AS "entryDate",
+		a.work_resume AS "workResume",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.engage_specialty AS "engageSpecialty",
+		a.age AS "age",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.phone AS "phone",
+		a.retire AS "retire",
+		a.type AS "type",
+		a.title_specialty as "titleSpecialty",
+		a.file_no as "fileNo",
+		a.company_name as "companyName",
+		a.review_company as "reviewCompany",
+		a.z_specialty as "zSpecialty",
+		a.f_specialty as "fSpecialty",
+		a.company_contact as "companyContact",
+		a.company_area as "companyArea",
+		a.company_tel as "companyTel",
+		a.picture_lock as "pictureLock"
+	</sql>
+	
+	<sql id="declareApplyPersonWorkersColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.certificates_type AS "certificatesType",
+		a.certificates_num AS "certificatesNum",
+		a.education AS "education",
+		a.mobile AS "mobile",
+		a.title AS "title",
+		d.specialty_type AS "specialty",
+		a.school AS "school",
+		a.nationality AS "nationality",
+		a.graduation_date AS "graduationDate",
+		a.entry_date AS "entryDate",
+		a.work_resume AS "workResume",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.engage_specialty AS "engageSpecialty",
+		a.age AS "age",
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.phone AS "phone",
+		a.retire AS "retire",
+		a.type AS "type",
+		a.title_specialty as "titleSpecialty",
+		a.file_no as "fileNo",
+		a.company_name as "companyName",
+		a.review_company as "reviewCompany",
+		a.z_specialty as "zSpecialty",
+		a.f_specialty as "fSpecialty",
+		a.company_contact as "companyContact",
+		a.company_area as "companyArea",
+		a.company_tel as "companyTel",
+		a.picture_lock as "pictureLock"
+	</sql>
+
+	<sql id="enterpriseWorkersColumns2">
+		a.id AS "id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.nation AS "nation",
+		a.certificates_type AS "certificatesType",
+		a.certificates_num AS "certificatesNum",
+		a.education AS "education",
+		a.mobile AS "mobile",
+		a.title AS "title",
+		a.specialty AS "specialty",
+		a.school AS "school",
+		a.nationality AS "nationality",
+		a.graduation_date AS "graduationDate",
+		a.entry_date AS "entryDate",
+		a.work_resume AS "workResume",
+		a.register_main_specialty AS "registerMainSpecialty",
+		a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+		a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+		a.register_certificate_num AS "registerCertificateNum",
+		a.engage_specialty AS "engageSpecialty",
+		<!--用于代替退休人-->
+		d.retire AS "age",
+
+		a.pid AS "pid",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.phone AS "phone",
+		a.retire AS "retire",
+		a.type AS "type",
+		a.title_specialty as "titleSpecialty",
+		a.file_no as "fileNo",
+		a.company_name as "companyName",
+		a.review_company as "reviewCompany",
+		a.z_specialty as "zSpecialty",
+		a.f_specialty as "fSpecialty",
+		a.company_contact as "companyContact",
+		a.company_area as "companyArea",
+		a.company_tel as "companyTel",
+		a.picture_lock as "pictureLock"
+	</sql>
+	
+	<sql id="enterpriseWorkersJoins">
+	</sql>
+    
+	<select id="get" resultType="EnterpriseWorkers">
+		SELECT 
+			<include refid="enterpriseWorkersColumns"/>
+		FROM enterprise_workers a
+		<include refid="enterpriseWorkersJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+
+	<select id="getByNameNum" resultType="EnterpriseWorkers">
+		SELECT
+		<include refid="enterpriseWorkersColumns3"/>
+		FROM enterprise_workers a LEFT JOIN sys_user b on b.id = a.pid LEFT JOIN sys_office c on c.id = b.office_id
+		<include refid="enterpriseWorkersJoins"/>
+		<where>
+			<if test="name != null and name != ''">
+				AND a.name = #{name} 
+			</if>
+			<if test="cardNumber != null and cardNumber != ''">
+				AND a.certificates_num = #{cardNumber} 
+			</if>
+		</where>
+	</select>
+
+	<select id="getAddEmail" resultType="EnterpriseWorkers">
+					select
+			b.name as name,b.sex,b.nation,b.certificates_num as certificatesNum,b.certificates_type as certificatesType,
+			b.entry_date as entryDate,b.phone,b.getyear,b.professioncard_num as professioncardNum,
+			(
+			select
+			u.email
+			from
+			sys_user u
+			where u.name =
+			(
+			select
+			a.name
+			from
+			enterprise_workers a
+			WHERE
+			a.id = #{personId}
+			)
+			and u.card_number =
+			(
+			select
+			a.certificates_num
+			from
+			enterprise_workers a
+			WHERE
+			a.id = #{personId}
+			)and u.del_flag = '0'
+			) as email
+			from
+			enterprise_workers b
+			WHERE
+			b.id = #{personId}
+	</select>
+	
+	<select id="findList" resultType="EnterpriseWorkers">
+		SELECT 
+			<include refid="enterpriseWorkersColumns"/>
+		FROM enterprise_workers a
+		<include refid="enterpriseWorkersJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+
+			<if test="certificatesNum != null and certificatesNum != ''">
+				AND a.certificates_num = #{certificatesNum}
+			</if>
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+
+			<if test="registerMainSpecialty != null and registerMainSpecialty != ''">
+				AND (a.register_main_specialty = #{registerMainSpecialty} OR a.register_auxiliary_specialty = #{registerMainSpecialty})
+			</if>
+			
+			<if test="isValid != null and isValid != ''">
+				AND a.isvalid = #{isValid}
+			</if>
+			<if test="isFreeze != null and isFreeze != ''">
+				AND a.is_freeze = #{isFreeze}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<!--寻找文件路径最大的值-->
+	<select id="findMaxNo" resultType="Integer">
+		SELECT
+			max(a.file_no)
+		FROM enterprise_workers a
+		<where>
+			a.pid = #{pid}
+		</where>
+	</select>
+
+	<!--查找有图片的人员列表-->
+	<!--<select id="findListByAttachment" resultType="EnterpriseWorkers">
+		SELECT
+		distinct a.id,
+		<include refid="enterpriseWorkersColumns"/>
+		FROM enterprise_workers a ,enterprise_attachment e,declare_apply_person p
+		<where>
+				<if test="type != null and type != ''">
+					AND e.type = #{type}
+				</if>
+				<if test="pid != null and pid != ''">
+					AND a.pid = #{pid}
+				</if>
+					AND a.id = e.pid
+					and p.pid = #{declareRecordId}
+					and p.person_id = a.id
+		</where>
+		<choose>
+		<when test="type != null and type != ''">
+			ORDER BY e.type
+		</when>
+		</choose>
+	</select>-->
+	
+	<select id="findDeclareApplyPerson" resultType="EnterpriseWorkers">
+		SELECT
+		<include refid="declareApplyPersonWorkersColumns"/>
+		FROM declare_apply_person d LEFT JOIN enterprise_workers a on d.person_id = a.id 
+		<where>
+			<if test="pid != null and pid != ''">
+				AND d.pid = #{pid}
+			</if>
+		</where>
+		ORDER BY d.specialty_type 
+	</select>
+
+
+	<select id="findListBySpecialty" resultType="EnterpriseWorkers">
+		SELECT
+		<include refid="enterpriseWorkersColumns1"/>
+		FROM enterprise_workers a left join declare_apply_person d on a.id = d.person_id
+		where
+				a.pid = #{pid}
+		and 	d.pid = #{declareRecordId}
+		and		d.specialty_type=#{specialtyType}
+		ORDER BY a.type 
+	</select>
+
+    <select id="findListByAttachment" resultType="EnterpriseWorkers">
+        SELECT
+        <include refid="enterpriseWorkersColumns1"/>
+        FROM declare_apply_person d
+		LEFT JOIN enterprise_workers a on d.person_id = a.id
+        <where>
+            <if test="declareRecordId != null and declareRecordId != ''">
+                AND d.pid = #{declareRecordId}
+            </if>
+			<if test="retire != null and retire != ''">
+				AND a.retire = #{retire}
+			</if>
+            AND d.type = '4'
+        </where>
+        ORDER BY d.specialty_type
+    </select>
+<!--     查询出证书附件 包含职称证书、高级职称证书 -->
+     <select id="findListByAttachmentZhengShu" resultType="EnterpriseWorkers">
+        SELECT
+        <include refid="enterpriseWorkersColumns1"/>
+        FROM declare_apply_person d
+		LEFT JOIN enterprise_workers a on d.person_id = a.id
+        <where>
+            <if test="declareRecordId != null and declareRecordId != ''">
+                AND d.pid = #{declareRecordId}
+            </if>
+			<if test="retire != null and retire != ''">
+				AND a.retire = #{retire}
+			</if>
+            AND d.type = '4'
+        </where>
+        ORDER BY d.specialty_type
+    </select>
+
+	<select id="findOrder" resultType="EnterpriseWorkers">
+		
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		enterprise_workers a
+		where
+		a.pid = #{pid}
+		and
+		not EXISTS (
+		SELECT  w.id
+		FROM enterprise_workers w ,declare_apply_person p
+		WHERE
+		p.pid = #{declareRecordId}
+
+		and p.person_id = w.id
+		and a.id =w.id
+		and p.type = 4
+		)
+		and  EXISTS(
+		SELECT b.id
+		FROM enterprise_attachment t INNER JOIN enterprise_workers b ON t.pid =b.id 
+		AND b.pid = #{pid} 
+
+		WHERE b.id= a.id
+		)
+	
+	</select>
+
+	<select id="findAllList" resultType="EnterpriseWorkers">
+		SELECT 
+			<include refid="enterpriseWorkersColumns"/>
+		FROM enterprise_workers a
+		<include refid="enterpriseWorkersJoins"/>
+		<where>
+
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE
+				<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+
+			<if test="pid != null and pid != ''">
+				AND a.pid = #{pid}
+			</if>
+
+			<if test="registerMainSpecialty != null and registerMainSpecialty != ''">
+				AND (a.register_main_specialty = #{registerMainSpecialty} OR a.register_auxiliary_specialty = #{registerMainSpecialty})
+			</if>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findNewList3" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+			from enterprise_workers a LEFT JOIN declare_apply_person d on a.id = d.person_id
+				where
+				d.pid = #{declareRecordId}
+			and d.specialty_type = #{specialtyId}
+	</select>
+
+	<select id="findNewList4" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		enterprise_workers a LEFT JOIN declare_apply_person d on a.id = d.person_id
+		where
+		d.pid = #{declareRecordId}
+		and d.specialty_type =  #{specialtyId}
+		and a.retire = '1'
+	</select>
+
+
+	<select id="findNewList6" resultType="EnterpriseWorkers">
+		select
+			<include refid="enterpriseWorkersColumns"/>
+			from
+			enterprise_workers a
+			where a.type in ('1','2','3')
+			and a.pid = #{pid}
+		order by FIELD(a.type,'1','3','2')
+	</select>
+
+	<select id="findNewList7" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		enterprise_workers a
+			where
+			a.type in ('1','2','3')
+			and a.pid =#{pid}
+			and a.retire = '1'
+		order by FIELD(a.type,'1','3','2')
+	</select>
+
+	<select id="findNewList8" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+				from
+			enterprise_workers a LEFT JOIN declare_apply_person d on a.id = d.person_id
+			where
+			d.pid = #{declareRecordId}
+			and a.type = '1'
+			and d.specialty_type = #{specialtyId}
+	</select>
+
+	<select id="findNewList9" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+	declare_apply_person d,
+	enterprise_workers a
+		where
+	d.person_id=a.id AND
+	a.type in ('2','3') and
+  d.pid=#{declareRecordId} AND
+	d.specialty_type=#{specialtyId}
+	</select>
+
+	<select id="findNewList10" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+			from
+			declare_apply_person d,
+			enterprise_workers a
+			where
+		d.person_id=a.id AND
+		a.type in ('2','3') and
+ 		 d.pid=#{declareRecordId} AND
+		d.specialty_type=#{specialtyId}
+
+	</select>
+
+	<select id="findNewList11" resultType="EnterpriseWorkers">
+			SELECT
+		<include refid="enterpriseWorkersColumns"/>
+			FROM
+	enterprise_workers as a
+			where
+	a.pid=#{pid} AND
+	a.type in('1','2','3')
+		order by FIELD(a.type,'1','3','2')
+
+	</select>
+
+	<select id="findNewList12" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+			from
+	declare_apply_person d,
+	enterprise_workers a
+where
+	d.person_id=a.id AND
+	a.type ='1' and
+  d.pid=#{declareRecordId} AND
+	d.specialty_type=#{specialtyId}
+
+	</select>
+
+	<select id="findNewList13" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+			from
+	declare_apply_person d,
+	enterprise_workers a
+			where
+		d.person_id=a.id AND
+		a.type in ('2','3') and
+ 	d.pid=#{declareRecordId} AND
+	d.specialty_type=#{specialtyId}
+
+
+	</select>
+
+	<select id="findNewList14" resultType="EnterpriseWorkers">
+			SELECT
+		<include refid="enterpriseWorkersColumns"/>
+			FROM
+				enterprise_workers as a
+			where
+			a.pid=#{pid} AND
+			a.type in ('2','3')
+			and a.retire ='1'
+
+	</select>
+
+
+	<select id="findNewList16" resultType="EnterpriseWorkers">
+			select
+		<include refid="enterpriseWorkersColumns"/>
+			from
+			declare_apply_person d,
+			enterprise_workers a
+			where
+			d.person_id=a.id AND
+			a.type ='3' and
+			a.engage_specialty='40' and
+  			d.pid=#{declareRecordId} AND
+			d.specialty_type=#{specialtyId}
+
+	</select>
+
+	<select id="findNewList17" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		declare_apply_person d,
+		enterprise_workers a
+		where
+		d.person_id=a.id AND
+		d.type ='2' and
+		d.pid=#{declareRecordId}
+	</select>
+
+	<select id="findNewList18" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		enterprise_workers a LEFT JOIN declare_apply_person d on a.id = d.person_id
+		where
+		d.pid = #{declareRecordId}
+		and a.type = '1'
+		and d.specialty_type = '22'
+	</select>
+
+	<select id="findNewList21" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		declare_apply_person d,
+		enterprise_workers a
+		where
+		d.person_id=a.id AND
+		a.type in ('1','2','3') and
+		d.pid=#{declareRecordId} AND
+		d.specialty_type=#{specialtyId}
+		order by FIELD(a.type,'1','3','2')
+	</select>
+
+	<select id="findNewList22" resultType="EnterpriseWorkers">
+		select
+		<include refid="enterpriseWorkersColumns"/>
+		from
+		declare_apply_person d,
+		enterprise_workers a
+		where
+		d.person_id=a.id AND
+		(a.type in ('1','2')
+		or (a.type = '3'
+		and
+		a.engage_specialty='40'
+		)
+		)
+		and
+		d.pid=#{declareRecordId} AND
+		d.specialty_type=#{specialtyId}
+		order by FIELD(a.type,'1','3','2')
+
+	</select>
+
+	<select id="findNewList23" resultType="EnterpriseWorkers">
+		SELECT
+		<include refid="enterpriseWorkersColumns"/>
+		FROM
+		enterprise_workers as a
+		where
+		a.pid=#{pid} AND
+		a.type in ('1','2','3')
+		and a.retire ='1'
+		order by FIELD(a.type,'1','3','2')
+	</select>
+
+	<select id="getOfficeName" resultType="String">
+		SELECT
+		b.name
+		FROM
+		sys_user a LEFT JOIN sys_office b on a.office_id = b.id
+		where
+		a.name = #{name}
+		AND a.del_flag = '0'
+	</select>
+
+	<select id="getByTablePerson" resultType="EnterpriseWorkers">
+					select
+			a.id as "id",
+			a.name as "name",
+			a.sex as "sex",
+			a.nation as "nation",
+			a.isvalid as "isValid",
+			a.certificates_type as "certificatesType",
+			a.certificates_num as "certificatesNum",
+			a.entry_date as "entryDate",
+			a.phone as "phone",
+			a.getyear as "getyear",
+			a.professioncard_num as "professioncardNum",
+			a.company_name as "companyName",
+			b.backup_num as "registerCertificateNum",
+			b.job_company_name as "reviewCompany",
+			b.backup_type as "fileNo",
+			b.company_type as "companyArea",
+			b.register_main_specialty as "registerMainSpecialty",
+			b.register_auxiliary_specialty as "registerAuxiliarySpecialty",
+			b.id as "title",
+			b.confirm_five as "isRegister"
+			from
+			enterprise_workers a,person_register b
+			where
+			a.id = b.person_id
+			and a.id = #{personId}
+			and b.table_id = #{tableId}
+	</select>
+
+	<select id="getByPersonId" resultType="EnterpriseWorkers">
+			select
+			a.id as "id",
+			a.name as "name",
+			a.sex as "sex",
+			a.nation as "nation",
+			a.certificates_type as "certificatesType",
+			a.certificates_num as "certificatesNum",
+			a.entry_date as "entryDate",
+			a.phone as "phone",
+			a.getyear as "getyear",
+			a.professioncard_num as "professioncardNum",
+			a.company_name as "companyName",
+			a.picture_url as "pictureUrl",
+			a.picture_name as "pictureName",
+			a.isvalid as "isValid"
+			from
+			enterprise_workers a
+			where
+			a.id = #{personId}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO enterprise_workers(
+			id,
+			name,
+			sex,
+			nation,
+			certificates_type,
+			certificates_num,
+			education,
+			mobile,
+			title,
+			specialty,
+			school,
+			nationality,
+			graduation_date,
+			entry_date,
+			work_resume,
+			register_main_specialty,
+			register_auxiliary_specialty,
+			zi_xun_ye_wu_nian_xian,
+			register_certificate_num,
+			engage_specialty,
+			age,
+			pid,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			phone,
+			retire,
+			type,
+			title_specialty,
+			file_no,
+			company_name,
+			review_company,
+			z_specialty,
+			f_specialty,
+			company_contact,
+			company_area,
+			company_tel,
+			professioncard_num,
+			getyear,
+			is_first
+		) VALUES (
+			#{id},
+			#{name},
+			#{sex},
+			#{nation},
+			#{certificatesType},
+			#{certificatesNum},
+			#{education},
+			#{mobile},
+			#{title},
+			#{specialty},
+			#{school},
+			#{nationality},
+			#{graduationDate},
+			#{entryDate},
+			#{workResume},
+			#{registerMainSpecialty},
+			#{registerAuxiliarySpecialty},
+			#{ziXunYeWuNianXian},
+			#{registerCertificateNum},
+			#{engageSpecialty},
+			#{age},
+			#{pid},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{phone},
+			#{retire},
+			#{type},
+			#{titleSpecialty},
+			#{fileNo},
+			#{companyName},
+			#{reviewCompany},
+			#{zSpecialty},
+			#{fSpecialty},
+			#{companyContact},
+			#{companyArea},
+			#{companyTel},
+			#{professioncardNum},
+			#{getyear},
+			#{isFirst}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_workers SET 	
+			name = #{name},
+			sex = #{sex},
+			nation = #{nation},
+			certificates_type = #{certificatesType},
+			certificates_num = #{certificatesNum},
+			education = #{education},
+			mobile = #{mobile},
+			title = #{title},
+			specialty = #{specialty},
+			school = #{school},
+			nationality = #{nationality},
+			graduation_date = #{graduationDate},
+			entry_date = #{entryDate},
+			work_resume = #{workResume},
+			register_main_specialty = #{registerMainSpecialty},
+			register_auxiliary_specialty = #{registerAuxiliarySpecialty},
+			zi_xun_ye_wu_nian_xian = #{ziXunYeWuNianXian},
+			register_certificate_num = #{registerCertificateNum},
+			engage_specialty = #{engageSpecialty},
+			age = #{age},
+			pid = #{pid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			phone = #{phone},
+			retire = #{retire},
+			type = #{type},
+		  	title_specialty = #{titleSpecialty},
+		  	file_no = #{fileNo},
+		  	company_name = #{companyName},
+		  	review_company =  #{reviewCompany},
+			z_specialty  =  #{zSpecialty},
+			f_specialty  =  #{fSpecialty},
+			company_contact  =  #{companyContact},
+			company_area  =  #{companyArea},
+			company_tel  =  #{companyTel},
+			professioncard_num = #{professioncardNum},
+			getyear = #{getyear},
+			is_first = #{isFirst}
+		WHERE id = #{id}
+	</update>
+	
+		<update id="updateForAdmin">
+		UPDATE enterprise_workers SET 	
+			name = #{name},
+			sex = #{sex},
+			certificates_type = #{certificatesType},
+			certificates_num = #{certificatesNum},
+			mobile = #{mobile},
+			email = #{email},
+			age = #{age},
+			pid = #{pid},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+		  	company_name = #{companyName},
+		  	nation = #{nation},
+		  	isvalid = #{isValid},
+		  	is_freeze = #{isFreeze},
+		  	freeze_cycle = #{freezeCycle},
+		  	professioncard_num  = #{professioncardNum }
+		WHERE id = #{id}
+	</update>
+	<update id="delete">
+		DELETE FROM enterprise_workers
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateCompany">
+		update enterprise_workers w, sys_user u set w.pid = u.id where u.name = w.company_name and u.user_type = '7'
+	</update>
+	
+	<!-- 校检身份号是否存在添加的时候 -->
+	<select id="checkCardNumberAdd" resultType="EnterpriseWorkers">
+		SELECT 
+			certificates_num
+		FROM 
+			enterprise_workers e
+		WHERE 
+			e.certificates_num = #{certificatesNum} 
+	</select>
+	
+	<!-- 校检身份号是否存在 修改的时候-->
+	<select id="checkCardNumberUpdate" resultType="EnterpriseWorkers">
+		SELECT 
+			id
+		FROM 
+			enterprise_workers e
+		WHERE 
+			e.certificates_num = #{certificatesNum} 
+		AND
+			e.id != #{id}
+	</select>
+	
+	<!-- 根据申请单查询出技术力量中被选中人员的信息 -->
+	<select id="findListByDeclareId" resultType="EnterpriseWorkers">
+		
+		select 
+		<include refid="enterpriseWorkersColumns"/>
+		from enterprise_workers  a INNER JOIN
+			(select  person_id from declare_apply_person where pid=#{declareRecordId}) p
+		on a.id = p.person_id	
+	</select>
+	
+	<select id="findPersonApplyCount" resultType="EnterpriseWorkers">
+		 select  
+		 w.id AS "id",
+		        count(w.id) AS "selectStatus"
+		from 
+		declare_record  d 
+		INNER JOIN declare_apply_person p 
+		INNER JOIN enterprise_workers w 
+		INNER JOIN enterprise_attachment a
+		on d.id = p.pid
+		and p.person_id = w.id
+		and w.id = a.pid
+		where d.id =   #{declareRecordId}
+		and w.title IN ( '1','2','3','8','9','10','14' )
+		                AND a.type IN ('12','17') 
+		GROUP BY w.id
+		having count(w.id) = 1		
+		
+	</select>
+	
+	<!-- 根据证件号和姓名查询该用户信息,确认workers表中是否存在该用户-->
+	<select id = "findEnterpriseWorkers" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.nation,
+			w.certificates_type as certificatesType,
+			w.certificates_num as certificatesNum,
+			w.`name`,
+			w.mobile,
+			w.email,
+			w.isregister as isRegister,
+			w.isvalid as isValid,
+			w.company_name as companyName,
+			w.pid,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.create_date
+		FROM
+			enterprise_workers w
+		WHERE
+			w.certificates_num = #{certificatesNum}
+		AND
+			w.name = #{name}
+	</select>
+	
+	
+	<!-- 根据证件号和姓名查询该用户信息,确认workers表中是否存在该用户-->
+	<select id = "findByNameAndCertificatesNum" resultType="EnterpriseWorkers">
+		SELECT
+			<include refid="enterpriseWorkersColumns"/>
+		FROM
+			enterprise_workers a
+		LEFT JOIN sys_user u ON a.`name` = u.`name` AND a.certificates_num = u.card_number
+		WHERE
+			u.del_flag != '1'
+		AND 
+			a.certificates_num = #{certificatesNum}
+		AND
+			a.name = #{name}
+	</select>
+	
+	<!-- 根据证件号和姓名查询该用户信息，并返回给前台数据 -->
+	<select id = "findByCertificatesNum" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.nation,
+			w.certificates_type as certificatesType,
+			w.certificates_num as certificatesNum,
+			w.`name`,
+			w.mobile,
+			w.email,
+			w.isregister as isRegister,
+			w.isvalid as isValid,
+			w.company_name as companyName,
+			w.pid,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.create_date,
+			u.office_id,
+			u.address,
+			o.name AS officeName
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		where
+			w.certificates_num = #{certificatesNum}
+		AND
+			w.name = #{name}
+	</select>
+	
+	<insert id="savaCounselorToUser">
+		INSERT INTO sys_user(
+			id,company_id,office_id,login_name,name,email,card_number,mobile,
+			password,user_type,login_flag,create_by,
+			create_date,update_by,update_date,confim_flg,del_flag,user_from
+		) VALUES (
+			#{id},'null',#{officeId},#{loginName},#{name},#{email},#{cardNumber},#{mobile},#{password},#{userType},
+			#{loginFlag},#{createBy.id},#{createDate},#{updateBy.id},#{updateDate},#{confimFlg},#{delFlag},#{userFrom}
+		)
+	</insert>
+	
+	<update id="updateIsRegister">
+		UPDATE enterprise_workers SET
+			isregister = #{isRegister},age=#{age},mobile= #{mobile},email = #{email} 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateEnterpriseWorkers">
+		UPDATE enterprise_workers SET
+			isregister = #{isRegister},mobile= #{mobile},email = #{email},nation=#{nation},pid=#{pid},company_name = #{companyName}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据pid查询咨询师信息 -->
+	<select id="findPerInfo" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.age,
+			w.certificates_type as certificatesType,
+			w.certificates_num as certificatesNum,
+			w.mobile,
+			w.isValid,
+			w.email,
+			w.company_name,
+			w.picture_url,
+			w.picture_name,
+			w.pid,
+			ur.role_id,
+			s.confim_flg,
+			s.office_id,
+			w.picture_lock as pictureLock
+		FROM
+			`enterprise_workers` w
+		LEFT JOIN 
+			sys_user s
+		ON
+			w.certificates_num = s.card_number AND w.name = s.`name`
+		LEFT JOIN sys_user_role ur ON s.id = ur.user_id
+		WHERE
+			w.certificates_num = #{certificatesNum}
+		AND
+			w.`name` = #{name}
+		AND
+			s.del_flag != '1'
+	</select>
+	
+	<!-- 登录且无效时，更新咨询师信息 -->
+	<update id="updateZXS">
+		UPDATE enterprise_workers SET 	
+			name = #{name},
+			certificates_type = #{certificatesType},
+			certificates_num = #{certificatesNum},
+			mobile = #{mobile},
+			email = #{email},
+			update_date = NOW(),
+		  	company_name = #{companyName}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 未申请登录时，插入咨询师信息 -->
+	<insert id="insertZXS">
+		INSERT INTO enterprise_workers(
+			id,name,sex,nation,age,certificates_type,certificates_num,mobile,pid,company_name,
+			create_by,create_date,update_by,update_date,isregister,isvalid,email
+		) VALUES (
+			#{id},#{name},#{sex},#{nation},#{age},#{certificatesType},#{certificatesNum},#{mobile},#{pid},#{companyName},
+			#{createBy.id},#{createDate},#{updateBy.id},#{updateDate},#{isRegister},#{isValid},#{email}
+		)
+	</insert>
+	
+	<!-- 更新注册时的信息 -->
+	<update id="updateZXSInfo">
+		UPDATE enterprise_workers SET 	
+			name = #{name},
+			certificates_type = #{certificatesType},
+			certificates_num = #{certificatesNum},
+			mobile = #{mobile},
+			email = #{email},
+			update_date = NOW(),
+			pid = #{pid},
+			company_name = #{companyName}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 验证name是否存在 -->
+	<select id="findName" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(name) FROM enterprise_workers WHERE name = #{name}
+	</select>
+	
+	<!-- 证件类型为身份证时，只更新手机号和邮箱 -->
+	<update id= "updateZXSInfo01">
+		UPDATE enterprise_workers SET 	
+			mobile = #{mobile},
+			email = #{email},
+			update_date = NOW(),
+			pid = #{pid},
+			company_name = #{companyName}
+		  WHERE
+		  	id = #{id}
+	</update>
+	<!-- 证件类型为身份证时，只更新手机号和邮箱 -->
+	<update id= "updateZXSInfo02">
+		UPDATE enterprise_workers SET
+			age = #{age},
+			sex = #{sex}, 	
+			mobile = #{mobile},
+			email = #{email},
+			update_date = NOW(),
+			pid = #{pid},
+			company_name = #{companyName}
+		  WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据id查询所有咨询师信息 -->
+	<select id="getNew" parameterType="java.lang.String" resultType="EnterpriseWorkers">
+		SELECT 
+		*
+		FROM enterprise_workers  a
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 分页查询个人用户信息 -->
+	<select id= "findPageList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.name,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			u.create_date,
+			u.confim_flg,
+			u.id AS userId
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.certificates_num = u.card_number AND w.`name` = u.`name`
+		<where>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="confimFlg != null and confimFlg !=''">
+				AND u.confim_flg = #{confimFlg}
+			</if>
+			<if test="pid != null and pid !=''">
+					AND w.pid = #{pid}
+			</if>
+			AND u.del_flag != '1'
+		</where>
+	</select>
+	
+	<!-- 待接收申请 -->
+	<select id="findPageList01" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			r.id AS personRecordId,
+			r.batch_id AS batchId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.batch_status,
+			r.declare_status,
+			r.update_date
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND w.pid = #{pid}
+			</if>
+			<!-- AND r.declare_status = #{declareStatus} -->
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+		</where>
+	</select>
+	
+	<!-- 已上报申请 -->
+	<select id="findPageList02" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.declare_status,
+			r.batch_status
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND w.pid = #{pid}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<!-- AND r.declare_status &gt;=  #{declareStatus} -->
+			AND r.batch_status &gt;= convert( #{batchStatus}, UNSIGNED INTEGER)
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 中咨协会已审核-->
+	<select id="findPageList034" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName,
+			r.first_Zdeclare_result as firstZdeclareResult,
+			r.second_Zdeclare_result as secondZdeclareResult
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 中咨协会待审核申请 ，仅存在-->
+	<select id="findPageList03" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			AND r.batch_id in (
+			SELECT batch_id FROM (select batch_id,count(id) from person_record where batch_status=#{batchStatus} group by batch_id having count(id) =1) a 
+			)
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+<!-- 	<select id="findPageList03" resultType="EnterpriseWorkers"> -->
+<!-- 		SELECT -->
+<!-- 			w.id, -->
+<!-- 			w.`name`, -->
+<!-- 			w.sex, -->
+<!-- 			w.certificates_type, -->
+<!-- 			w.certificates_num, -->
+<!-- 			w.isvalid, -->
+<!-- 			w.company_name, -->
+<!-- 			r.id AS personRecordId, -->
+<!-- 			r.declare_type AS type, -->
+<!-- 			r.declare_date AS create_date, -->
+<!-- 			r.update_date, -->
+<!-- 			r.util_feedback, -->
+<!-- 			r.batch_id, -->
+<!-- 			u.id AS userId, -->
+<!-- 			u.office_id AS officeId, -->
+<!-- 			o.`name` AS officeName -->
+<!-- 		FROM -->
+<!-- 			enterprise_workers w -->
+<!-- 		LEFT JOIN person_record r ON w.id = r.person_id -->
+<!-- 		LEFT JOIN sys_user u ON w.pid = u.id -->
+<!-- 		LEFT JOIN sys_office o ON u.office_id = o.id -->
+<!-- 		<where> -->
+<!-- 			<if test="type != null and type !=''"> -->
+<!-- 				AND r.declare_type = #{type} -->
+<!-- 			</if> -->
+<!-- 			<if test="userId != null and userId !=''"> -->
+<!-- 				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId}) -->
+<!-- 			</if> -->
+<!-- 			<if test="name != null and name !=''"> -->
+<!-- 				AND w.name LIKE CONCAT('%',#{name},'%') -->
+<!-- 			</if> -->
+<!-- 			<if test="createDate != null and createDate !=''"> -->
+<!-- 				AND r.declare_date &gt;= #{createDate} -->
+<!-- 			</if> -->
+<!-- 			<if test="updateDate !=null and updateDate !=''"> -->
+<!-- 				AND r.declare_date &lt;= #{updateDate} -->
+<!-- 			</if> -->
+<!-- 			<if test="companyName !=null and companyName !=''"> -->
+<!-- 				AND w.company_name LIKE CONCAT('%',#{companyName},'%') -->
+<!-- 			</if> -->
+<!-- 			<if test="officeId !=null and officeId !=''"> -->
+<!-- 				AND u.office_id = #{officeId} -->
+<!-- 			</if> -->
+<!-- 			AND r.batch_status = #{batchStatus} -->
+<!-- 			AND r.del_flag != '1' -->
+<!-- 			AND u.del_flag != '1' -->
+<!-- 		</where> -->
+<!-- 		<choose> -->
+<!-- 			<when test="page !=null and page.orderBy != null and page.orderBy != ''"> -->
+<!-- 				ORDER BY ${page.orderBy} -->
+<!-- 			</when> -->
+<!-- 			<otherwise> -->
+<!-- 				ORDER BY r.declare_date DESC -->
+<!-- 			</otherwise> -->
+<!-- 		</choose> -->
+<!-- 	</select> -->
+	<!-- 中咨协会待审核申请 ，包含-->
+	<select id="findPageList031" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			AND r.batch_id in (
+			select batch_id from person_record 
+			<where>
+				<if test="batchStatus !=null and batchStatus !=''">
+					AND batch_status=#{batchStatus} 
+				</if>
+				<if test="type !=null and type !=''">
+					 and declare_type = #{type}
+				</if>
+			 </where>
+			)
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>	
+	<!-- 中咨协会待审核申请 ，不包含-->
+	<select id="findPageList032" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			AND r.batch_id not in (
+			select batch_id from person_record 
+			<where>
+				<if test="batchStatus !=null and batchStatus !=''">
+					AND batch_status=#{batchStatus} 
+				</if>
+				<if test="type !=null and type !=''">
+					 and declare_type = #{type}
+				</if>
+			 </where>
+			)
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+		<!-- 中咨协会专家待审 -->
+		<select id="findPageList033" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName,
+			r.batch_status as batchStatus,
+			r.declare_status as declareStatus,
+			r.first_Zdeclare_result as firstZdeclareResult,
+			r.second_Zdeclare_result as secondZdeclareResult,
+			r.first_Zexpert_id as firstZexpertId,
+			r.second_Zexpert_id as secondZexpertId
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Zexpert_id = #{userId} or r.second_Zexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.update_date asc
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 复议待审列表 -->
+		<select id="findPageList035" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			p.name AS fexpertName,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.util_feedback,
+			r.batch_id,
+			u.id AS userId,
+			u.office_id AS officeId,
+			o.`name` AS officeName,
+			r.batch_status as batchStatus,
+			r.declare_status as declareStatus,
+			r.first_Zdeclare_result as firstZdeclareResult,
+			r.second_Zdeclare_result as secondZdeclareResult,
+			r.first_Zexpert_id as firstZexpertId,
+			r.second_Zexpert_id as secondZexpertId,
+			r.first_Fexpert_result as firstFexpertResult,
+			r.second_Fexpert_result as secondFexpertResult,
+			r.Fdeclare_result as fdeclareResult
+		FROM
+		enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_user p ON r.Fexpert_id = p.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="userId != null and userId !=''">
+				AND r.Fexpert_id = #{userId}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="officeId !=null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="confimFlg !=null and confimFlg !='' and confimFlg == '0'.toString()">
+				AND (r.Fdeclare_result is null or r.Fdeclare_result='')
+			</if>
+			<if test="confimFlg !=null and confimFlg !='' and confimFlg == '1'.toString()">
+				AND r.Fdeclare_result is not null 
+			</if>
+			
+			AND r.batch_status in ('17','19')
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.update_date asc
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 判断手机号是否存在 -->
+	<select id="checkMobile" resultType="com.thinkgem.jeesite.modules.sys.entity.User">
+		SELECT * FROM sys_user WHERE mobile = #{mobile} AND id != #{id} AND user_type='1' AND del_flag != '1'
+	</select>
+	
+	<!-- 地方协会已上报申请 -->
+	<select id="findPageList04" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.declare_status,
+			r.batch_status
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			AND r.batch_status not in ('1','2','3','4','5','6','7','8','9','21')
+			AND r.del_flag != '1'
+			AND u.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 合规审查-->
+	<select id="findPageList005" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.name,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.batch_status,
+			r.declare_status 
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND u.office_id = #{pid}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<!-- AND r.declare_status = #{declareStatus} -->
+			AND r.batch_status = #{batchStatus}
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 地方协会待上报-->
+	<select id="findPageList0051" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.name,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.batch_status,
+			r.declare_status 
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND u.office_id = #{pid}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<!-- AND r.declare_status = #{declareStatus} -->
+			AND r.batch_status in ('8','9')
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 地方协会待审核申请 -->
+	<select id="findPageList05" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.declare_status,
+			r.batch_status
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Cexpert_id = #{userId} or r.second_Cexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND u.office_id = #{pid}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			AND (r.batch_status = #{batchStatus} or r.batch_status = '21')
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 地方协会已审核上报申请 -->
+	<select id="findPageList06" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			w.isvalid,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.update_date,
+			r.declare_status,
+			r.batch_status
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		<where>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			<if test="userId != null and userId !=''">
+				AND (r.first_Cexpert_id = #{userId} or r.second_Cexpert_id = #{userId})
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="createDate != null and createDate !=''">
+				AND r.declare_date &gt;= #{createDate}
+			</if>
+			<if test="updateDate !=null and updateDate !=''">
+				AND r.declare_date &lt;= #{updateDate}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND u.office_id = #{pid}
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			AND r.batch_status not in ('1','2','3','4','5','6','7','8')
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 中咨协会分配专家 ,查询已分配和未分配的申请单信息-->
+	<select id="zzDistributeExpertList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			o.`name` AS officeName,
+			w.company_name,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.first_Cexpert_id,
+			r.second_Cexpert_id,
+			r.first_Zexpert_id,
+			r.second_Zexpert_id,
+			r.batch_status,
+			r.declare_status,
+			u2.`name` AS firstExpertName,
+			u3.`name` AS secondExpertName,
+			i.newvalue,
+			i.changetype
+		FROM
+			`enterprise_workers` w
+		LEFT JOIN sys_user u1 on w.pid=u1.id 
+		LEFT JOIN sys_office o ON u1.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u2 ON r.first_Zexpert_id = u2.id
+		LEFT JOIN sys_user u3 ON r.second_Zexpert_id = u3.id
+		LEFT JOIN change_item i ON r.id = i.person_record_id
+		<where>
+			<if test="officeId != null and officeId !=''">
+				AND u1.office_id = #{officeId}
+			</if>
+			<if test="certificatesNum != null and certificatesNum !=''">
+				AND w.certificates_num = #{certificatesNum}
+			</if>
+			<if test="specialty != null and specialty !=''">
+				AND i.newvalue = #{specialty}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="batchNo != null and batchNo !=''">
+				AND r.batchno = #{batchNo}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus !='12'.toString() and (declareType =='0'.toString() or declareType =='2'.toString() or declareType =='4'.toString())">
+				AND r.batch_status = #{batchStatus}
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus !='12'.toString() and (declareType =='1'.toString() or declareType =='3'.toString())">
+				AND (i.is_assigned = '0' or i.is_assigned is null) AND (r.batch_status = '11' or r.batch_status = '12')
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='12'.toString() and (declareType =='0'.toString() or declareType =='2'.toString() or declareType =='4'.toString())">
+				AND r.batch_status not in ('1','2','3','4','5','6','7','8','9','10','11','20')
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='12'.toString() and (declareType =='1'.toString() or declareType =='3'.toString())">
+				AND i.is_assigned = '1'  AND (r.batch_status = '11' or r.batch_status = '12')
+			</if>
+			<if test="batchStatus ==null or batchStatus ==''">
+				AND (r.batch_status = '11' or r.batch_status = '12')
+			</if>
+			AND o.del_flag != '1'
+			AND u1.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 地方协会分配专家 ,查询已分配和未分配的申请单信息-->
+	<select id="localDistributeExpertList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			o.`name` AS officeName,
+			w.company_name,
+			w.`name`,
+			w.sex,
+			w.certificates_type,
+			w.certificates_num,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.first_Cexpert_id,
+			r.second_Cexpert_id,
+			r.batch_status,
+			r.declare_status,
+			u1.`name` AS firstExpertName,
+			u2.`name` AS secondExpertName,
+			i.newvalue
+		FROM
+			`enterprise_workers` w
+		LEFT JOIN sys_user u on w.pid=u.id 
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u1 ON r.first_Cexpert_id = u1.id
+		LEFT JOIN sys_user u2 ON r.second_Cexpert_id = u2.id
+		LEFT JOIN change_item i ON r.id = i.person_record_id
+		<where>
+			<if test="pid != null and pid !=''">
+				AND u.office_id = #{pid}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="specialty != null and specialty !=''">
+				AND i.newvalue = #{specialty}
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus !='7'.toString()">
+				AND r.batch_status = #{batchStatus}
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='7'.toString()">
+				AND r.batch_status not in ('1','2','3','4','5','6','8','20')
+			</if>
+			<if test="batchStatus ==null or batchStatus ==''">
+				AND (r.batch_status = '8' or r.batch_status = '7')
+			</if>
+			AND o.del_flag != '1'
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--分配专家 ,查询待分配的申请单信息，按照专业分配专家-->
+	<select id="localdistributeExpertList1" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			o.`name` AS officeName,
+			w.company_name,
+			w.`name`,
+			w.age,
+			w.certificates_type,
+			w.certificates_num,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.first_Cexpert_id,
+			r.second_Cexpert_id,
+			r.declare_status, 
+			r.batch_status,
+			i.id AS changeItemId,
+			i.changetype AS changeType,
+			i.newvalue AS newValue
+		FROM
+			`enterprise_workers` w
+		LEFT JOIN sys_user u1 on w.pid=u1.id 
+		LEFT JOIN sys_office o ON u1.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN change_item i ON r.id = i.person_record_id
+		<where>
+			<if test="officeId != null and officeId !=''">
+				AND u1.office_id = #{officeId}
+			</if>
+			<if test="certificatesNum != null and certificatesNum !=''">
+				AND w.certificates_num = #{certificatesNum}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="specialty !=null and specialty !=''">
+				AND i.newvalue = #{specialty}
+			</if>
+			
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='11'.toString() and (declareType =='0'.toString() or declareType =='2'.toString() or declareType =='4'.toString())">
+				AND r.batch_status = #{batchStatus}
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='11'.toString() and (declareType =='1'.toString() or declareType =='3'.toString())">
+				AND (i.is_assigned = '0' or i.is_assigned is null) AND (r.batch_status = '11' or r.batch_status = '12')
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='12'.toString() and (declareType =='0'.toString() or declareType =='2'.toString() or declareType =='4'.toString())">
+				AND r.batch_status not in ('1','2','3','4','5','6','7','8','9','10','11','20')
+			</if>
+			<if test="batchStatus !=null and batchStatus !='' and batchStatus =='12'.toString() and (declareType =='1'.toString() or declareType =='3'.toString())">
+				AND i.is_assigned = '1'  AND (r.batch_status = '11' or r.batch_status = '12')
+			</if>
+			
+			
+			 <if test="batchStatus !=null and batchStatus !='' and batchStatus =='8'.toString()">
+				AND r.batch_status = #{batchStatus}
+			</if> 
+			AND w.isregister ='1'
+			AND o.del_flag != '1'
+			AND u1.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.batch_id DESC
+			</otherwise>
+		</choose>
+		<if test="index != null and index !=''">
+			limit 0,#{index}
+		</if>
+	</select>
+	
+	<!-- 分配专家 ,待分配的申请单信息，不用按照专业分配-->
+	<select id="localdistributeExpertList2" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			o.`name` AS officeName,
+			w.company_name,
+			w.`name`,
+			w.age,
+			w.certificates_type,
+			w.certificates_num,
+			r.id AS personRecordId,
+			r.declare_type AS type,
+			r.declare_date AS create_date,
+			r.first_Cexpert_id,
+			r.second_Cexpert_id,
+			r.declare_status, 
+			r.batch_status
+		FROM
+			`enterprise_workers` w
+		LEFT JOIN sys_user u1 on w.pid=u1.id 
+		LEFT JOIN sys_office o ON u1.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		<where>
+			<if test="officeId != null and officeId !=''">
+				AND u1.office_id = #{officeId}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="name != null and name !=''">
+				AND w.name LIKE CONCAT('%',#{name},'%')
+			</if>
+			<if test="companyName !=null and companyName !=''">
+				AND w.company_name LIKE CONCAT('%',#{companyName},'%')
+			</if>
+			<if test="batchStatus !=null and batchStatus !=''">
+				AND r.batch_status = #{batchStatus}
+			</if> 
+			AND w.isregister ='1'
+			AND o.del_flag != '1'
+			AND r.del_flag != '1'
+			AND u1.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.batch_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 更新个人图片路径 -->
+	<update id="updatePictureUrl">
+		UPDATE enterprise_workers SET 	
+			picture_url = #{pictureUrl},
+			picture_name = #{pictureName}
+		WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 根据Id查询个人图片的地址和名字-->
+	<select id="getPicture" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.picture_url,
+			w.picture_name
+		FROM
+			`enterprise_workers` w
+		WHERE
+		  	id = #{id}
+	</select>
+	
+	<!-- 根据id删除个人图片信息 -->
+	<update id="deletePicture">
+		UPDATE enterprise_workers SET 	
+			picture_url = '',
+			picture_name = ''
+		WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 更新worker的pid和companyName -->
+	<update id="updateCompanyInfo">
+		UPDATE enterprise_workers SET 	
+			pid = #{pid},
+			update_date = NOW(),
+			company_name = #{companyName}
+		WHERE
+		  	id = #{id}
+	</update>
+	
+	<!-- 删除个人信息时修改idRegister为为注册 -->
+	<update id="updateIsRegister1">
+		UPDATE enterprise_workers SET
+			isregister = #{isRegister},
+			update_date = NOW() 
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询所有登记且无效的数据，当isvalid为0时为登记且无效 -->
+	<select id="findIsValidList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.name,
+			w.certificates_num,
+			w.mobile,
+			w.pid,
+			w.create_date,
+			w.company_name,
+			u.id AS userId
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.certificates_num = u.card_number AND w.name = u.name
+		WHERE
+			isregister = #{isRegister}
+			AND (isvalid = '0' or isvalid = '2')
+			AND u.confim_flg !='2'
+	</select>
+	
+	<!-- 单位审核咨询师信息通过时，修改isvalid为1（登记且有效） -->
+	<update id="updateisValid">
+		UPDATE enterprise_workers SET
+			isvalid = #{isValid},
+			update_date = NOW() 
+		WHERE id = #{id}
+	</update>
+	
+	<!--  -->
+	<select id="checkCertificatesNum" resultType="EnterpriseWorkers">
+		SELECT
+			*
+		FROM
+			enterprise_workers
+		WHERE
+			certificates_num = #{certificatesNum}
+		<!-- AND isregister = '1' -->
+	</select>
+	
+	<!-- 验证身份证号是否已注册 -->
+	<select id="checkCertificatesNumisRegister" resultType="EnterpriseWorkers">
+		SELECT
+			*
+		FROM
+			enterprise_workers
+		WHERE
+			certificates_num = #{certificatesNum}
+		AND isregister = '1'
+	</select>
+	
+	<!-- 查询考试数据中的取得年份和证书编号 -->
+	<select id="getTempPhoto" resultType="EnterpriseWorkers">
+		SELECT
+			year as getyear,
+			url as pictureUrl,
+			picname as pictureName,
+			zsbh as professioncardNum
+		FROM
+			temp_photo
+		WHERE
+			cardnum = #{certificatesNum}
+	</select>
+	
+	<!-- 咨询师执业登记情况表 -->
+	<select id="findByCertificatesNumAndName" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.nation,
+			w.certificates_type,
+			w.certificates_num,
+			w.getyear,
+			w.professioncard_num,
+			w.isvalid,
+			w.company_name,
+			w.register_certificate_num,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.valid_date,
+			w.aollow_date,
+			w.picture_url,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u1 ON u1.id = w.pid
+		LEFT JOIN sys_office o ON u1.office_id = o.id
+		WHERE
+			w.certificates_num = #{certificatesNum}
+			AND w.`name` = #{name}
+	</select>
+
+	<select id="findSysUserName1" resultType="com.thinkgem.jeesite.modules.sys.entity.User">
+		SELECT
+		su.id,su.original_company_name AS "name",su.office_id,su.record_number AS "recordNumber",so.name AS "officeId"
+		FROM
+		`sys_user`su left join sys_office so ON su.office_id = so.id
+		<where>
+			<if test="name != null and name != ''">
+				AND su.original_company_name like concat('%',#{name},'%')
+			</if>
+			AND
+			su.user_type = '7'
+		</where>
+	</select>
+	
+	<!-- 查询咨询师列表 -->
+	<select id="findCounselorList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			w.register_certificate_num,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.is_freeze,
+			w.isregister,
+			w.zheng_shu_flag,
+			w.electronic_chapter_flag,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+			left join sys_user s on  w.pid=s.id AND s.del_flag != '1'
+			LEFT JOIN sys_office o ON s.office_id = o.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="certificatesNum != null and certificatesNum != ''">
+				AND w.certificates_num like concat('%',#{certificatesNum},'%')
+			</if>
+			<if test="registerCertificateNum != null and registerCertificateNum != ''">
+				AND w.register_certificate_num like concat('%',#{registerCertificateNum},'%')
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND (s.office_id = #{officeId}
+						AND w.id not in 
+							(SELECT
+								person_record.person_id
+							FROM
+								person_record
+							inner join change_item on person_record.id=change_item.person_record_id
+							inner join sys_user as a on change_item.oldvalue=a.name
+							inner join sys_user as b on change_item.newvalue=b.name
+							where 
+								a.office_id !=#{officeId} and 
+								b.office_id =#{officeId} and 
+								person_record.declare_type='2' and person_record.del_flag='0' and
+								(person_record.batch_status !='20' or person_record.batch_status is null))
+						or w.id in 
+							(SELECT
+								person_record.person_id
+							FROM
+								person_record
+							inner join change_item on person_record.id=change_item.person_record_id
+							inner join sys_user as a on change_item.oldvalue=a.name
+							inner join sys_user as b on change_item.newvalue=b.name
+							where 
+								a.office_id =#{officeId} and 
+								b.office_id !=#{officeId} and 
+								person_record.declare_type='2' and person_record.del_flag='0' and
+								(person_record.batch_status !='20' or person_record.batch_status is null)))
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND w.pid = #{pid}
+			</if>	
+			<if test="isFreeze != null and isFreeze !=''">
+				AND w.is_freeze = #{isFreeze}
+			</if>
+			
+			<if test="isRegister != null and isRegister !=''">
+				AND w.isregister ='1'
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY w.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 查询准备转出咨询师列表 -->
+	<select id="findCounselorOutList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			w.register_certificate_num,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.is_freeze,
+			w.isregister,
+			w.zheng_shu_flag,
+			w.electronic_chapter_flag,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+			left join sys_user s on  w.pid=s.id AND s.del_flag != '1'
+			LEFT JOIN sys_office o ON s.office_id = o.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="certificatesNum != null and certificatesNum != ''">
+				AND w.certificates_num like concat('%',#{certificatesNum},'%')
+			</if>
+			<if test="registerCertificateNum != null and registerCertificateNum != ''">
+				AND w.register_certificate_num like concat('%',#{registerCertificateNum},'%')
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				w.id  in 
+							(SELECT
+								person_record.person_id
+							FROM
+								person_record
+							inner join change_item on person_record.id=change_item.person_record_id
+							inner join sys_user as a on change_item.oldvalue=a.name
+							inner join sys_user as b on change_item.newvalue=b.name
+							where 
+								a.office_id ='06a3473c1e8e49278dc512f5592cae68' and 
+								b.office_id !='06a3473c1e8e49278dc512f5592cae68' and 
+								person_record.declare_type='2' and person_record.del_flag='0' and
+								(person_record.batch_status !='20' or person_record.batch_status is null))
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND w.pid = #{pid}
+			</if>	
+			<if test="isFreeze != null and isFreeze !=''">
+				AND w.is_freeze = #{isFreeze}
+			</if>
+			
+			<if test="isRegister != null and isRegister !=''">
+				AND w.isregister ='1'
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY w.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<!-- 查询准备转入咨询师列表 -->
+	<select id="findCounselorInList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.sex,
+			w.certificates_num,
+			w.isvalid,
+			w.company_name,
+			w.register_certificate_num,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.is_freeze,
+			w.isregister,
+			w.zheng_shu_flag,
+			w.electronic_chapter_flag,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+			left join sys_user s on  w.pid=s.id AND s.del_flag != '1'
+			LEFT JOIN sys_office o ON s.office_id = o.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="certificatesNum != null and certificatesNum != ''">
+				AND w.certificates_num like concat('%',#{certificatesNum},'%')
+			</if>
+			<if test="registerCertificateNum != null and registerCertificateNum != ''">
+				AND w.register_certificate_num like concat('%',#{registerCertificateNum},'%')
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				w.id  in 
+							(SELECT
+								person_record.person_id
+							FROM
+								person_record
+							inner join change_item on person_record.id=change_item.person_record_id
+							inner join sys_user as a on change_item.oldvalue=a.name
+							inner join sys_user as b on change_item.newvalue=b.name
+							where 
+								a.office_id !='06a3473c1e8e49278dc512f5592cae68' and 
+								b.office_id ='06a3473c1e8e49278dc512f5592cae68' and 
+								person_record.declare_type='2' and person_record.del_flag='0' and
+								(person_record.batch_status !='20' or person_record.batch_status is null))
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			<if test="pid != null and pid !=''">
+				AND w.pid = #{pid}
+			</if>	
+			<if test="isFreeze != null and isFreeze !=''">
+				AND w.is_freeze = #{isFreeze}
+			</if>
+			
+			<if test="isRegister != null and isRegister !=''">
+				AND w.isregister ='1'
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY w.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 中咨协会专家意见复核 -->
+	<select id="expertSuggestionCheckList1" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.company_name,
+			w.certificates_num,
+			r.id as personRecordId,
+			r.batch_id,
+			r.batch_status,
+			r.declare_status,
+			r.declare_date AS createDate,
+			r.declare_type,
+			r.impropriety,
+			r.is_punish,
+			o.`name` AS officeName,
+			u1.`name` AS firstExpertName,
+			u2.`name` AS secondExpertName,
+			r.util_feedback as utilFeedback,
+			IFNULL(r.first_Zdeclare_result,'0') as firstZdeclareResult,
+			IFNULL(r.second_Zdeclare_result,'0') as secondZdeclareResult,
+			r.Zdeclare_result AS zdeclareResult,
+			r.Fdeclare_result AS fdeclareResult
+			
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN sys_user u1 ON r.first_Zexpert_id = u1.id
+		LEFT JOIN sys_user u2 ON r.second_Zexpert_id = u2.id
+		LEFT JOIN sys_user u3 ON r.Fexpert_id = u3.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="impropriety != null and impropriety != ''">
+				AND r.impropriety in ('2','3')
+			</if>
+			<if test="isPunish != null and isPunish != ''">
+				AND r.is_punish = #{isPunish}
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="expertName != null and expertName != ''">
+				AND (u1.name = #{expertName}  OR u2.name = #{expertName})
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="flag != null and flag !=''">
+				AND (r.Zdeclare_result = #{flag})
+			</if>
+			<if test="fdeclareResult != null and fdeclareResult !=''">
+				AND (r.Fdeclare_result = #{fdeclareResult})
+			</if>
+			<if test="fexpertName != null and fexpertName !=''">
+				AND (u3.name like concat('%',#{fexpertName},'%'))
+			</if>
+			AND r.batch_status in ('17','18','19')
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 中咨协会专家意见复核 -->
+	<select id="punlishList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			r.company_name,
+			w.certificates_num,
+			r.id as personRecordId,
+			r.batch_id,
+			r.batch_status,
+			r.declare_status,
+			r.declare_date AS createDate,
+			r.declare_type,
+			r.impropriety,
+			r.is_punish,
+			o.`name` AS officeName,
+			r.util_feedback as utilFeedback
+			
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON r.company_id = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="impropriety != null and impropriety != ''">
+				AND r.impropriety in ('2','3')
+			</if>
+			<if test="isPunish != null and isPunish != ''">
+				AND r.is_punish = #{isPunish}
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="batchNo != null and batchNo !=''">
+				AND r.batchno = #{batchNo}
+			</if>
+
+			AND r.batch_status in ('17','20','19')
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<!-- 复核分配专家 -->
+	<select id="reconsiderDistributeExpert" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			f.name AS fexpertName,
+			w.company_name,
+			w.certificates_num,
+			r.id as personRecordId,
+			r.batch_id,
+			r.batch_status,
+			r.declare_status,
+			r.declare_date AS createDate,
+			r.declare_type,
+			r.impropriety,
+			r.is_punish,
+			o.`name` AS officeName,
+			r.util_feedback as utilFeedback,
+			IFNULL(r.first_Zdeclare_result,'0') as firstZdeclareResult,
+			IFNULL(r.second_Zdeclare_result,'0') as secondZdeclareResult,
+			r.Fexpert_id as fExpertId
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_user f ON r.Fexpert_id = f.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="impropriety != null and impropriety != ''">
+				AND r.impropriety != #{impropriety}
+			</if>
+			<if test="utilFeedback != null and utilFeedback != ''">
+				AND r.util_feedback = #{utilFeedback}
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="flag == null or flag == ''"><!-- 如果flag等于空或者"",初始查询 -->
+				AND r.batch_status in ('17','19')
+			</if>
+			<if test="flag == '1'.toString()"><!-- 查询已分配 -->
+				AND r.batch_status in ('17','19') and  r.Fexpert_id IS NOT NULL
+			</if>
+			<if test="flag == '0'.toString()"><!-- 查询未分配 -->
+				AND r.batch_status in ('17','19') and  r.Fexpert_id IS NULL
+			</if>
+			AND (r.Zdeclare_result = '2' or r.Zdeclare_result = '3')
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+		<if test="index != null and index !=''">
+			limit 0,#{index}
+		</if>
+	</select>
+
+	<!-- 专家终审完毕查询（意见告知） -->
+	<select id="expertSuggestionCheckList" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.company_name,
+			w.certificates_num,
+			r.id as personRecordId,
+			r.batch_id,
+			r.batch_status,
+			r.declare_status,
+			r.declare_date AS createDate,
+			r.declare_type,
+			r.impropriety,
+			r.is_punish,
+			o.`name` AS officeName,
+			u1.`name` AS firstExpertName,
+			u2.`name` AS secondExpertName
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON w.id = r.person_id
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN sys_user u1 ON r.first_Cexpert_id = u1.id
+		LEFT JOIN sys_user u2 ON r.second_Cexpert_id = u2.id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="impropriety != null and impropriety != ''">
+				AND r.impropriety != #{impropriety}
+			</if>
+			<if test="isPunish != null and isPunish != ''">
+				AND r.is_punish = #{isPunish}
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="firstCexpertId != null and firstCexpertId != ''">
+				AND (r.first_Cexpert_id = #{firstCexpertId}  OR r.second_Cexpert_id = #{firstCexpertId})
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="declareType != null and declareType !=''">
+				AND r.declare_type = #{declareType}
+			</if>
+			<if test="batchStatus != null and batchStatus !=''">
+				AND r.batch_status = #{batchStatus}
+			</if>
+			<if test="batchNo != null and batchNo !=''">
+				AND r.batchno = #{batchNo}
+			</if>
+			<if test="flag != null and flag !=''">
+				AND r.batch_status != #{flag}
+			</if>
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY r.declare_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findApplicationBills"  resultType="EnterpriseWorkers">
+		SELECT
+			r.id AS personRecordId,
+			r.batch_status,
+			r.declare_status,
+			r.declare_type AS type,
+			r.first_Zdeclare_result,
+			r.second_Zdeclare_result,
+			r.first_Cdeclare_result,
+			r.second_Cdeclare_result,
+			w.id,
+			w.`name`,
+			w.certificates_num,
+			w.company_name,
+			u.office_id,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON r.person_id = w.id
+		LEFT JOIN sys_user u ON u.id = w.pid
+		LEFT JOIN sys_office o ON o.id = u.office_id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND w.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="declareStatus != null and declareStatus !=''">
+				AND r.declare_status = #{declareStatus}
+			</if>
+			<if test="flag =='1'.toString()">
+				<if test="expertResult != null and expertResult !=''">
+					AND (r.first_Zdeclare_result = #{expertResult}  OR r.second_Zdeclare_result = #{expertResult})
+				</if>
+			</if>
+			<if test="flag =='0'.toString()">
+				<if test="expertResult != null and expertResult !=''">
+					AND (r.first_Cdeclare_result = #{expertResult}  OR r.second_Cdeclare_result = #{expertResult})
+				</if>
+			</if>
+			AND r.batch_status != #{batchStatus}
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		ORDER BY
+		o.`name`,
+		w.company_name,
+		w.`name`
+	</select>
+	
+	<!-- 查询已完成的申请单 -->
+	<select id="findApplicationBillsClose"  resultType="EnterpriseWorkers">
+		SELECT
+			r.id AS personRecordId,
+			r.batch_status,
+			r.declare_status,
+			r.declare_type AS type,
+			r.Fdeclare_result AS fdeclareResult,
+			r.Zdeclare_result AS zdeclareResult,
+			w.id,
+			w.`name`,
+			w.certificates_num,
+			w.company_name AS companyName,
+			r.company_name AS companyNameold,
+			u.office_id,
+			o.`name` AS officeName
+		FROM
+			enterprise_workers w
+		LEFT JOIN person_record r ON r.person_id = w.id
+		LEFT JOIN sys_user u ON u.id = r.company_id
+		LEFT JOIN sys_office o ON o.id = u.office_id
+		<where>
+			<if test="name != null and name != ''">
+				AND w.name like concat('%',#{name},'%')
+			</if>
+			<if test="companyName != null and companyName != ''">
+				AND r.company_name like concat('%',#{companyName},'%')
+			</if>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="type != null and type !=''">
+				AND r.declare_type = #{type}
+			</if>
+			<if test="declareStatus != null and declareStatus !=''">
+				AND r.declare_status = #{declareStatus}
+			</if>
+			<if test="expertResult != null and expertResult !=''">
+				AND r.Fdeclare_result = #{expertResult}
+			</if>
+			<if test="batchNo != null and batchNo !=''">
+				AND r.batchno = #{batchNo}
+			</if>
+			AND r.batch_status = '20'
+			AND u.del_flag != '1'
+			AND r.del_flag != '1'
+		</where>
+		ORDER BY
+		o.`name`,
+		w.company_name,
+		w.`name`
+	</select>
+	
+		<!-- 查询考试数据中的取得年份和证书编号 -->
+	<select id="getMobileByRecordId" resultType="EnterpriseWorkers">
+		SELECT
+			distinct 
+			enterprise_base.contacts_zy_phone as mobile,
+			enterprise_workers.name as name ,
+			person_record.declare_type as decalerType
+		FROM
+			person_record
+		left join enterprise_workers on person_record.person_id=enterprise_workers.id
+		left join sys_user on enterprise_workers.pid=sys_user.id
+		LEFT join enterprise_base on sys_user.id=enterprise_base.user_id
+		where
+			person_record.id = #{id} AND person_record.del_flag != '1'
+	</select>
+
+	<!-- 查询出所有有效的咨询师信息 -->
+	<select id="findEffectiveCounselorInfo" resultType="EnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			o.`name` AS officeName,
+			w.isvalid,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.register_certificate_num,
+			w.company_area,
+			w.company_tel,
+			b.contacts_zy,
+			b.contacts_zy_phone
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON u.id = w.pid
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN enterprise_base b ON w.pid = b.user_id
+		<where>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			AND u.del_flag != '1'
+			AND o.del_flag != '1'
+			AND b.del_flag != '1'
+		</where>
+		ORDER BY w.`name`,w.`certificates_num`
+	</select>
+
+
+	<select id="findUpdateService" resultType="EnterpriseWorkers">
+			SELECT
+			w.name AS 'name',
+			CASE w.sex WHEN '1' THEN '0' WHEN '2' THEN '1' END AS 'sex',
+			w.id AS 'id',
+			w.certificates_num AS 'certificatesNum',
+			w.professioncard_num AS 'professioncardNum',
+			w.register_certificate_num AS 'registerCertificateNum',
+			o.area_id AS 'areaId',
+			w.company_name AS 'companyName',
+			w.mobile AS 'companyTel',
+			w.email AS 'email'
+			FROM
+			enterprise_workers w
+			LEFT JOIN sys_user u ON w.pid = u.id
+			LEFT JOIN sys_office o ON o.id = u.office_id
+			WHERE
+			w.update_date > #{resultDate}
+	</select>
+
+
+
+
+
+
+
+	<select id="availableWorkersList" resultType="EnterpriseWorkers">
+		SELECT
+			a.id AS "id",
+			a.name AS "name",
+			a.sex AS "sex",
+			a.nation AS "nation",
+			a.certificates_type AS "certificatesType",
+			a.certificates_num AS "certificatesNum",
+			a.education AS "education",
+			a.mobile AS "mobile",
+			a.title AS "title",
+			a.specialty AS "specialty",
+			a.school AS "school",
+			a.nationality AS "nationality",
+			a.graduation_date AS "graduationDate",
+			a.entry_date AS "entryDate",
+			a.work_resume AS "workResume",
+			a.register_main_specialty AS "registerMainSpecialty",
+			a.register_auxiliary_specialty AS "registerAuxiliarySpecialty",
+			a.zi_xun_ye_wu_nian_xian AS "ziXunYeWuNianXian",
+			a.register_certificate_num AS "registerCertificateNum",
+			a.engage_specialty AS "engageSpecialty",
+			a.age AS "age",
+			a.pid AS "pid",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.phone AS "phone",
+			a.retire AS "retire",
+			a.type AS "type",
+			a.title_specialty as "titleSpecialty",
+			a.file_no as "fileNo",
+			a.company_name as "companyName",
+			a.review_company as "reviewCompany",
+			a.z_specialty as "zSpecialty",
+			a.f_specialty as "fSpecialty",
+			a.company_contact as "companyContact",
+			a.company_area as "companyArea",
+			a.company_tel as "companyTel",
+			a.getyear as "getyear",
+			a.professioncard_num as "professioncardNum",
+			a.isvalid AS "isValid",
+			a.picture_url AS "pictureUrl",
+			a.picture_name AS "pictureName",
+			a.is_first as "isFirst",
+			a.is_freeze as "isFreeze",
+			a.freeze_date as "freezeDate",
+			a.freeze_cycle as "freezeCycle",
+			a.picture_lock as "pictureLock",
+			a.aollow_date as "aollowDate",
+		    a.valid_date as "validDate",
+			a.zheng_shu_flag as "zhengShuFlag",
+			a.electronic_chapter_flag as "electronicChapterFlag"
+		FROM enterprise_workers a
+		LEFT JOIN engineer_certificate c ON a.id = c.worker_id
+		LEFT JOIN sys_user u ON a.pid = u.id
+
+		<if test="batchNo != null and batchNo != ''">
+		INNER JOIN
+			(select person_id , batchno from person_record where batchno = #{batchNo}
+			 AND Fdeclare_result in( '1','2')
+			GROUP BY person_id) as ba
+		on a.id= ba.person_id
+		</if>
+
+
+		<where>
+
+			<!-- 只查询在有效期内的 工程师
+			AND ( a.aollow_date > DATE_ADD(CURRENT_DATE,INTERVAL -3 YEAR) )-->
+			<!--	查询出有证书的，以及生效后没有证书的记录
+			AND ( c.start_date > DATE_ADD(CURRENT_DATE,INTERVAL -3 YEAR) OR c.start_date IS NULL )-->
+			<!-- 登录且有效 -->
+			AND a.isvalid = '1'
+			<!-- 未冻结 -->
+			AND a.is_freeze = '0'
+			AND a.picture_url is not null
+			AND a.id not in 
+			(SELECT
+				enterprise_workers.id
+				FROM
+				enterprise_workers
+				inner join person_record on enterprise_workers.id=person_record.person_id
+				where
+				enterprise_workers.isvalid='1' and 
+				person_record.declare_type ='2' and 
+				(person_record.batch_status!='20' or person_record.batch_status is null) and 
+				person_record.del_flag='0')
+			<choose>
+				<when test="zhengShuFlag !=null and zhengShuFlag !='' and zhengShuFlag == 1 ">
+					and zheng_shu_flag = #{zhengShuFlag}
+				</when>
+				<when test="zhengShuFlag !=null and zhengShuFlag !='' and zhengShuFlag == 0 ">
+					and zheng_shu_flag = #{zhengShuFlag}
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="electronicChapterFlag !=null and electronicChapterFlag !='' and electronicChapterFlag == '1'.toString() ">
+					and electronic_chapter_flag = #{electronicChapterFlag}
+				</when>
+				<when test="electronicChapterFlag !=null and electronicChapterFlag !='' and electronicChapterFlag == '0'.toString()">
+					and electronic_chapter_flag = #{electronicChapterFlag}
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+
+			<if test="aollowDate != null and aollowDate !=''">
+				AND a.aollow_date = #{aollowDate}
+			</if>
+
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+				<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE
+				<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+
+			<if test="companyName != null and companyName != ''">
+				AND a.company_name LIKE
+				<if test="dbName == 'oracle'">'%'||#{companyName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{companyName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{companyName},'%')</if>
+			</if>
+
+			<if test="certificatesNum != null and certificatesNum != ''">
+				AND a.certificates_num LIKE
+				<if test="dbName == 'oracle'">'%'||#{certificatesNum}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{certificatesNum}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{certificatesNum},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getWorkerAndOfficeCode" resultType="EnterpriseWorkers">
+		SELECT 
+			<include refid="enterpriseWorkersColumns"/>
+			,c.code AS officeCode
+		FROM enterprise_workers a
+		left join sys_user b on a.pid=b.id
+		left join sys_office c on b.office_id=c.id
+		WHERE a.id = #{id}
+	</select>
+
+    <update id="updateZhengShuFlag">
+		UPDATE enterprise_workers SET
+			zheng_shu_flag = #{zhengShuFlag}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="updateElectronicChapterFlag">
+		UPDATE enterprise_workers SET
+			electronic_chapter_flag = #{electronicChapterFlag}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

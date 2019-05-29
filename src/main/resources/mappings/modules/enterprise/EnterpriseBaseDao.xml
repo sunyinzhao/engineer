@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.EnterpriseBaseDao">
+    
+	<sql id="enterpriseBaseColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.company_name AS "companyName",
+		a.company_introduction AS "companyIntroduction",
+		a.organization_code AS "organizationCode",
+		a.application_code AS "applicationCode",
+		a.comanpy_type AS "comanpyType",
+		a.establishment_date AS "establishmentDate",
+		a.master_comanpy AS "masterComanpy",
+		a.years AS "years",
+		a.office_area_all AS "officeAreaAll",
+		a.office_area_self AS "officeAreaSelf",
+		a.old_declare_grade AS "oldDeclareGrade",
+		a.old_declare_num AS "oldDeclareNum",
+		a.register_address AS "registerAddress",
+		a.url AS "url",
+		a.postal_address AS "postalAddress",
+		a.zip_code AS "zipCode",
+		a.manber_main AS "manberMain",
+		a.manber_local AS "manberLocal",
+		a.manber_code AS "manberCode",
+		a.legal_person AS "legalPerson",
+		a.post AS "post",
+		a.phone AS "phone",
+		a.mobile AS "mobile",
+		a.contact_dept AS "contactDept",
+		a.contact_phone AS "contactPhone",
+		a.file AS "file",
+		u2.name AS "user.name",
+		u2.address as  "user.address",
+		u2.register_address as "user.registerAddress",
+		u2.org_code	as "user.orgCode",
+		o.name as "office.name",
+		a.contacts_zx as  "contactsZx" , 		
+		a.contacts_zx_phone as "contactsZxPhone" ,
+		a.contacts_zy as "contactsZy" ,	
+		a.contacts_zy_phone as "contactsZyPhone",
+		a.contacts_py as "contactsPy"	,
+		a.contacts_py_phone  as "contactsPyPhone"
+	</sql>
+
+	<sql id="enterpriseBaseJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+		LEFT JOIN sys_office o ON u2.office_id = o.id
+		
+	</sql>
+    
+	<select id="get" resultType="EnterpriseBase">
+		SELECT 
+			<include refid="enterpriseBaseColumns"/>
+		FROM enterprise_base a
+		<include refid="enterpriseBaseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<select id="findEBase" resultType="EnterpriseBase">
+		SELECT 
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.company_name AS "companyName",
+		a.company_introduction AS "companyIntroduction",
+		a.organization_code AS "organizationCode",
+		a.application_code AS "applicationCode",
+		a.comanpy_type AS "comanpyType",
+		a.establishment_date AS "establishmentDate",
+		a.master_comanpy AS "masterComanpy",
+		a.years AS "years",
+		a.office_area_all AS "officeAreaAll",
+		a.office_area_self AS "officeAreaSelf",
+		a.old_declare_grade AS "oldDeclareGrade",
+		a.old_declare_num AS "oldDeclareNum",
+		a.register_address AS "registerAddress",
+		a.url AS "url",
+		a.postal_address AS "postalAddress",
+		a.zip_code AS "zipCode",
+		a.manber_main AS "manberMain",
+		a.manber_local AS "manberLocal",
+		a.manber_code AS "manberCode",
+		a.legal_person AS "legalPerson",
+		a.post AS "post",
+		a.phone AS "phone",
+		a.mobile AS "mobile",
+		a.contact_dept AS "contactDept",
+		a.contact_phone AS "contactPhone",
+		a.file AS "file",
+		a.contacts_zx as  "contactsZx" , 		
+		a.contacts_zx_phone as "contactsZxPhone" ,
+		a.contacts_zy as "contactsZy" ,	
+		a.contacts_zy_phone as "contactsZyPhone",
+		a.contacts_py as "contactsPy"	,
+		a.contacts_py_phone  as "contactsPyPhone"
+		FROM enterprise_base a
+		<where>
+			 a.del_flag = '0'
+			<if test="userid != null and userid != ''">
+				AND a.user_id = #{userid}
+			</if>
+		</where>
+		
+	</select>
+	
+	<select id="findList" resultType="EnterpriseBase">
+		SELECT 
+			<include refid="enterpriseBaseColumns"/>
+		FROM enterprise_base a
+		<include refid="enterpriseBaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EnterpriseBase">
+		SELECT 
+			<include refid="enterpriseBaseColumns"/>
+		FROM enterprise_base a
+		<include refid="enterpriseBaseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enterprise_base(
+			id,
+			user_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			company_name,
+			company_introduction,
+			organization_code,
+			application_code,
+			comanpy_type,
+			establishment_date,
+			master_comanpy,
+			years,
+			office_area_all,
+			office_area_self,
+			old_declare_grade,
+			old_declare_num,
+			register_address,
+			url,
+			postal_address,
+			zip_code,
+			manber_main,
+			manber_local,
+			manber_code,
+			legal_person,
+			post,
+			phone,
+			mobile,
+			contact_dept,
+			contact_phone,
+			file,
+			contacts_zx, 		
+			contacts_zx_phone ,
+			contacts_zy ,
+			contacts_zy_phone ,
+			contacts_py,
+			contacts_py_phone 
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{companyName},
+			#{companyIntroduction},
+			#{organizationCode},
+			#{applicationCode},
+			#{comanpyType},
+			#{establishmentDate},
+			#{masterComanpy},
+			#{years},
+			#{officeAreaAll},
+			#{officeAreaSelf},
+			#{oldDeclareGrade},
+			#{oldDeclareNum},
+			#{registerAddress},
+			#{url},
+			#{postalAddress},
+			#{zipCode},
+			#{manberMain},
+			#{manberLocal},
+			#{manberCode},
+			#{legalPerson},
+			#{post},
+			#{phone},
+			#{mobile},
+			#{contactDept},
+			#{contactPhone},
+			#{file},
+			#{contactsZx}, 		
+			#{contactsZxPhone},
+			#{contactsZy},	
+			#{contactsZyPhone},
+			#{contactsPy}	,
+			#{contactsPyPhone}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enterprise_base SET
+			<!-- company_name = #{companyName},
+			organization_code = #{organizationCode},
+			application_code = #{applicationCode},
+			master_comanpy = #{masterComanpy},
+			register_address = #{registerAddress},
+			legal_person = #{legalPerson},
+			user_id = #{user.id},-->
+
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			company_introduction = #{companyIntroduction},
+			comanpy_type = #{comanpyType},
+			establishment_date = #{establishmentDate},
+			years = #{years},
+			office_area_all = #{officeAreaAll},
+			office_area_self = #{officeAreaSelf},
+			old_declare_grade = #{oldDeclareGrade},
+			old_declare_num = #{oldDeclareNum},
+			url = #{url},
+			postal_address = #{postalAddress},
+			zip_code = #{zipCode},
+			manber_main = #{manberMain},
+			manber_local = #{manberLocal},
+			manber_code = #{manberCode},
+			post = #{post},
+			phone = #{phone},
+			mobile = #{mobile},
+			contact_dept = #{contactDept},
+			contact_phone = #{contactPhone},
+			contacts_zx = #{contactsZx}, 		
+			contacts_zx_phone =#{contactsZxPhone},
+			contacts_zy =#{contactsZy},	
+			contacts_zy_phone =#{contactsZyPhone},
+			contacts_py =#{contactsPy}	,
+			contacts_py_phone  =#{contactsPyPhone},
+			file = #{file}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE enterprise_base SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<!-- 校检统一社会信用代码是否存在 -->
+	<select id="checkOrganizationCode" resultType="User">
+		SELECT 
+			org_code
+		FROM 
+			sys_user a
+		WHERE 
+			a.org_code = #{orgCode}
+	</select>
+</mapper>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.ReportEnterpriseWorkersDao">
+
+	<!-- 查询出所有有效的咨询师信息 -->
+	<select id="findEffectiveCounselorInfo" resultType="ReportEnterpriseWorkers">
+		SELECT
+			w.id,
+			w.`name`,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			o.`name` AS officeName,
+			w.isvalid,
+			w.register_main_specialty,
+			w.register_auxiliary_specialty,
+			w.register_certificate_num,
+			w.company_contact as "companyContact", -- 后加的，bug修改
+			w.company_area,
+			w.company_tel,
+			b.contacts_zy,
+			b.contacts_zy_phone
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON u.id = w.pid
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN enterprise_base b ON w.pid = b.user_id
+		<where>
+			<if test="officeId != null and officeId !=''">
+				AND u.office_id = #{officeId}
+			</if>
+			<if test="isValid != null and isValid !=''">
+				AND w.isvalid = #{isValid}
+			</if>
+			AND u.del_flag != '1'
+			AND o.del_flag != '1'
+			AND b.del_flag != '1'
+		</where>
+		ORDER BY w.`name`,w.`certificates_num`
+	</select>
+	
+	
+	<!-- 查询出预审单位上报信息，返回到前台对应页面 -->
+	<select id="findPretrialUnitsReportInfo" resultType="ReportEnterpriseWorkers">
+		select
+		table1.Fdeclare_result as fdeclareResult,
+		table1.id,
+		table1.name0 as name,
+		table1.batchno as batchNo,
+		table1.certificates_num,
+		table1.sex,
+		table1.company_name,
+		table1.`name` as officeName,
+		sum(table1.type0) as cancellationOfRegistration,
+		sum(IFNULL(table1.type1,0)) as initialRegistration,
+		sum(IFNULL(table1.type2,0)) as changeUnit,
+		sum(IFNULL(table1.type3,0)) as changeSpecialty,
+		sum(IFNULL(table1.type4,0)) as continueRegistration,
+		table1.register_certificate_num as registerCertificateNum
+		FROM
+		(SELECT
+			r.Fdeclare_result,
+			w.id,
+			w.`name` AS name0,
+			r.batchno,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			u.office_id,
+			o.`name`,
+			r.declare_type as type0,
+			null as type1,
+			null as type2,
+			null as type3,
+			null as type4,
+			w.register_certificate_num
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		WHERE
+		r.del_flag != '1'
+		AND u.del_flag != '1'
+		AND o.del_flag != '1'
+		AND r.batch_status != '21' AND r.batch_status >9
+		AND r.declare_type = '0'
+		UNION 
+		SELECT
+			r.Fdeclare_result,
+			w.id,
+			w.`name` AS name0,
+			r.batchno,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			u.office_id,
+			o.`name`,
+			null as type0,
+			r.declare_type as type1,
+			null as type2,
+			null as type3,
+			null as type4,
+			w.register_certificate_num
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		WHERE
+		r.del_flag != '1'
+		AND u.del_flag != '1'
+		AND o.del_flag != '1'
+		AND r.batch_status != '21' AND r.batch_status >9
+		AND r.declare_type = '1'
+		UNION 
+		SELECT
+			r.Fdeclare_result,
+			w.id,
+			w.`name` AS name0,
+			r.batchno,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			u.office_id,
+			o.`name`,
+			null as type0,
+			null as type1,
+			r.declare_type as type2,
+			null as type3,
+			null as type4,
+			w.register_certificate_num
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		WHERE
+		r.del_flag != '1'
+		AND u.del_flag != '1'
+		AND o.del_flag != '1'
+		AND r.batch_status != '21' AND r.batch_status >9
+		AND r.declare_type = '2'
+		UNION 
+		SELECT
+			r.Fdeclare_result,
+			w.id,
+			w.`name` AS name0,
+			r.batchno,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			u.office_id,
+			o.`name`,
+			null as type0,
+			null as type1,
+			null as type2,
+			r.declare_type as type3,
+			null as type4,
+			w.register_certificate_num
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		WHERE
+		r.del_flag != '1'
+		AND u.del_flag != '1'
+		AND o.del_flag != '1'
+		AND r.batch_status != '21' AND r.batch_status >9
+		AND r.declare_type = '3'
+		UNION 
+		SELECT
+			r.Fdeclare_result,
+			w.id,
+			w.`name` AS name0,
+			r.batchno,
+			w.certificates_num,
+			w.sex,
+			w.company_name,
+			u.office_id,
+			o.`name`,
+			null as type0,
+			null as type1,
+			null as type2,
+			null as type3,
+			r.declare_type as type4,
+			w.register_certificate_num
+		FROM
+			enterprise_workers w
+		LEFT JOIN sys_user u ON w.pid = u.id
+		LEFT JOIN sys_office o ON u.office_id = o.id
+		LEFT JOIN person_record r ON w.id = r.person_id
+		WHERE
+		r.del_flag != '1'
+		AND u.del_flag != '1'
+		AND o.del_flag != '1'
+		AND r.batch_status != '21' AND r.batch_status >9
+		AND r.declare_type = '4'
+		) table1
+		<where>
+			<if test="officeId !=null and officeId !=''">
+				AND table1.office_id = #{officeId}
+			</if>
+			<if test="batchNo !=null and batchNo !=''">
+				AND table1.batchno = #{batchNo}
+			</if>
+		</where>
+		group by 
+		table1.id,
+		table1.name0,
+		table1.batchno,
+		table1.certificates_num,
+		table1.sex,
+		table1.company_name,
+		table1.`name`,
+		table1.register_certificate_num
+		order by
+		table1.`name`,
+		table1.name0,
+		table1.id
+	</select>
+	
+	<!-- 查询出预审单位上报信息汇总-->
+	<select id="findUnitsReportInfo" resultType="ReportEnterpriseWorkers">
+		SELECT
+		a.company_name AS companyName,
+		num1 as initialRegistration,
+		num2 as changeUnit,
+		num3 as changeSpecialty,
+		num4 as continueRegistration,
+		a.office_id
+		FROM
+			(
+				SELECT
+					enterprise_workers.company_name,
+					sys_user.office_id,
+					sum(CASE WHEN person_record.declare_type = '1' THEN 1 ELSE 0 END) AS num1,
+					sum(CASE WHEN person_record.declare_type = '2' THEN 1 ELSE 0 END) AS num2,
+					sum(CASE WHEN person_record.declare_type = '3' THEN 1 ELSE 0 END) AS num3,
+					sum(CASE WHEN person_record.declare_type = '4' THEN 1 ELSE 0 END) AS num4
+				FROM
+					person_record
+				LEFT JOIN enterprise_workers ON person_record.person_id = enterprise_workers.id
+				LEFT JOIN sys_user ON sys_user.id = enterprise_workers.pid
+				LEFT JOIN sys_office ON sys_office.id = sys_user.office_id
+				WHERE
+					person_record.del_flag != '1'
+				AND person_record.batch_status != '20'
+				AND person_record.batch_status != '21'
+				AND person_record.batch_status > 9
+				GROUP BY
+					enterprise_workers.company_name,
+					sys_user.office_id
+			) a
+			<where>
+				<if test="officeId != null and officeId !=''">
+					AND a.office_id = #{officeId}
+				</if>
+			</where>
+	</select>
+	
+	<!-- 登记申请汇总表-申请人次统计 -->
+	<select id="findApplyPersonTime" resultType="ReportEnterpriseWorkers">
+		SELECT
+		a.`name` as officeName,
+		num0+num1+num2+num3+num4 as tatol,
+		num0 as cancellationOfRegistration,
+		num1 as initialRegistration,
+		aleryReportTatol,
+		num2 as changeUnit,
+		num3 as changeSpecialty,
+		num4 as continueRegistration,
+		a.office_id
+		FROM
+			(
+				SELECT
+					sys_user.office_id,
+					sys_office.`name`,
+					sum(CASE WHEN person_record.declare_status>9 AND person_record.declare_type = '1' THEN 1 ELSE 0 END) as aleryReportTatol,
+					sum(CASE WHEN person_record.declare_type = '0' THEN 1 ELSE 0 END) AS num0,
+					sum(CASE WHEN person_record.declare_type = '1' THEN 1 ELSE 0 END) AS num1,
+					sum(CASE WHEN person_record.declare_type = '2' THEN 1 ELSE 0 END) AS num2,
+					sum(CASE WHEN person_record.declare_type = '3' THEN 1 ELSE 0 END) AS num3,
+					sum(CASE WHEN person_record.declare_type = '4' THEN 1 ELSE 0 END) AS num4
+				FROM
+					person_record
+				LEFT JOIN enterprise_workers ON person_record.person_id = enterprise_workers.id
+				LEFT JOIN sys_user ON sys_user.id = enterprise_workers.pid
+				LEFT JOIN sys_office ON sys_office.id = sys_user.office_id
+				WHERE
+					person_record.del_flag != '1'
+				AND sys_office.del_flag !='1'
+				AND sys_user.del_flag !='1'
+				AND person_record.batch_status != '20'
+				AND person_record.batch_status != '21'
+				GROUP BY
+					sys_office.`name`,
+					sys_user.office_id
+			) a
+	</select>
+	
+	<!-- 登记申请汇总表-申请人数-材料 -->
+	<select id="findApplyPersonNum" resultType="ReportEnterpriseWorkers">
+		select
+		b.officeName,
+		b.tatol,
+		b.initialRegistration,
+		b.subtotal,
+		b.scc as changeSpecialty,
+		b.uc as changeUnit,
+		b.continueRegistration,
+		b.cancellationOfRegistration
+		FROM(
+				SELECT
+				a.officeName,
+				num0+num1+num2+num3+num4 as tatol,
+				num1 as initialRegistration,
+				SUM(CASE WHEN num3='1' AND (num2='1' or num4='1') THEN 1 ELSE 0 END)+num3+SUM(CASE WHEN num2='1' AND num4 = '1' THEN 1 ELSE 0 END)+num2+num4+num0 as subtotal,
+				SUM(CASE WHEN num3='1' AND (num2='1' or num4='1') THEN 1 ELSE 0 END)+num3 as scc,
+				SUM(CASE WHEN num2='1' AND num4 = '1' THEN 1 ELSE 0 END)+num2 as uc,
+				num4 as continueRegistration,
+				num0 as cancellationOfRegistration
+				FROM
+				(
+					SELECT
+						sys_office.`name` as officeName,
+						sum(CASE WHEN person_record.declare_type = '0' THEN 1 ELSE 0 END) AS num0,
+						sum(CASE WHEN person_record.declare_type = '1' THEN 1 ELSE 0 END) AS num1,
+						sum(CASE WHEN person_record.declare_type = '2' THEN 1 ELSE 0 END) AS num2,#变单
+						sum(CASE WHEN person_record.declare_type = '3' THEN 1 ELSE 0 END) AS num3,#变专
+						sum(CASE WHEN person_record.declare_type = '4' THEN 1 ELSE 0 END) AS num4#继续
+					FROM
+						person_record
+					LEFT JOIN enterprise_workers ON person_record.person_id = enterprise_workers.id
+					LEFT JOIN sys_user ON sys_user.id = enterprise_workers.pid
+					LEFT JOIN sys_office ON sys_office.id = sys_user.office_id
+					WHERE
+						person_record.del_flag != '1'
+					AND sys_office.del_flag !='1'
+					AND sys_user.del_flag !='1'
+					AND person_record.batch_status != '20'
+					AND person_record.batch_status != '21'
+					AND person_record.batch_status >9
+					GROUP BY
+						sys_office.`name`
+				) a
+				GROUP BY
+				 a.officeName
+		) b
+	</select>
+</mapper>

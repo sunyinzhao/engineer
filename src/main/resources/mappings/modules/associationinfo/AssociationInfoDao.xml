@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.associationinfo.dao.AssociationInfoDao">
+    
+	<sql id="associationInfoColumns">
+		a.id AS "id",
+		a.association_name AS "associationName",
+		a.org_num AS "orgNum",
+		a.office_id AS "office.id",
+		a.seal_pic_url AS "sealPicUrl",
+		a.seal_pic_Name as "sealPicName",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.jian_zhi_dan_wei AS jianZhiDanWei,
+		a.start_date AS  startDate,
+		a.end_date AS  endDate,
+		o4.name AS "office.name"
+	</sql>
+	
+	<sql id="associationInfoJoins">
+		LEFT JOIN sys_office o4 ON o4.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="AssociationInfo">
+		SELECT 
+			<include refid="associationInfoColumns"/>
+		FROM association_info a
+		<include refid="associationInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AssociationInfo">
+		SELECT 
+			<include refid="associationInfoColumns"/>
+		FROM association_info a
+		<include refid="associationInfoJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AssociationInfo">
+		SELECT 
+			<include refid="associationInfoColumns"/>
+		FROM association_info a
+		<include refid="associationInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO association_info(
+			id,
+			association_name,
+			org_num,
+			office_id,
+			seal_pic_url,
+			seal_pic_Name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			jian_zhi_dan_wei,
+			start_date,
+			end_date
+	  ) VALUES (
+			#{id},
+			#{associationName},
+			#{orgNum},
+			#{office.id},
+			#{sealPicUrl},
+			#{sealPicName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{jianZhiDanWei},
+			#{startDate},
+			#{endDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE association_info SET 	
+			association_name = #{associationName},
+			org_num = #{orgNum},
+			jian_zhi_dan_wei = #{jianZhiDanWei},
+			office_id = #{office.id},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			start_date = #{startDate},
+			end_date = #{endDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSealUrl">
+		UPDATE association_info SET 
+			seal_pic_url = #{sealPicUrl},
+			seal_pic_Name = #{sealPicName}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	
+<!-- <update id="delete">
+		DELETE FROM association_info
+		WHERE id = #{id}
+	</update>
+	 -->
+	 
+	<update id="delete">
+		UPDATE association_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<select id="getAssocicationBySerialNumber" resultType="AssociationInfo">
+		SELECT 
+			<include refid="associationInfoColumns"/>
+		FROM  association_info a 
+		INNER JOIN cfca_electronic_chapter c ON a.ID=c.user_id
+		LEFT JOIN sys_office o4 ON o4.id = a.office_id
+		
+		<where>
+			<choose>
+				<when test="serialNumber != null and serialNumber != ''">
+					AND c.serial_no = #{serialNumber}
+				</when>
+				<otherwise>
+					AND 1 = 2
+				</otherwise>
+			</choose>
+		</where>
+		ORDER BY a.update_date DESC
+	</select>
+	
+	
+	<select id="getAssocicationByOfficeId" resultType="AssociationInfo">
+		SELECT 
+			<include refid="associationInfoColumns"/>
+		FROM  association_info a 
+		LEFT JOIN sys_office o4 ON o4.id = a.office_id
+		<where>
+			<choose>
+				<when test="officeId != null and officeId != ''">
+					AND a.office_id = #{officeId}
+				</when>
+				<otherwise>
+					AND 1 = 2
+				</otherwise>
+			</choose>
+		</where>
+		ORDER BY a.update_date DESC
+			
+	</select>
+	
+</mapper>

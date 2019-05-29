@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.enterprise.dao.ContinueEducationDao">
+    <sql id="continueEducationColumns">
+        a.id AS "id",
+        a.card_num AS "cardNum",
+        a.name AS "name",
+        a.year AS "year",
+        a.education_flag AS "educationFlag",
+        a.worker_id AS "workerId",
+        a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+    </sql>
+    <select id="get" resultType="ContinueEducation">
+        SELECT
+        <include refid="continueEducationColumns"/>
+        FROM continue_education a
+        where a.id=#{id}
+    </select>
+
+    <select id="findList" resultType="ContinueEducation">
+        SELECT
+        <include refid="continueEducationColumns"/>
+        FROM continue_education a
+        WHere a.worker_id = #{workerId}
+    </select>
+
+    <select id="findAllList" resultType="ContinueEducation">
+        SELECT
+        <include refid="continueEducationColumns"/>
+        FROM continue_education a
+    </select>
+
+    <insert id="insert">
+        INSERT INTO continue_education(
+         id,
+         card_num,
+         name,
+         year,
+         education_flag,
+         worker_id,
+         create_by,
+         create_date,
+         update_by,
+         update_date
+        )VALUES (
+        #{id},
+        #{cardNum},
+        #{name},
+        #{year},
+        #{educationFlag},
+        #{workerId},
+        #{createBy.id},
+        #{createDate},
+        #{updateBy.id},
+		#{updateDate}
+        )
+    </insert>
+
+    <update id="update">
+        update continue_education set
+        card_num = #{cardNum},
+         name = #{name},
+         year = #{year},
+         education_flag = #{educationFlag},
+         worker_id = #{workerId},
+         create_by = #{createBy.id},
+         create_date = #{createDate},
+         update_by = #{updateBy.id},
+         update_date = #{updateDate}
+      WHERE id=#{id}
+    </update>
+    <delete id="delete">
+        delete from continue_education where id=#{id}
+    </delete>
+
+    <select id="getAllYear" resultType="string">
+        SELECT a.year FROM continue_education a WHERE a.worker_id=#{id}
+    </select>
+
+    <select id="getAllYearThree" resultType="string">
+        SELECT a.year FROM continue_education a WHERE a.worker_id=#{id} and a.year between #{year}-2 and #{year}
+    </select>
+</mapper>

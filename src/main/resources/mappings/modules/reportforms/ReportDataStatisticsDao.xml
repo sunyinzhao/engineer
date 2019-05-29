@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.ReportDataStatisticsDao">
+
+    <!-- 注销 -->
+    <select id="findReportDataStatisticsOpinionLogout" resultType="ReportDataStatistics">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        -- #case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as declareType,
+        enterprise_workers.register_main_specialty as registerMainSpecialty,
+        enterprise_workers.register_auxiliary_specialty as registerAuxiliarySpecialty,
+        title_certificate.title_type as title,
+        title_certificate.specialty as titleSpecialty,
+        educationtbl.specialty as suoxueSpecialty,
+        specialty_train.specialty as peixunSpecialty,
+        a.`name` as companyName,
+        sys_office.`name` AS areaName,
+        sys_office.id AS officeId,
+        batchno as batchNo,
+        b.`name` as zexpert1Name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zdResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as finalOpinion,
+        GROUP_concat(back_memo  SEPARATOR '|') as feedBack,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as finalResult,
+        #feedback.back_memo,
+        person_record.fy_advice as advice,
+        person_record.declare_date as declareDate
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        LEFT JOIN title_certificate ON enterprise_workers.id=title_certificate.person_id
+        LEFT JOIN educationtbl ON enterprise_workers.id=educationtbl.person_id
+        LEFT JOIN specialty_train ON enterprise_workers.id=specialty_train.person_id
+        <where>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="finalResult != null and finalResult !=''">
+                and Fdeclare_result = #{finalResult}
+            </if>
+            and person_record.declare_type = '0'
+            and person_record.del_flag='0'
+            and person_record.batch_status in ('17','19')
+        </where>
+        group by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        b.`name`,
+        person_record.Zdeclare_result,
+        person_record.Fdeclare_result,
+        enterprise_workers.register_main_specialty,
+        enterprise_workers.register_auxiliary_specialty,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name` asc
+
+    </select>
+    <!-- 初始 -->
+	<select id="findReportDataStatisticsOpinionInitial" resultType="ReportDataStatistics">
+        SELECT
+        enterprise_workers.`name` as enterpriseName,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as declareType,
+        Getzhuanye(h.newvalue) as registerMainSpecialty,
+        Getzhuanye(i.newvalue) as registerAuxiliarySpecialty,
+        title_certificate.title_type as title,
+        title_certificate.specialty as titleSpecialty,
+        educationtbl.specialty as suoxueSpecialty,
+        specialty_train.specialty as peixunSpecialty,
+        a.`name` as companyName,
+        sys_office.`name` AS areaName,
+        sys_office.id AS officeId,
+        batchno as batchNo,
+        b.`name` as zexpert1Name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        c.name as zexpert2Name,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as szResult,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zdResult,
+        case person_expert.type
+              when '1' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '2' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '3' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '4' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '5' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '6' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '7' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '8' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '9' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '10' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '11' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '12' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '13' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '18' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '19' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '20' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '21' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '22' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '23' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '24' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '25' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '26' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '27' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '28' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '29' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '30' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '31' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '32' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '33' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '34' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as baseOpinion,
+        case person_expert.type
+              when '14' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '16' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '35' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '37' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '39' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as mainOpinion,
+        case person_expert.type
+              when '15' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '17' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '36' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '38' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+              when '40' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as auxiliaryOpinion,
+        GROUP_concat(REPLACE(back_memo,'	','')  SEPARATOR '|') as feedBack,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end finalResult,
+        person_record.fy_advice as advice,
+        person_record.declare_date as declareDate
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='4'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='5'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1'
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        LEFT JOIN title_certificate ON enterprise_workers.id=title_certificate.person_id
+        LEFT JOIN educationtbl ON enterprise_workers.id=educationtbl.person_id
+        LEFT JOIN specialty_train ON enterprise_workers.id=specialty_train.person_id
+        <where>
+            <if test="officeId != null and officeId !=''">and sys_office.id = #{officeId}</if>
+            <if test="batchNo != null and batchNo !=''">and  batchno = #{batchNo}</if>
+            <if test="finalResult != null and finalResult !=''">and Fdeclare_result = #{finalResult}</if>
+            and person_record.declare_type = '1'
+            and person_record.del_flag='0'
+            and person_record.batch_status > 11
+            and person_record.batch_status !='21'
+        </where>
+        group by
+            person_record.declare_type,
+            sys_office.`name`,
+            a.`name`,
+            enterprise_workers.`name`,
+            person_record.declare_date,
+            h.newvalue,
+            i.newvalue,
+            c.name,
+            person_record.Fdeclare_result
+        order by
+            person_record.declare_type,
+            sys_office.`name`,
+            a.`name`,
+            enterprise_workers.`name` asc
+    </select>
+
+
+    <!-- 单位 -->
+    <select id="findReportDataStatisticsOpinionWorkunit" resultType="ReportDataStatistics">
+        SELECT
+        enterprise_workers.`name` AS enterpriseName,
+        enterprise_workers.register_certificate_num AS registerCertificateNum,
+        CASE person_record.declare_type
+        WHEN '0' THEN
+        '注销登记'
+        WHEN '1' THEN
+        '初始登记'
+        WHEN '2' THEN
+        '变更执业单位'
+        WHEN '3' THEN
+        '变更专业'
+        WHEN '4' THEN
+        '继续登记'
+        END AS declareType,
+        -- 执业单位
+        h.oldvalue AS yuanDeclareWork,
+        h.newvalue AS xinDeclareWork,
+        enterprise_workers.register_main_specialty as registerMainSpecialty,
+        enterprise_workers.register_auxiliary_specialty as registerAuxiliarySpecialty,
+        title_certificate.title_type AS title,
+        title_certificate.specialty AS titleSpecialty,
+        educationtbl.specialty AS suoxueSpecialty,
+        specialty_train.specialty AS peixunSpecialty,
+        -- 预审单位
+        sys_office.`name` AS areaName,
+        sys_office.id AS officeId,
+        batchno AS batchNo,
+        b.`name` as zexpert1Name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zdResult,
+        GROUP_concat(concat(g.label,':',f.label, '-描述:', person_expert.item_text ) SEPARATOR '|') AS finalOpinion,
+        GROUP_concat(back_memo SEPARATOR '|') AS feedBack,
+        #d.name as fexpertName,
+        CASE person_record.Fdeclare_result
+        WHEN '1' THEN
+        '通过'
+        WHEN '3' THEN
+        '未通过'
+        WHEN '2' THEN
+        '部分通过'
+        END AS finalResult,
+        person_record.fy_advice AS advice
+        FROM
+        person_record
+        LEFT JOIN enterprise_workers ON person_record.person_id = enterprise_workers.id
+        LEFT JOIN sys_user a ON enterprise_workers.pid = a.id
+        LEFT JOIN sys_office ON a.office_id = sys_office.id
+        LEFT JOIN sys_user b ON person_record.first_Zexpert_id = b.id
+        LEFT JOIN sys_user c ON person_record.second_Zexpert_id = c.id
+        LEFT JOIN sys_user d ON person_record.Fexpert_id = d.id
+        LEFT JOIN change_item h ON person_record.id = h.person_record_id
+        AND h.changetype = '1'
+        LEFT JOIN person_expert ON person_record.id = person_expert.record_id
+        AND person_expert.items != '1'
+        LEFT JOIN sys_examine ON person_expert.examine_id = sys_examine.id
+        LEFT JOIN sys_dict g ON person_expert.type = g.value
+        AND g.type = 'expert_type'
+        LEFT JOIN sys_dict f ON concat('person_expert',person_expert.type) = f.type
+        AND person_expert.items = f.value
+        LEFT JOIN feedback ON feedback.person_record_id = person_record.id
+        LEFT JOIN title_certificate ON enterprise_workers.id = title_certificate.person_id
+        LEFT JOIN educationtbl ON enterprise_workers.id = educationtbl.person_id
+        LEFT JOIN specialty_train ON enterprise_workers.id = specialty_train.person_id
+        <where>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="finalResult != null and finalResult !=''">
+                and Fdeclare_result = #{finalResult}
+            </if>
+            and person_record.declare_type = '2'
+            and person_record.del_flag = '0'
+            and person_record.batch_status > 11
+            and person_record.batch_status != '21'
+        </where>
+        GROUP BY
+        person_record.declare_type,
+        sys_office.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        h.oldvalue,
+        h.newvalue,
+        b.`name`,
+        person_record.fy_advice
+        ORDER BY
+        person_record.declare_type,
+        sys_office.`code`,
+        sys_office.`name`,
+        #a.`name`,
+        enterprise_workers.`name` ASC
+    </select>
+
+    <!-- 专业 -->
+    <select id="findReportDataStatisticsOpinionSpecialty" resultType="ReportDataStatistics">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        #case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as declareType,
+        Getzhuanye(h.oldvalue) as originalMajor,
+        Getzhuanye(h.newvalue) as newMainProfessional,
+        Getzhuanye(i.oldvalue) as originalAuxiliaryProfession,
+        Getzhuanye(i.newvalue) as newAuxiliaryProfession,
+        title_certificate.title_type as title,
+        title_certificate.specialty as titleSpecialty,
+        educationtbl.specialty as suoxueSpecialty,
+        specialty_train.specialty as peixunSpecialty,
+        a.`name` as companyName,
+        sys_office.`name` AS areaName,
+        sys_office.id AS officeId,
+        batchno as batchNo,
+        person_record.declare_date as declareDate,
+        b.`name` as zexpert1Name,
+        case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        c.name as zexpert2Name,
+        case person_record.second_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as szResult,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as zdResult,
+        case person_expert.type
+        when '1' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '2' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '3' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '4' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '5' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '6' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '7' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '8' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '9' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '10' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '11' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '12' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '13' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '18' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '19' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '20' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '21' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '22' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '23' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '24' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '25' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '26' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '27' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '28' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '29' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '30' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '31' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '32' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '33' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '34' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as baseOpinion,
+        case person_expert.type
+        when '14' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '16' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '35' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '37' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '39' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as mainOpinion,
+        case person_expert.type
+        when '15' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '17' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '36' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '38' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        when '40' then GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|')
+        end as auxiliaryOpinion,
+        #d.name as fexpertName,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as finalResult,
+
+        #person_expert.type,
+        #g.label,
+        #person_expert.items,
+        #f.label,
+        #person_expert.item_text
+        #g.label,
+        #person_expert.type,
+        #f.value,
+        #f.label
+        GROUP_concat(back_memo  SEPARATOR '|') as feedBack,
+        #feedback.back_memo,
+        person_record.fy_advice as advice
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join change_item h on person_record.id=h.person_record_id and h.changetype='2'
+        left join change_item i on person_record.id=i.person_record_id and i.changetype='3'
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1'
+        -- #and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        LEFT JOIN title_certificate ON enterprise_workers.id=title_certificate.person_id
+        LEFT JOIN educationtbl ON enterprise_workers.id=educationtbl.person_id
+        LEFT JOIN specialty_train ON enterprise_workers.id=specialty_train.person_id
+        <where>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="finalResult != null and finalResult !=''">
+                and Fdeclare_result = #{finalResult}
+            </if>
+            and person_record.declare_type = '3'
+            and person_record.del_flag='0'
+            and person_record.batch_status>11
+            and person_record.batch_status!='21'
+        </where>
+        group by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        h.oldvalue,
+        h.newvalue,
+        i.oldvalue,
+        i.newvalue,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name` asc
+    </select>
+
+    <!-- 继续 -->
+    <select id="findReportDataStatisticsOpinionContinue" resultType="ReportDataStatistics">
+        select
+        enterprise_workers.`name` as enterpriseName,
+        #case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as sex,
+        enterprise_workers.register_certificate_num as registerCertificateNum,
+        case person_record.declare_type
+        when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as declareType,
+        enterprise_workers.register_main_specialty as registerMainSpecialty,
+        enterprise_workers.register_auxiliary_specialty as registerAuxiliarySpecialty,
+        title_certificate.title_type as title,
+        title_certificate.specialty as titleSpecialty,
+        educationtbl.specialty as suoxueSpecialty,
+        specialty_train.specialty as peixunSpecialty,
+        a.`name` as companyName,
+        sys_office.`name` AS areaName,
+        sys_office.id AS officeId,
+        batchno as batchNo,
+        person_record.declare_date as declareDate,
+        b.`name` as zexpert1Name,
+        case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fzResult,
+        GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as finalOpinion,
+        GROUP_concat(back_memo  SEPARATOR '|') as feedBack,
+        #d.name as fexpertName,
+        case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as finalResult,
+        person_record.fy_advice as advice
+        #person_record.batch_status,
+        #person_record.declare_status
+        FROM
+        person_record
+        left join enterprise_workers on person_record.person_id=enterprise_workers.id
+        left join sys_user a on enterprise_workers.pid=a.id
+        left join sys_office on a.office_id=sys_office.id
+        left join sys_user b on person_record.first_Zexpert_id =b.id
+        left join sys_user c on person_record.second_Zexpert_id =c.id
+        left join sys_user d on person_record.Fexpert_id=d.id
+        left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1'
+        -- and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40')
+        left join sys_examine on person_expert.examine_id=sys_examine.id
+        left join sys_dict g on person_expert.type = g.value and g.type='expert_type'
+        left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value
+        left join feedback on feedback.person_record_id=person_record.id
+        LEFT JOIN title_certificate ON enterprise_workers.id=title_certificate.person_id
+        LEFT JOIN educationtbl ON enterprise_workers.id=educationtbl.person_id
+        LEFT JOIN specialty_train ON enterprise_workers.id=specialty_train.person_id
+        <where>
+            <if test="officeId != null and officeId !=''">
+                and sys_office.id = #{officeId}
+            </if>
+            <if test="batchNo != null and batchNo !=''">
+                and batchno = #{batchNo}
+            </if>
+            <if test="finalResult != null and finalResult !=''">
+                and Fdeclare_result = #{finalResult}
+            </if>
+            and person_record.declare_type = '4'
+            and person_record.del_flag='0'
+            and person_record.batch_status in ('17','19')
+        </where>
+        group by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name`,
+        enterprise_workers.register_certificate_num,
+        person_record.declare_date,
+        b.`name`,
+        person_record.fy_advice
+        order by
+        person_record.declare_type,
+        sys_office.`name`,
+        a.`name`,
+        enterprise_workers.`name` asc
+    </select>
+
+
+
+</mapper>

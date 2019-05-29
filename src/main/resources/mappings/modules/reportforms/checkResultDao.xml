@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reportforms.dao.checkResultDao">
+
+
+
+	
+
+    <select id="findChangeUnit" resultType="changeUnit">
+select 
+enterprise_workers.`name` as enterprisename,
+case  enterprise_workers.sex  when '1' then '男' when '2' then '女' end as workerSex,
+enterprise_workers.register_certificate_num as registerCertificateNum,
+sys_office.`name` as city,
+case person_record.declare_type 
+when '0' then '注销登记' when '1' then '初始登记' when '2' then '变更执业单位' when '3' then '变更专业' when '4' then '继续登记' end as type,
+h.oldvalue as oldName,
+h.newvalue as newName,
+person_record.declare_date as date,
+b.`name` as expertName,
+case person_record.first_Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as result,
+case person_record.Zdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as lastView,
+GROUP_concat(concat(g.label,':',f.label,'-描述:',person_expert.item_text)  SEPARATOR '|') as expertView,
+GROUP_concat(back_memo  SEPARATOR '|') as feedBackExpert,
+d.name as MMMexpertName,
+case person_record.Fdeclare_result when '1' then '通过' when '3' then '未通过'  when '2' then '部分通过' end as fResult,
+person_record.fy_advice as reconsiderAdvice 
+FROM 
+person_record 
+left join enterprise_workers on person_record.person_id=enterprise_workers.id 
+left join sys_user a on enterprise_workers.pid=a.id 
+left join sys_office on a.office_id=sys_office.id 
+left join sys_user b on person_record.first_Zexpert_id =b.id 
+left join sys_user c on person_record.second_Zexpert_id =c.id 
+left join sys_user d on person_record.Fexpert_id=d.id 
+left join change_item h on person_record.id=h.person_record_id and h.changetype='1' 
+left join person_expert on person_record.id=person_expert.record_id and person_expert.items!='1' and person_expert.examine_type='4' and person_expert.type not in('35','36','37','38','39','40') 
+left join sys_examine on person_expert.examine_id=sys_examine.id 
+left join sys_dict g on person_expert.type = g.value and g.type='expert_type'  
+left join sys_dict f on concat('person_expert',person_expert.type)=f.type and person_expert.items=f.value 
+left join feedback on feedback.person_record_id=person_record.id 
+
+  
+<where>
+person_record.del_flag='0' and person_record.batch_status>11 and person_record.batch_status!='21' and person_record.declare_type='2'
+<if test="batchNo !=null and batchNo !=''">
+ and person_record.batchno=#{batchNo}
+</if>
+<if test="fResult !=null and fResult !=''">
+ and person_record.Fdeclare_result=#{fResult} 
+</if>
+<if test="officeId !=null and officeId !=''">
+ and sys_office.id=#{officeId}
+</if>
+</where>
+group by  
+enterprise_workers.sex,
+person_record.declare_type,
+sys_office.`name`,
+sys_office.`code` ,
+#a.`name`,
+enterprise_workers.`name`,
+enterprise_workers.register_certificate_num,
+person_record.declare_date,
+h.oldvalue,
+h.newvalue,
+d.`name`,
+person_record.first_Zdeclare_result,
+b.`name`,
+person_record.second_Zdeclare_result,
+person_record.Zdeclare_result,
+c.name,
+person_record.Fdeclare_result,
+#feedback.back_memo,
+person_record.fy_advice
+order by  
+person_record.declare_type,
+sys_office.`code` ,
+sys_office.`name` ,
+#a.`name`,
+enterprise_workers.`name`
+
+</select>
+
+
+ 
+</mapper>

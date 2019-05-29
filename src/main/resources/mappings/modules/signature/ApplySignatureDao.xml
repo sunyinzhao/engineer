@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.signature.dao.ApplySignatureDao">
+    
+	<sql id="applySignatureColumns">
+		a.id AS "id",
+		a.project_name AS "projectName",
+		a.services AS "services",
+		a.child_services AS "childServices",
+		a.area AS "area",
+		a.plan_grade AS "planGrade",
+		a.enterprise_id AS "enterpriseId",
+		a.complete_date AS "completeDate",
+		a.project_specialty AS "projectSpecialty",
+		a.project_specialty_child AS "projectSpecialtyChild",
+		a.project_invest_amount AS "projectInvestAmount",
+		a.status AS "status",
+		a.signature_file_path AS "signatureFilePath",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.boundary AS "boundary",
+		a.boundary_case AS "boundaryCase",
+		a.contract_num AS "contractNum",
+		a.lock_person AS "lockPerson",
+		a.lock_time AS "lockTime",
+		a.build_scale AS "buildScale",
+		a.project_abroad_amount AS "projectAbroadAmount",
+		a.project_add_sub_amount AS "projectAddSubAmount",
+		a.funds_source  AS "fundsSource",
+		a.plan_begin_date AS "planBeginDate",
+		a.approval_org AS "approvalOrg",
+		a.veto AS "veto",
+		a.project_property AS "projectProperty"
+
+	</sql>
+	<sql id="counselorAttachmentColumns">
+			a.id AS "id",
+			a.file_name AS "fileName",
+			a.type AS "type",
+			a.file_type AS "fileType",
+			a.path AS "path",
+			a.pid AS "pid",
+			a.table_id AS "tableId",
+			a.table_type AS "tableType",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.back_expert_id AS "backExpertId",
+			a.type_num AS "typeNum"
+		</sql>
+			<sql id="counselorAttachmentJoins">
+	</sql>
+
+
+	<sql id="applySignatureJoins">
+	</sql>
+    
+	<select id="get" resultType="ApplySignature">
+		SELECT 
+			<include refid="applySignatureColumns"/>
+		FROM apply_signature a
+		<include refid="applySignatureJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ApplySignature">
+		SELECT 
+			<include refid="applySignatureColumns"/>
+		FROM apply_signature a
+		<include refid="applySignatureJoins"/>
+		left join sys_user b on a.enterprise_id=b.id
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="projectName != null and projectName != ''">
+				AND a.project_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{projectName}</if>
+					<if test="dbName == 'mssql'">'%'+#{projectName}</if>
+					<if test="dbName == 'mysql'">concat('%',#{projectName})</if>
+			</if>
+
+			<choose>
+
+				<when test="enterpriseId !=null and enterpriseId !='' and enterpriseId =='1'.toString() ">
+					<!-- 系统管理员-->
+				</when>
+				<when test="enterpriseId !=null and enterpriseId !='' and enterpriseId !='1'.toString() and officeId =='1'.toString() and userModel =='2'.toString()">
+					<!-- 协会管理员-->
+				</when>
+				<when test="enterpriseId !=null and enterpriseId !='' and enterpriseId !='1'.toString() and officeId !='1'.toString() and userModel =='2'.toString()">
+					b.office_id=#{officeId}
+				</when>
+				<when test="enterpriseId !=null and enterpriseId !=''  ">
+					AND a.enterprise_id = #{enterpriseId}
+				</when>
+				<otherwise>
+					AND 1=2
+				</otherwise>
+			</choose>
+
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ApplySignature">
+		SELECT 
+			<include refid="applySignatureColumns"/>
+		FROM apply_signature a
+		<include refid="applySignatureJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO apply_signature(
+			id,
+			project_name,
+			services,
+			child_services,
+			area,
+			plan_grade,
+			enterprise_id,
+			complete_date,
+			project_specialty,
+			project_specialty_child ,
+			project_invest_amount,
+			status,
+			signature_file_path ,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			boundary,
+			boundary_case ,
+			contract_num ,
+			build_scale,
+			project_abroad_amount ,
+			project_add_sub_amount ,
+			funds_source  ,
+			plan_begin_date,
+			approval_org ,
+			veto ,
+			project_property
+		) VALUES (
+			#{id},
+			#{projectName},
+			#{services},
+			#{childServices},
+			#{area},
+			#{planGrade},
+			#{enterpriseId},
+			#{completeDate},
+			#{projectSpecialty},
+			#{projectSpecialtyChild},
+			#{projectInvestAmount},
+			#{status},
+			#{signatureFilePath},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},			
+			#{boundary},
+			#{boundaryCase},
+			#{contractNum},
+			#{buildScale},
+			#{projectAbroadAmount},
+		    #{projectAddSubAmount},
+		    #{fundsSource},
+		    #{planBeginDate},
+		    #{approvalOrg},
+		    #{veto},
+		    #{projectProperty}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE apply_signature SET 	
+			project_name = #{projectName},
+			services = #{services},
+			child_services = #{childServices},
+			area = #{area},
+			plan_grade = #{planGrade},
+			enterprise_id = #{enterpriseId},
+			complete_date = #{completeDate},
+			project_specialty = #{projectSpecialty},
+			project_specialty_child = #{projectSpecialtyChild},
+			project_invest_amount = #{projectInvestAmount},
+			status = #{status},
+			signature_file_path = #{signatureFilePath},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},			
+			boundary =#{boundary},
+			boundary_case = #{boundaryCase},
+			contract_num = #{contractNum}	,
+			build_scale = #{buildScale},
+
+			project_abroad_amount = #{projectAbroadAmount},
+			project_add_sub_amount = #{projectAddSubAmount},
+			funds_source = #{fundsSource},
+			plan_begin_date = #{planBeginDate},
+			approval_org  = #{approvalOrg},
+			veto = #{veto},
+			project_property =  #{projectProperty}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateLock">
+		UPDATE apply_signature SET
+			lock_person = #{lockPerson},
+			lock_time = #{lockTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE apply_signature SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<update id="cancellation">
+		UPDATE apply_signature SET 
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	<select id="checkProjectName" resultType="int">
+		SELECT COUNT(project_name)
+			FROM apply_signature 
+			WHERE project_name=#{projectName}
+			<if test="id!=null">
+			AND id!=#{id}
+			</if>
+	</select>
+	<!--根据类型集合查询list-->
+	<select id="findListPid" resultType="CounselorAttachment">
+		SELECT
+		<include refid="counselorAttachmentColumns"/>
+		FROM counselor_attachment a
+		<include refid="counselorAttachmentJoins"/>
+		WHERE
+		a.pid = #{pid}
+		ORDER BY create_date ASC
+	</select>
+	
+	<update id="deleteattach">
+		DELETE FROM counselor_attachment
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更改签章状态 -->
+	<select id="selectsignature" resultType="ApplySignaturePerson">
+	SELECT p.status AS STATUS,p.signature_id AS signature_id FROM apply_signature s 
+	LEFT JOIN apply_signature_person p ON s.id=p.signature_id 
+	WHERE s.project_name=#{projectName}
+	</select>
+	<update id="updatesignature" >
+		UPDATE apply_signature_person a 
+		SET a.status= #{status} 
+		WHERE  a.signature_id = #{signatureId}
+	</update>
+</mapper>
